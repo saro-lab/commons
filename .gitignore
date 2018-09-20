@@ -1,0 +1,37 @@
+.gradle
+.vscode
+/build/
+!gradle/wrapper/gradle-wrapper.jar
+/node_modules/
+/node/
+/logs/
+/bin/
+/out/
+/yarn.lock
+/yarn-error.log
+/target/
+
+### make temp ###
+/src/main/resources/static/app/main.xxxxxx.*
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
