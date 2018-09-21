@@ -1,8 +1,8 @@
-package saro.commons;
+package me.saro.commons;
 
 import org.junit.Test;
 
-import saro.commons.Lambdas.*;
+import me.saro.commons.Lambdas.*;
 
 public class LambdasTest {
 	
