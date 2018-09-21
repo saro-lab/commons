@@ -9,13 +9,13 @@ public class Lambdas {
 	
     private Lambdas() {
     }
+    
+    public interface ThrowableRunnable {
+        void run() throws Exception;
+    }
 
     public interface ThrowableSupplier<T> {
         T get() throws Exception;
-    }
-
-    public interface ThrowableRunnable {
-        void run() throws Exception;
     }
     
     public interface ThrowableConsumer<T> {
