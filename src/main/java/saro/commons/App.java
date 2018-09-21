@@ -1,4 +1,4 @@
-package me.saro.commons;
+package saro.commons;
 
 /**
  * Hello world!
