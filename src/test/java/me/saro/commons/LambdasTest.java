@@ -1,5 +1,8 @@
 package me.saro.commons;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 
 import me.saro.commons.Lambdas.*;
@@ -7,48 +10,55 @@ import me.saro.commons.Lambdas.*;
 public class LambdasTest {
 	
 	@Test
-    public void testLambdas() {
+    public void testLambdas() throws Exception {
 		
+		// Runnable
+		throwableRunnable(() -> assertTrue(true));
 		
+		// Supplier
+		assertEquals("1", throwableSupplier(() -> "1"));
+		
+		// Consumers
+		throwableConsumer(a -> assertEquals("1", a), "1");
+		throwableBiConsumer((a, b) -> assertEquals("12", a + b), "1", "2");
+		throwableTriConsumer((a, b, c) -> assertEquals("123", a + b + c), "1", "2", "3");
+		
+		// Functions
+		assertEquals("1", throwableFunction(a -> a, "1"));
+		assertEquals("12", throwableBiFunction((a, b) -> a + b, "1", "2"));
+		assertEquals("123", throwableTriFunction((a, b, c) -> a + b + c, "1", "2", "3"));
     }
 	
-	public boolean test(ThrowableSupplier<String> throwableSupplier) throws Exception {
-		throwableSupplier.get();
-		return true;
-	}
-	
-	public boolean test(ThrowableRunnable throwableRunnable) throws Exception {
+	public void throwableRunnable(ThrowableRunnable throwableRunnable) throws Exception {
 		throwableRunnable.run();
-		return true;
 	}
 	
-	public boolean test(ThrowableConsumer<String> throwableConsumer) throws Exception {
-		throwableConsumer.accept("P1");
-		return true;
+	public String throwableSupplier(ThrowableSupplier<String> throwableSupplier) throws Exception {
+		return throwableSupplier.get();
 	}
 	
-	public boolean test(ThrowableBiConsumer<String, String> throwableBiConsumer) throws Exception {
-		throwableBiConsumer.accept("P1", "P2");
-		return true;
+	public void throwableConsumer(ThrowableConsumer<String> throwableConsumer, String p1) throws Exception {
+		throwableConsumer.accept(p1);
 	}
 	
-	public boolean test(ThrowableTriConsumer<String, String, String> throwableTriConsumer) throws Exception {
-		throwableTriConsumer.accept("P1", "P2", "P3");
-		return true;
+	public void throwableBiConsumer(ThrowableBiConsumer<String, String> throwableBiConsumer, String p1, String p2) throws Exception {
+		throwableBiConsumer.accept(p1, p2);
 	}
 	
-	public boolean test(ThrowableFunction<String, String> throwableFunction) throws Exception {
-		throwableFunction.apply("P1");
-		return true;
+	public void throwableTriConsumer(ThrowableTriConsumer<String, String, String> throwableTriConsumer, String p1, String p2, String p3) throws Exception {
+		throwableTriConsumer.accept(p1, p2, p3);
 	}
 	
-	public boolean test(ThrowableBiFunction<String, String, String> throwableBiFunction) throws Exception {
-		throwableBiFunction.apply("P1", "P2");
-		return true;
+	public String throwableFunction(ThrowableFunction<String, String> throwableFunction, String p1) throws Exception {
+		return throwableFunction.apply(p1);
 	}
 	
-	public boolean test(ThrowableTriFunction<String, String, String, String> throwableTriFunction) throws Exception {
-		throwableTriFunction.apply("P1", "P2", "P3");
-		return true;
+	public String throwableBiFunction(ThrowableBiFunction<String, String, String> throwableBiFunction, String p1, String p2) throws Exception {
+		return throwableBiFunction.apply(p1, p2);
+	}
+	
+	public String throwableTriFunction(ThrowableTriFunction<String, String, String, String> throwableTriFunction, String p1, String p2, String p3) throws Exception {
+		
+		return throwableTriFunction.apply(p1, p2, p3);
 	}
 }
