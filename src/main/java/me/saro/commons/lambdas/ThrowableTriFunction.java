@@ -1,0 +1,48 @@
+package me.saro.commons.lambdas;
+
+/**
+ * Throwable <code>TriFunction</code>
+ * 
+ * @param <T>
+ * input parameter type T
+ * 
+ * @param <U>
+ * input parameter type U
+ * 
+ * @param <V> 
+ * input parameter type V
+ * 
+ * @param <R> 
+ * output return type
+ * 
+ * @see
+ * java.util.function.Function
+ * 
+ * @author
+ * PARK Yong Seo
+ * 
+ * @since
+ * 1.0.0
+ */
+@FunctionalInterface
+public interface ThrowableTriFunction<T, U, V, R> {
+	/**
+	 * @see
+	 * java.util.function.Function
+	 * 
+	 * @param <T>
+	 * input parameter type T
+	 * 
+	 * @param <U>
+	 * input parameter type U
+	 * 
+	 * @param <V> 
+	 * input parameter type V
+	 * 
+	 * @return
+	 * output return
+	 * 
+	 * @throws Exception
+	 */
+	R apply(T t, U u, V v) throws Exception;
+}

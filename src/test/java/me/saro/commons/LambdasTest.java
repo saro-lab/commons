@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import me.saro.commons.Lambdas.*;
+import me.saro.commons.lambdas.*;
 
 public class LambdasTest {
 	
