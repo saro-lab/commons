@@ -251,7 +251,7 @@ public class Web {
 	 * <br>
 	 * <b>equals</b>
 	 * <br>
-	 * aa=11&bb=22
+	 * aa=11&amp;bb=22
 	 * @param name
 	 * @param value
 	 * @return
