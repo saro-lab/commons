@@ -47,7 +47,7 @@ public class Web {
 	
 	// ignore certificate
 	boolean ignoreCertificate = false;
-
+	
 	/**
 	 * private constructor
 	 * @param url
@@ -289,7 +289,10 @@ public class Web {
 							: new URL(url)
 					).openConnection();
 
-			// setWmAttr header
+			if (ignoreCertificate) {
+				WebIgnoreCertificate.ignoreCertificate(connection);
+			}
+			
 			header.forEach(connection::setRequestProperty);
 
 			if (body.size() > 0) {
@@ -299,18 +302,16 @@ public class Web {
 					os.flush();
 				}
 			}
-
-			// 상태코드
+			
 			status = connection.getResponseCode();
-
-			// 공통 스트림
+			
 			InputStream commonInputStream;
 			try {
 				commonInputStream = connection.getInputStream();
 			} catch (IOException ie) {
 				commonInputStream = connection.getErrorStream();
 			}
-			// 데이터 저장
+			
 			try (InputStream is = commonInputStream) {
 				data = function.apply(is);
 			}
@@ -378,5 +379,4 @@ public class Web {
 		});
 		return webResult.getBody().isPresent();
 	}
-
 }
