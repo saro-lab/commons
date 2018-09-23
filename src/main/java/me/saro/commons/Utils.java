@@ -1,5 +1,15 @@
 package me.saro.commons;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
+import me.saro.commons.lambdas.ThrowableTriConsumer;
+import me.saro.commons.web.Web;
+
 /**
  * common utils
  * @author		PARK Yong Seo
@@ -120,32 +130,52 @@ public class Utils {
 		}
 		return min + (int)(Math.random() * ((max + 1) - min));
 	}
-
-//	/**
-//	 * 이객체는 자동으로 닫힙니다.
-//	 * @param inputStream is not ZipInputStream just InputStream
-//	 * @param func
-//	 * @param <T>
-//	 * @return
-//	 * @throws Exception
-//	 */
-//	public static <T> List<T> mapInZipInputStream(InputStream inputStream, ThrowableTriFunction<String, InputStream, BufferedReader, T> func) throws Exception {
-//		ZipEntry ze;
-//		List<T> list = new ArrayList<>();
-//		try (
-//				InputStream is = inputStream;
-//				ZipInputStream zis = new ZipInputStream(is, Charset.forName("UTF-8"));
-//				InputStreamReader isr = new InputStreamReader(zis, Charset.forName("UTF-8"));
-//				BufferedReader br = new BufferedReader(isr)
-//			) {
-//			while ((ze = zis.getNextEntry()) != null) {
-//				T t = func.apply(ze.getName(), zis, br);
-//				if (t != null) {
-//					list.add(t);
-//				}
-//				zis.closeEntry();
-//			}
-//		}
-//		return list;
-//	}
+	
+	/**
+	 * read zip file
+	 * <br>
+	 * <b>WARNING : </b> is not auto closed
+	 * @param inputStream
+	 * @param callbackFileInputstream
+	 * (String fileName, ZipEntry zipEntry, InputStream inputStream)
+	 * @throws Exception
+	 */
+	public static void openZipStreamNotClose(InputStream inputStream, ThrowableTriConsumer<String, ZipEntry, InputStream> callbackFileInputstream) throws Exception {
+		ZipInputStream zipInputStream = new ZipInputStream(inputStream);
+		ZipEntry ze;
+		while ((ze = zipInputStream.getNextEntry()) != null) {
+			if (!ze.isDirectory()) {
+				callbackFileInputstream.accept(ze.getName(), ze, inputStream);
+			}
+			zipInputStream.closeEntry();
+		}
+	}
+	
+	/**
+	 * open zip from file
+	 * @param zipfile
+	 * @param callbackFileInputstream
+	 * (String fileName, ZipEntry zipEntry, InputStream inputStream)
+	 * @throws Exception
+	 */
+	public static void openZipFromFile(File zipfile, ThrowableTriConsumer<String, ZipEntry, InputStream> callbackFileInputstream) throws Exception {
+		try (InputStream is = new FileInputStream(zipfile)) {
+			openZipStreamNotClose(is, callbackFileInputstream);
+		}
+	}
+	
+	/**
+	 * open zip from web
+	 * @param web
+	 * @param callbackFileInputstream
+	 * (String fileName, ZipEntry zipEntry, InputStream inputStream)
+	 * @throws IOException
+	 */
+	public static void openZipFromWeb(Web web, ThrowableTriConsumer<String, ZipEntry, InputStream> callbackFileInputstream) throws IOException {
+		if (!web.rawReadStream(is -> {
+			openZipStreamNotClose(is, callbackFileInputstream);
+		})) {
+			throw new IOException("Fail load WEB URL");
+		}
+	}
 }
