@@ -10,6 +10,8 @@
 /yarn.lock
 /yarn-error.log
 /target/
+pom.xml.releaseBackup
+release.properties
 
 ### make temp ###
 /src/main/resources/static/app/main.xxxxxx.*
