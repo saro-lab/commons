@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>me.saro</groupId>
@@ -8,7 +10,30 @@
 	<packaging>jar</packaging>
 
 	<name>commons</name>
-	<url>http://maven.apache.org</url>
+	<url>https://saro.me</url>
+
+	<organization>
+		<url>https://saro.me</url>
+		<name>SARO</name>
+	</organization>
+	<inceptionYear>2010</inceptionYear>
+
+	<licenses>
+		<license>
+			<name>The Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>PARK Yong Seo</name>
+			<email>j@saro.me</email>
+			<organization>SARO</organization>
+			<organizationUrl>https://saro.me</organizationUrl>
+			<timezone>UTC+09:00</timezone>
+		</developer>
+	</developers>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
