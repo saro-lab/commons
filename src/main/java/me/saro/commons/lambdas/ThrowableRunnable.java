@@ -15,7 +15,7 @@ package me.saro.commons.lambdas;
 @FunctionalInterface
 public interface ThrowableRunnable {
 	/**
-	 * @See
+	 * @see
 	 * java.lang.Runnable
 	 * 
 	 * @throws

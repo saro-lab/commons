@@ -27,10 +27,10 @@ public interface ThrowableBiFunction<T, U, R> {
 	 * @see
 	 * java.util.function.Function
 	 * 
-	 * @param <T>
+	 * @param t
 	 * input parameter type T
 	 * 
-	 * @param <U>
+	 * @param u
 	 * input parameter type U
 	 * 
 	 * @return

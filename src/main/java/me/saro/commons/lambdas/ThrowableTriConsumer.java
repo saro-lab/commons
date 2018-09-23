@@ -27,13 +27,13 @@ public interface ThrowableTriConsumer<T, U, V> {
 	 * @see
 	 * java.util.function.Consumer
 	 * 
-	 * @param <T>
+	 * @param t
 	 * input parameter type T
 	 * 
-	 * @param <U>
+	 * @param u
 	 * input parameter type U
 	 * 
-	 * @param <V> 
+	 * @param v 
 	 * input parameter type V
 	 * 
 	 * @throws Exception
