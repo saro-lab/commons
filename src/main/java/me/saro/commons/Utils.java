@@ -172,7 +172,7 @@ public class Utils {
 	 * @throws IOException
 	 */
 	public static void openZipFromWeb(Web web, ThrowableTriConsumer<String, ZipEntry, InputStream> callbackFileInputstream) throws IOException {
-		if (!web.rawReadStream(is -> {
+		if (!web.readRawResultStream(is -> {
 			openZipStreamNotClose(is, callbackFileInputstream);
 		})) {
 			throw new IOException("Fail load WEB URL");
