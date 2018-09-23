@@ -24,10 +24,10 @@ public interface ThrowableBiConsumer<T, U> {
 	 * @see
 	 * java.util.function.Consumer
 	 * 
-	 * @param <T>
+	 * @param t
 	 * input parameter type T
 	 * 
-	 * @param <U>
+	 * @param u
 	 * input parameter type U
 	 * 
 	 * @throws Exception

@@ -24,7 +24,7 @@ public interface ThrowableFunction<T, R> {
 	 * @see
 	 * java.util.function.Function
 	 * 
-	 * @param <T>
+	 * @param t
 	 * input parameter type T
 	 * 
 	 * @return

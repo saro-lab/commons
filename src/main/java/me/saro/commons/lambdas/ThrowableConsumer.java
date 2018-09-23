@@ -21,7 +21,7 @@ public interface ThrowableConsumer<T> {
 	 * @see
 	 * java.util.function.Consumer
 	 * 
-	 * @param <T>
+	 * @param t
 	 * input parameter type T
 	 * 
 	 * @throws Exception
