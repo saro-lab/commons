@@ -13,6 +13,7 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -89,6 +90,28 @@ public class Converter {
 			}
 		}
 		return Arrays.asList(rv);
+	}
+	
+	/**
+	 * asList
+	 * <br>
+	 * this asList different Arrays.asList
+	 * <br>
+	 * this method List is ArrayList
+	 * <br>
+	 * can editable list
+	 * @param args
+	 * @return
+	 */
+	@SafeVarargs
+	public static <T> List<T> asList(T... args) {
+		List<T> list = new ArrayList<>();
+		if (args != null) {
+			for (T t : args) {
+				list.add(t);
+			}
+		}
+		return list;
 	}
 
 	/**
