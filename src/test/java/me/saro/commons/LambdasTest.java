@@ -3,6 +3,8 @@ package me.saro.commons;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.function.Function;
+
 import org.junit.Test;
 
 import me.saro.commons.lambdas.*;
@@ -27,6 +29,12 @@ public class LambdasTest {
 		assertEquals("1", throwableFunction(a -> a, "1"));
 		assertEquals("12", throwableBiFunction((a, b) -> a + b, "1", "2"));
 		assertEquals("123", throwableTriFunction((a, b, c) -> a + b + c, "1", "2", "3"));
+		
+		
+		assertEquals("OK TEST", callTest(Lambdas.runtime(p1 -> {
+			Thread.sleep(100);
+			return "OK " + p1;
+		})));
     }
 	
 	public void throwableRunnable(ThrowableRunnable throwableRunnable) throws Exception {
@@ -60,5 +68,9 @@ public class LambdasTest {
 	public String throwableTriFunction(ThrowableTriFunction<String, String, String, String> throwableTriFunction, String p1, String p2, String p3) throws Exception {
 		
 		return throwableTriFunction.apply(p1, p2, p3);
+	}
+	
+	public String callTest(Function<String, String> function) {
+		return function.apply("TEST");
 	}
 }
