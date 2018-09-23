@@ -85,7 +85,6 @@
 		<connection>scm:git:git://github.com/saro-lab/commons.git</connection>
 		<developerConnection>scm:git:git@github.com:saro-lab/commons.git</developerConnection>
 		<url>https://github.com/saro-lab/commons</url>
-		<tag>commons-0.0.1</tag>
 	</scm>
 
 	<profiles>
