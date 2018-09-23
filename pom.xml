@@ -5,7 +5,7 @@
 
 	<groupId>me.saro</groupId>
 	<artifactId>commons</artifactId>
-	<version>0.0.1-TEST</version>
+	<version>0.0.1</version>
 	<packaging>jar</packaging>
 
 	<name>commons</name>
