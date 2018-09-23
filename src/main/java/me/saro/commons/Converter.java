@@ -1,5 +1,6 @@
 package me.saro.commons;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -284,6 +285,19 @@ public class Converter {
 	 */
 	public static <T> Stream<T> toStream(Enumeration<T> enumeration) {
 		return toStream(enumeration, false);
+	}
+	
+	/**
+	 * text InputStream to Stream<String line>
+	 * <br>
+	 * <b>WARNING : </b> this method not close InputStream
+	 * @param inputStream
+	 * @param charset
+	 * @return
+	 * @throws IOException
+	 */
+	public static Stream<String> toStreamLineNotCloseByTextInputStream(InputStream inputStream, String charset) throws IOException {
+		return new BufferedReader(new InputStreamReader(inputStream, Charset.forName(charset))).lines();
 	}
 
 	/**
