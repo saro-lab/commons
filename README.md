@@ -17,7 +17,7 @@
 
 ## gradle
 
-``` js
+```
 compile 'me.saro:commons:0.0.10'
 ```
 
@@ -97,12 +97,12 @@ Lambdas.runtime(ThrowableSupplier<R>)
 #### me.saro.commons.web.Web
 
 ```
-custom(String, String)
-delete(String)
-get(String)
-patch(String)
-post(String)
-put(String)
+Web.custom(String, String)
+Web.delete(String)
+Web.get(String)
+Web.patch(String)
+Web.post(String)
+Web.put(String)
 addUrlParameter(String, String)
 readRawResultStream(ThrowableConsumer<InputStream>)
 setContentType(String)
@@ -126,22 +126,19 @@ writeJsonByClass(Object)
 ## DateFormat
 #### me.saro.commons.DateFormat
 ```
-format(String, String, String)
-now()
-parse(Date)
-parse(long)
-parse(String, String)
-valid(String, String)
-calendar : Calendar
+DateFormat.format(String, String, String)
+DateFormat.now()
+DateFormat.parse(Date)
+DateFormat.parse(long)
+DateFormat.parse(String, String)
+DateFormat.valid(String, String)
+DateFormat.format(String)
 addDates(int)
 addHours(int)
 addMilliseconds(int)
 addMinutes(int)
 addMonth(int)
 addYear(int)
-clone()
-equals(Object)
-format(String)
 getDate()
 getDayOfWeek()
 getHours()
@@ -165,16 +162,16 @@ toDate()
 toISO8601()
 toString()
 toString(String)
+clone()
+equals(Object)
 ```
 
 ## JsonReader
 #### me.saro.commons.JsonReader
 ```
-create(String)
-emptyList()
-emptyObject()
-clone()
-equals(Object)
+JsonReader.create(String)
+JsonReader.emptyList()
+JsonReader.emptyObject()
 get(int)
 get(String)
 getInt(String, int)
@@ -185,6 +182,8 @@ isObject()
 length()
 toList()
 toString()
+clone()
+equals(Object)
 ```
 
 
@@ -192,7 +191,7 @@ toString()
 #### me.saro.commons.lambdas.*
 ```
 ThrowableRunnable
-ThrowableSupplier<T>
+ThrowableSupplier<R>
 ThrowableConsumer<T>
 ThrowableBiConsumer<T, U>
 ThrowableTriConsumer<T, U, V>
