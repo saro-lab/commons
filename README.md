@@ -1,6 +1,6 @@
 # STATIC
 
-## Converter
+### Converter
 
 ```
 Converter.asList(T...)
@@ -31,7 +31,7 @@ Converter.toString(InputStream, String)
 Converter.toStringNotClose(InputStream, String)
 ```
 
-## Utils
+### Utils
 
 ```
 Utils.evl(String...)
@@ -42,13 +42,13 @@ Utils.openZipStreamNotClose(InputStream, ThrowableTriConsumer<String, ZipEntry, 
 Utils.random(long, long)
 ```
 
-## Valids
+### Valids
 
 ```
 Valids.isMail(String, int)
 ```
 
-## Lambdas
+### Lambdas
 
 ```
 Lambdas.runtime(ThrowableBiConsumer<T, U>)
@@ -61,7 +61,7 @@ Lambdas.runtime(ThrowableSupplier<R>)
 
 # INSTANCE
 
-## DateFormat
+### DateFormat
 
 ```
 format(String, String, String)
@@ -105,7 +105,7 @@ toString()
 toString(String)
 ```
 
-## Web
+### Web
 
 ```
 custom(String, String)
