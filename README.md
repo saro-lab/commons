@@ -1,9 +1,8 @@
-# commons
-saro common lib
+# # STATIC
 
-# static
 ## Converter
-``` java
+
+```
 Converter.asList(T...)
 Converter.splitCsvLine(String)
 Converter.toByteArrayOutputStream(InputStream, int)
@@ -33,7 +32,8 @@ Converter.toStringNotClose(InputStream, String)
 ```
 
 ## Utils
-``` java
+
+```
 Utils.evl(String...)
 Utils.nvl(T...)
 Utils.openZipFromFile(File, ThrowableTriConsumer<String, ZipEntry, InputStream>)
@@ -43,12 +43,14 @@ Utils.random(long, long)
 ```
 
 ## Valids
-``` java
+
+```
 Valids.isMail(String, int)
 ```
 
 ## Lambdas
-``` java
+
+```
 Lambdas.runtime(ThrowableBiConsumer<T, U>)
 Lambdas.runtime(ThrowableBiFunction<T, U, R>)
 Lambdas.runtime(ThrowableConsumer<T>)
@@ -57,9 +59,11 @@ Lambdas.runtime(ThrowableRunnable)
 Lambdas.runtime(ThrowableSupplier<R>)
 ```
 
-# instance
+# # INSTANCE
+
 ## DateFormat
-```java
+
+```
 format(String, String, String)
 now()
 parse(Date)
@@ -102,7 +106,8 @@ toString(String)
 ```
 
 ## Web
-``` java
+
+```
 custom(String, String)
 delete(String)
 get(String)
@@ -127,4 +132,18 @@ writeBody(byte[])
 writeBody(String)
 writeBodyParameter(String, String)
 writeJsonByClass(Object)
+```
+
+
+# # INTERFACE
+
+```
+ThrowableRunnable
+ThrowableSupplier<T>
+ThrowableConsumer<T>
+ThrowableBiConsumer<T, U>
+ThrowableTriConsumer<T, U, V>
+ThrowableFunction<T, R>
+ThrowableBiFunction<T, U, R>
+ThrowableTriFunction<T, U, V, R>
 ```
