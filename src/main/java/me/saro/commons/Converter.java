@@ -85,7 +85,7 @@ public class Converter {
 		String tmp;
 		for (int i = 0 ; i < rv.length ; i++) {
 			if ((tmp = rv[i]).indexOf('"') == 0) {
-				rv[i] = tmp.substring(1, tmp.length() - 1);
+				rv[i] = tmp.substring(1, Math.max(tmp.length() - 1, 1));
 			}
 		}
 		return rv;
