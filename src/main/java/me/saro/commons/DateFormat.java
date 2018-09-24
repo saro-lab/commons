@@ -426,7 +426,7 @@ public class DateFormat {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this.getClass().getName().equals(obj.getClass().getName())) {
+		if (obj != null && this.getClass().getName().equals(obj.getClass().getName())) {
 			return this.getTimeInMillis() == ((DateFormat)obj).getTimeInMillis();
 		}
 		return false;
