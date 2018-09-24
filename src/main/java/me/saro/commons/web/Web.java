@@ -16,6 +16,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import me.saro.commons.Converter;
+import me.saro.commons.JsonReader;
 import me.saro.commons.lambdas.ThrowableConsumer;
 import me.saro.commons.lambdas.ThrowableFunction;
 
@@ -338,7 +339,7 @@ public class Web {
 	 * to Map result by JsonObject
 	 * @return
 	 */
-	public WebResult<Map<String, Object>> toMapByJsonObjectResponse() {
+	public WebResult<Map<String, Object>> toMapByJsonObject() {
 		return toJsonTypeReference(new TypeReference<Map<String, Object>>(){});
 	}
 	
@@ -346,8 +347,16 @@ public class Web {
 	 * to Map List result by JsonArray
 	 * @return
 	 */
-	public WebResult<List<Map<String, Object>>> toMapListByJsonArrayResponse() {
+	public WebResult<List<Map<String, Object>>> toMapListByJsonArray() {
 		return toJsonTypeReference(new TypeReference<List<Map<String, Object>>>(){});
+	}
+	
+	/**
+	 * to JsonReader
+	 * @return
+	 */
+	public WebResult<JsonReader> toJsonReader() {
+		return toCustom(is -> JsonReader.create(Converter.toStringNotClose(is, responseCharset)));
 	}
 	
 	/**
