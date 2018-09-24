@@ -152,7 +152,7 @@ public class JsonReader {
 			if (Map.class.isAssignableFrom(data.getClass())) {
 				rv = map().get(name);
 				
-				if (List.class.isAssignableFrom(rv.getClass()) || Map.class.isAssignableFrom(rv.getClass())) {
+				if (rv != null && (List.class.isAssignableFrom(rv.getClass()) || Map.class.isAssignableFrom(rv.getClass()))) {
 					rv = new JsonReader(rv);
 				}
 				
