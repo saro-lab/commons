@@ -81,8 +81,38 @@ Lambdas.runtime(ThrowableSupplier<R>)
 
 # INSTANCE
 
-### DateFormat
+### Web
+#### me.saro.commons.web.Web
 
+```
+custom(String, String)
+delete(String)
+get(String)
+patch(String)
+post(String)
+put(String)
+addUrlParameter(String, String)
+readRawResultStream(ThrowableConsumer<InputStream>)
+setContentType(String)
+setHeader(String, String)
+setIgnoreCertificate(boolean)
+setRequestCharset(String)
+setResponseCharset(String)
+toCustom(ThrowableFunction<InputStream, R>)
+toCustom(WebResult<R>, ThrowableFunction<InputStream, R>)
+toJsonReader()
+toJsonTypeReference(TypeReference<T>)
+toMapByJsonObject()
+toMapListByJsonArray()
+toPlainText()
+writeBody(byte[])
+writeBody(String)
+writeBodyParameter(String, String)
+writeJsonByClass(Object)
+```
+
+### DateFormat
+#### me.saro.commons.DateFormat
 ```
 format(String, String, String)
 now()
@@ -125,33 +155,24 @@ toString()
 toString(String)
 ```
 
-### Web
-
+### JsonReader
+#### me.saro.commons.JsonReader
 ```
-custom(String, String)
-delete(String)
+create(String)
+emptyList()
+emptyObject()
+clone()
+equals(Object)
+get(int)
 get(String)
-patch(String)
-post(String)
-put(String)
-addUrlParameter(String, String)
-readRawResultStream(ThrowableConsumer<InputStream>)
-setContentType(String)
-setHeader(String, String)
-setIgnoreCertificate(boolean)
-setRequestCharset(String)
-setResponseCharset(String)
-toCustom(ThrowableFunction<InputStream, R>)
-toCustom(WebResult<R>, ThrowableFunction<InputStream, R>)
-toJsonReader()
-toJsonTypeReference(TypeReference<T>)
-toMapByJsonObject()
-toMapListByJsonArray()
-toPlainText()
-writeBody(byte[])
-writeBody(String)
-writeBodyParameter(String, String)
-writeJsonByClass(Object)
+getInt(String, int)
+getString(String)
+into(String)
+isArray()
+isObject()
+length()
+toList()
+toString()
 ```
 
 
