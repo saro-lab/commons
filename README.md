@@ -1,4 +1,4 @@
-# # STATIC
+# STATIC
 
 ## Converter
 
@@ -59,7 +59,7 @@ Lambdas.runtime(ThrowableRunnable)
 Lambdas.runtime(ThrowableSupplier<R>)
 ```
 
-# # INSTANCE
+# INSTANCE
 
 ## DateFormat
 
@@ -135,7 +135,7 @@ writeJsonByClass(Object)
 ```
 
 
-# # INTERFACE
+# INTERFACE
 
 ```
 ThrowableRunnable
