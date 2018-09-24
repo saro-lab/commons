@@ -320,7 +320,6 @@ public class Web {
 			}
 		} catch (Exception e) {
 			exception = e;
-			e.printStackTrace();
 		}
 
 		result.status = status;
