@@ -14,7 +14,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
@@ -76,11 +75,11 @@ public class Converter {
 	 * @param line
 	 * csv line
 	 * @return
-	 * line value list
+	 * line value array
 	 */
-	public static List<String> splitCsvLine(String line) {
+	public static String[] splitCsvLine(String line) {
 		if (line == null) {
-			return List.of();
+			return new String[0];
 		}
 		String[] rv = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
 		String tmp;
@@ -89,7 +88,7 @@ public class Converter {
 				rv[i] = tmp.substring(1, tmp.length() - 1);
 			}
 		}
-		return Arrays.asList(rv);
+		return rv;
 	}
 	
 	/**
