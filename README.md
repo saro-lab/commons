@@ -17,8 +17,8 @@ compile 'me.saro:commons:0.0.10'
 ```
 
 ## repository
-https://search.maven.org/artifact/me.saro/commons
-http://central.maven.org/maven2/me/saro/commons/
+- https://search.maven.org/artifact/me.saro/commons
+- http://central.maven.org/maven2/me/saro/commons/
 
 # STATIC
 
