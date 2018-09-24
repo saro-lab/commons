@@ -24,6 +24,14 @@ public class WebResult<T> {
     
     // response body data
     T body;
+    
+    /**
+     * setBody
+     * @param body
+     */
+    void setBody(T body) {
+    	this.body = body;
+    }
 
     /**
      * is status 2xx
