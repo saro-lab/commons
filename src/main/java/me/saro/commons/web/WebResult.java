@@ -1,5 +1,7 @@
 package me.saro.commons.web;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -10,7 +12,7 @@ import lombok.ToString;
  * @author		PARK Yong Seo
  * @since		1.0.0
  */
-@ToString(exclude = {"data"})
+@ToString(exclude = {"body", "headers"})
 public class WebResult<T> {
 
     WebResult() {
@@ -21,6 +23,9 @@ public class WebResult<T> {
     
     // exception
     @Getter Exception exception;
+    
+    // headers
+    @Getter Map<String, List<String>> headers;
     
     // response body data
     T body;

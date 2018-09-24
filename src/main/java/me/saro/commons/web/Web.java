@@ -281,6 +281,7 @@ public class Web {
 		int status = -1;
 		Exception exception = null;
 		R data = null;
+		Map<String, List<String>> headers = null;
 
 		HttpURLConnection connection = null;
 		try {
@@ -305,6 +306,7 @@ public class Web {
 			}
 			
 			status = connection.getResponseCode();
+			headers = connection.getHeaderFields();
 			
 			InputStream commonInputStream;
 			try {
@@ -318,11 +320,13 @@ public class Web {
 			}
 		} catch (Exception e) {
 			exception = e;
+			e.printStackTrace();
 		}
 
 		result.status = status;
 		result.exception = exception;
 		result.body = data;
+		result.headers = headers != null ? headers : Map.of();
 		return result;
 	}
 	
@@ -381,11 +385,10 @@ public class Web {
 	 * @param reader
 	 * @return it has Body
 	 */
-	public boolean readRawResultStream(ThrowableConsumer<InputStream> reader) {
-		WebResult<String> webResult = toCustom(is -> {
+	public WebResult<String> readRawResultStream(ThrowableConsumer<InputStream> reader) {
+		return toCustom(is -> {
 			reader.accept(is);
 			return "OK";
 		});
-		return webResult.getBody().isPresent();
 	}
 }
