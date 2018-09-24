@@ -2,13 +2,13 @@ package me.saro.commons;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import me.saro.commons.lambdas.ThrowableTriConsumer;
 import me.saro.commons.web.Web;
+import me.saro.commons.web.WebResult;
 
 /**
  * common utils
@@ -145,7 +145,7 @@ public class Utils {
 		ZipEntry ze;
 		while ((ze = zipInputStream.getNextEntry()) != null) {
 			if (!ze.isDirectory()) {
-				callbackFileInputstream.accept(ze.getName(), ze, inputStream);
+				callbackFileInputstream.accept(ze.getName(), ze, zipInputStream);
 			}
 			zipInputStream.closeEntry();
 		}
@@ -169,13 +169,14 @@ public class Utils {
 	 * @param web
 	 * @param callbackFileInputstream
 	 * (String fileName, ZipEntry zipEntry, InputStream inputStream)
-	 * @throws IOException
+	 * @throws Exception 
 	 */
-	public static void openZipFromWeb(Web web, ThrowableTriConsumer<String, ZipEntry, InputStream> callbackFileInputstream) throws IOException {
-		if (!web.readRawResultStream(is -> {
+	public static void openZipFromWeb(Web web, ThrowableTriConsumer<String, ZipEntry, InputStream> callbackFileInputstream) throws Exception {
+		WebResult<String> res; 
+		if ((res = web.readRawResultStream(is -> {
 			openZipStreamNotClose(is, callbackFileInputstream);
-		})) {
-			throw new IOException("Fail load WEB URL");
+		})).getException() != null) {
+			throw res.getException();
 		}
 	}
 }
