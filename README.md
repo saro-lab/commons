@@ -19,7 +19,7 @@ compile 'me.saro:commons:0.0.10'
 
 # STATIC
 
-### Converter
+## Converter
 #### me.saro.commons.Converter
 
 ```
@@ -51,7 +51,7 @@ Converter.toString(InputStream, String)
 Converter.toStringNotClose(InputStream, String)
 ```
 
-### Utils
+## Utils
 #### me.saro.commons.Utils
 ```
 Utils.evl(String...)
@@ -62,13 +62,13 @@ Utils.openZipStreamNotClose(InputStream, ThrowableTriConsumer<String, ZipEntry, 
 Utils.random(long, long)
 ```
 
-### Valids
+## Valids
 #### me.saro.commons.Valids
 ```
 Valids.isMail(String, int)
 ```
 
-### Lambdas
+## Lambdas
 #### me.saro.commons.lambdas.Lambdas
 ```
 Lambdas.runtime(ThrowableBiConsumer<T, U>)
@@ -81,7 +81,7 @@ Lambdas.runtime(ThrowableSupplier<R>)
 
 # INSTANCE
 
-### Web
+## Web
 #### me.saro.commons.web.Web
 
 ```
@@ -111,7 +111,7 @@ writeBodyParameter(String, String)
 writeJsonByClass(Object)
 ```
 
-### DateFormat
+## DateFormat
 #### me.saro.commons.DateFormat
 ```
 format(String, String, String)
@@ -155,7 +155,7 @@ toString()
 toString(String)
 ```
 
-### JsonReader
+## JsonReader
 #### me.saro.commons.JsonReader
 ```
 create(String)
