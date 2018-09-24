@@ -24,6 +24,7 @@ compile 'me.saro:commons:0.0.10'
 ## repository
 - https://search.maven.org/artifact/me.saro/commons
 - http://central.maven.org/maven2/me/saro/commons/
+- https://mvnrepository.com/artifact/me.saro/commons
 
 ## see
 - [가리사니 개발자공간](https://gs.saro.me)
