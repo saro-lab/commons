@@ -11,7 +11,7 @@ import me.saro.commons.web.Web;
 import me.saro.commons.web.WebResult;
 
 /**
- * common utils
+ * util class
  * @author		PARK Yong Seo
  * @since		1.0.0
  */
