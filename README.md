@@ -123,6 +123,23 @@ writeBodyParameter(String, String)
 writeJsonByClass(Object)
 ```
 
+## Ftp
+#### me.saro.commons.Ftp
+```
+Ftp.open(InetAddress, int, String, String)
+getWorkingDirectory()
+listDirectories()
+listDirectories(Predicate<FTPFile>)
+listFiles()
+listFiles(Predicate<FTPFile>)
+read(String, File)
+send(String, File)
+setFileTypeAscii()
+setFileTypeBinary()
+setWorkingDirectory(String)
+close()
+```
+
 ## DateFormat
 #### me.saro.commons.DateFormat
 ```
