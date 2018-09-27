@@ -83,12 +83,12 @@ Valids.isMail(String, int)
 ## Lambdas
 #### me.saro.commons.lambdas.Lambdas
 ```
-Lambdas.runtime(ThrowableBiConsumer<T, U>)
-Lambdas.runtime(ThrowableBiFunction<T, U, R>)
-Lambdas.runtime(ThrowableConsumer<T>)
-Lambdas.runtime(ThrowableFunction<T, R>)
 Lambdas.runtime(ThrowableRunnable)
 Lambdas.runtime(ThrowableSupplier<R>)
+Lambdas.runtime(ThrowableConsumer<T>)
+Lambdas.runtime(ThrowableBiConsumer<T, U>)
+Lambdas.runtime(ThrowableFunction<T, R>)
+Lambdas.runtime(ThrowableBiFunction<T, U, R>)
 ```
 
 # INSTANCE
@@ -192,6 +192,7 @@ equals(Object)
 ```
 ThrowableRunnable
 ThrowableSupplier<R>
+ThrowablePredicate<T>
 ThrowableConsumer<T>
 ThrowableBiConsumer<T, U>
 ThrowableTriConsumer<T, U, V>
