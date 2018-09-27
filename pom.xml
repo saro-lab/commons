@@ -16,7 +16,7 @@
 		<url>https://saro.me</url>
 		<name>SARO</name>
 	</organization>
-	
+
 	<inceptionYear>2010</inceptionYear>
 
 	<licenses>
@@ -64,6 +64,11 @@
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>2.9.6</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-net</groupId>
+			<artifactId>commons-net</artifactId>
+			<version>3.6</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
