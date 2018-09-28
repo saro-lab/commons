@@ -7,7 +7,7 @@ import java.util.function.Function;
 
 import org.junit.Test;
 
-import me.saro.commons.lambdas.*;
+import me.saro.commons.function.*;
 
 public class LambdasTest {
 
