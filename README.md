@@ -136,6 +136,7 @@ writeJsonByClass(Object)
 #### me.saro.commons.Ftp
 ```
 Ftp.open(InetAddress, int, String, String)
+Ftp.open(String, int, String, String)
 getWorkingDirectory()
 listDirectories()
 listDirectories(Predicate<FTPFile>)
