@@ -68,6 +68,7 @@ Converter.toStringNotClose(InputStream, String)
 ```
 Utils.evl(String...)
 Utils.nvl(T...)
+Utils.inputStreamReader(InputStream, StreamReadConsumer)
 Utils.openZipFromFile(File, ThrowableTriConsumer<String, ZipEntry, InputStream>)
 Utils.openZipFromWeb(Web, ThrowableTriConsumer<String, ZipEntry, InputStream>)
 Utils.openZipStreamNotClose(InputStream, ThrowableTriConsumer<String, ZipEntry, InputStream>)
@@ -81,7 +82,7 @@ Valids.isMail(String, int)
 ```
 
 ## Lambdas
-#### me.saro.commons.lambdas.Lambdas
+#### me.saro.commons.Lambdas
 ```
 Lambdas.runtime(ThrowableRunnable)
 Lambdas.runtime(ThrowableSupplier<R>)
@@ -205,7 +206,7 @@ equals(Object)
 
 
 # INTERFACE
-#### me.saro.commons.lambdas.*
+#### me.saro.commons.function.*
 ```
 ThrowableRunnable
 ThrowableSupplier<R>
