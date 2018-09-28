@@ -2,11 +2,14 @@ package me.saro.commons;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.function.BiConsumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import me.saro.commons.lambdas.ThrowableTriConsumer;
+import me.saro.commons.function.StreamReadConsumer;
+import me.saro.commons.function.ThrowableTriConsumer;
 import me.saro.commons.web.Web;
 import me.saro.commons.web.WebResult;
 
@@ -129,6 +132,24 @@ public class Utils {
 			throw new IllegalArgumentException("'lessThen' have to over the value then 'min'");
 		}
 		return min + (int)(Math.random() * ((max + 1) - min));
+	}
+	
+	/**
+	 * InputStream Reader
+	 * <br>
+	 * <b>WARNING : </b> is not auto closed
+	 * @param inputStream
+	 * @param callback
+	 * stream read callback
+	 * @throws Exception
+	 */
+	public static void inputStreamReader(InputStream inputStream, StreamReadConsumer callback) throws Exception {
+		int size = Math.min(inputStream.available(), 8192);
+		byte[] buf = new byte[size];
+		int len;
+		while ( (len = inputStream.read(buf, 0, size)) != -1 ) {
+			callback.accept(buf, len);
+		}
 	}
 	
 	/**
