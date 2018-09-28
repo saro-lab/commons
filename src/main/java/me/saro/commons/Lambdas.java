@@ -1,10 +1,17 @@
-package me.saro.commons.lambdas;
+package me.saro.commons;
 
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import me.saro.commons.function.ThrowableBiConsumer;
+import me.saro.commons.function.ThrowableBiFunction;
+import me.saro.commons.function.ThrowableConsumer;
+import me.saro.commons.function.ThrowableFunction;
+import me.saro.commons.function.ThrowableRunnable;
+import me.saro.commons.function.ThrowableSupplier;
 
 /**
  * Lambdas Util
