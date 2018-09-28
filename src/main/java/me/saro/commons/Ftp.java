@@ -43,10 +43,9 @@ public class Ftp implements Cloneable {
 	 * @param pass
 	 * password
 	 * @return
-	 * @throws SocketException
 	 * @throws IOException
 	 */
-	public static Ftp open(InetAddress host, int port, String user, String pass) throws SocketException, IOException {
+	public static Ftp open(InetAddress host, int port, String user, String pass) throws IOException {
 		FTPClient ftp = null;
 		Ftp self = new Ftp(ftp);
 		try {
@@ -57,6 +56,23 @@ public class Ftp implements Cloneable {
 			self.throwConnectionError();
 		}
 		return self.setFileTypeBinary();
+	}
+	
+	/**
+	 * open ftp
+	 * @param host
+	 * ftp host
+	 * @param port
+	 * ftp port
+	 * @param user
+	 * username
+	 * @param pass
+	 * password
+	 * @return
+	 * @throws IOException
+	 */
+	public static Ftp open(String host, int port, String user, String pass) throws IOException {
+		return open(InetAddress.getByName(host), port, user, pass);
 	}
 
 	/**
