@@ -75,6 +75,13 @@ Utils.openZipStreamNotClose(InputStream, ThrowableTriConsumer<String, ZipEntry, 
 Utils.random(long, long)
 ```
 
+## Files
+#### me.saro.commons.Files
+```
+Files.createFile(File, boolean, InputStream)
+Files.createParentDirectoryForFile(File)
+```
+
 ## Valids
 #### me.saro.commons.Valids
 ```
