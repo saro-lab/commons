@@ -17,8 +17,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import me.saro.commons.Converter;
 import me.saro.commons.JsonReader;
-import me.saro.commons.lambdas.ThrowableConsumer;
-import me.saro.commons.lambdas.ThrowableFunction;
+import me.saro.commons.function.ThrowableConsumer;
+import me.saro.commons.function.ThrowableFunction;
 
 /**
  * Web Client
