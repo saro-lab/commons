@@ -1,6 +1,7 @@
 package me.saro.commons.web;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -16,6 +17,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import me.saro.commons.Converter;
+import me.saro.commons.Files;
 import me.saro.commons.JsonReader;
 import me.saro.commons.function.ThrowableConsumer;
 import me.saro.commons.function.ThrowableFunction;
@@ -377,6 +379,17 @@ public class Web {
 	 */
 	public WebResult<String> toPlainText() {
 		return toCustom(is -> Converter.toStringNotClose(is, responseCharset));
+	}
+	
+	/**
+	 * to text result
+	 * @return
+	 */
+	public WebResult<File> saveFile(File file, boolean overwrite) {
+		return toCustom(is -> {
+			Files.createFile(file, overwrite, is);
+			return file;
+		});
 	}
 
 	/**
