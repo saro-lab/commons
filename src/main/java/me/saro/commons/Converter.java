@@ -31,8 +31,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import me.saro.commons.lambdas.ThrowableBiFunction;
-import me.saro.commons.lambdas.ThrowableFunction;
+import me.saro.commons.function.ThrowableBiFunction;
+import me.saro.commons.function.ThrowableFunction;
 
 
 /**
