@@ -1,4 +1,4 @@
-package me.saro.commons.lambdas;
+package me.saro.commons.function;
 
 /**
  * Throwable <code>TriFunction</code>
