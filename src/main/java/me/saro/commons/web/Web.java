@@ -280,18 +280,10 @@ public class Web {
 	 * @return
 	 */
 	public <R> WebResult<R> toCustom(WebResult<R> result, ThrowableFunction<InputStream, R> function) {
-		int status = -1;
-		Exception exception = null;
-		R data = null;
-		Map<String, List<String>> headers = null;
-
 		HttpURLConnection connection = null;
+		
 		try {
-			connection = (HttpURLConnection)(
-					urlParameter.length() > 1
-					? new URL(url + urlParameter.toString())
-							: new URL(url)
-					).openConnection();
+			connection = (HttpURLConnection)(new URL(urlParameter.length() > 1 ? (url + urlParameter.toString()) : url )).openConnection();
 
 			if (ignoreCertificate) {
 				WebIgnoreCertificate.ignoreCertificate(connection);
@@ -307,8 +299,8 @@ public class Web {
 				}
 			}
 			
-			status = connection.getResponseCode();
-			headers = connection.getHeaderFields();
+			result.setStatus(connection.getResponseCode());
+			result.setHeaders(connection.getHeaderFields());
 			
 			InputStream commonInputStream;
 			try {
@@ -318,16 +310,12 @@ public class Web {
 			}
 			
 			try (InputStream is = commonInputStream) {
-				data = function.apply(is);
+				result.setBody(function.apply(is));
 			}
 		} catch (Exception e) {
-			exception = e;
+			result.setException(e);
 		}
-
-		result.status = status;
-		result.exception = exception;
-		result.body = data;
-		result.headers = headers != null ? headers : Map.of();
+		
 		return result;
 	}
 	

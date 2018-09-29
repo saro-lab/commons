@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -19,24 +20,16 @@ public class WebResult<T> {
     }
     
     // http status
-    @Getter int status;
+    @Getter @Setter(lombok.AccessLevel.PACKAGE) int status = -1;
     
     // exception
-    @Getter Exception exception;
+    @Getter @Setter(lombok.AccessLevel.PACKAGE) Exception exception;
     
     // headers
-    @Getter Map<String, List<String>> headers;
+    @Getter @Setter(lombok.AccessLevel.PACKAGE) Map<String, List<String>> headers = Map.of();
     
     // response body data
-    T body;
-    
-    /**
-     * setBody
-     * @param body
-     */
-    void setBody(T body) {
-    	this.body = body;
-    }
+    @Setter(lombok.AccessLevel.PACKAGE) T body;
 
     /**
      * is status 2xx
