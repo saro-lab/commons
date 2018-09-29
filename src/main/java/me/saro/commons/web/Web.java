@@ -382,8 +382,8 @@ public class Web {
 	}
 	
 	/**
-	 * to text result
-	 * @return
+	 * save file and return WebResult
+	 * @return WebResult[WebResult]
 	 */
 	public WebResult<File> saveFile(File file, boolean overwrite) {
 		return toCustom(is -> {
