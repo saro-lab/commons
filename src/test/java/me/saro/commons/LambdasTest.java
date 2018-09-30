@@ -1,13 +1,20 @@
 package me.saro.commons;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.function.Function;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import me.saro.commons.function.*;
+import me.saro.commons.function.ThrowableBiConsumer;
+import me.saro.commons.function.ThrowableBiFunction;
+import me.saro.commons.function.ThrowableConsumer;
+import me.saro.commons.function.ThrowableFunction;
+import me.saro.commons.function.ThrowableRunnable;
+import me.saro.commons.function.ThrowableSupplier;
+import me.saro.commons.function.ThrowableTriConsumer;
+import me.saro.commons.function.ThrowableTriFunction;
 
 public class LambdasTest {
 

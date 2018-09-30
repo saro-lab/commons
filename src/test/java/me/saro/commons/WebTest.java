@@ -1,9 +1,6 @@
 package me.saro.commons;
 
-//import static org.junit.Assert.assertFalse;
-//import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 //import me.saro.commons.web.Web;
 
