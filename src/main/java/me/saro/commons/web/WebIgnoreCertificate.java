@@ -15,7 +15,7 @@ import javax.net.ssl.X509TrustManager;
 /**
  * Web Ignore Certificate
  * @author		PARK Yong Seo
- * @since		1.0.0
+ * @since		0.1
  */
 public class WebIgnoreCertificate {
 	private WebIgnoreCertificate() {

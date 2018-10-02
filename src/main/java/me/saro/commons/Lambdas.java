@@ -16,7 +16,7 @@ import me.saro.commons.function.ThrowableSupplier;
 /**
  * Lambdas Util
  * @author		PARK Yong Seo
- * @since		1.0.0
+ * @since		0.1
  */
 public class Lambdas {
 	private Lambdas() {

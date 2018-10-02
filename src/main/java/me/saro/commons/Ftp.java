@@ -19,7 +19,7 @@ import org.apache.commons.net.ftp.FTPFile;
  * <br>
  * this class is just casing the FTPClient (apache common net)
  * @author		PARK Yong Seo
- * @since		1.0.0
+ * @since		0.1
  * @see
  * org.apache.commons.net.ftp.FTPClient
  * org.apache.commons.net.ftp.FTPFile

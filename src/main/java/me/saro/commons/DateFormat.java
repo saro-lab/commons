@@ -14,7 +14,7 @@ import java.util.Map;
  * <br>
  * but this class <b>thread-safe</b> because every use clone by SimpleDateFormat
  * @author		PARK Yong Seo
- * @since		1.0.0
+ * @since		0.1
  */
 public class DateFormat {
 
