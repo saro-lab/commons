@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
  * json
  * Thread-safe
  * @author		PARK Yong Seo
- * @since		1.0.0
+ * @since		0.1
  */
 public class JsonReader {
 

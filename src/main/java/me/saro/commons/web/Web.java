@@ -25,7 +25,7 @@ import me.saro.commons.function.ThrowableFunction;
 /**
  * Web Client
  * @author		PARK Yong Seo
- * @since		1.0.0
+ * @since		0.1
  */
 public class Web {
 

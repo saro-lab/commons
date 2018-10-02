@@ -11,7 +11,7 @@ import lombok.ToString;
 /**
  * web result
  * @author		PARK Yong Seo
- * @since		1.0.0
+ * @since		0.1
  */
 @ToString(exclude = {"body", "headers"})
 public class WebResult<T> {

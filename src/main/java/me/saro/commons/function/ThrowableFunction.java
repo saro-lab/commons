@@ -16,7 +16,7 @@ package me.saro.commons.function;
  * PARK Yong Seo
  * 
  * @since
- * 1.0.0
+ * 0.1
  */
 @FunctionalInterface
 public interface ThrowableFunction<T, R> {
