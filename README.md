@@ -80,6 +80,10 @@ Utils.random(long, long)
 ```
 Files.createFile(File, boolean, InputStream)
 Files.createParentDirectoryForFile(File)
+Files.attributesFilter(ThrowablePredicate<BasicFileAttributes>)
+Files.streamFiles(File)
+Files.streamFiles(String)
+Files.toBasicFileAttributes(File)
 ```
 
 ## Valids
