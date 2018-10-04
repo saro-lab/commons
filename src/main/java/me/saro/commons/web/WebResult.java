@@ -1,5 +1,6 @@
 package me.saro.commons.web;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,7 +27,7 @@ public class WebResult<T> {
     @Getter @Setter(lombok.AccessLevel.PACKAGE) Exception exception;
     
     // headers
-    @Getter @Setter(lombok.AccessLevel.PACKAGE) Map<String, List<String>> headers = Map.of();
+    @Getter @Setter(lombok.AccessLevel.PACKAGE) Map<String, List<String>> headers = Collections.emptyMap();
     
     // response body data
     @Setter(lombok.AccessLevel.PACKAGE) T body;

@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -175,7 +176,7 @@ public class Converter {
 	public static Map<String, Object> toMapByJsonObject(String jsonObject) {
 		try {
 			
-			return jsonObject != null ? JSON_MAPPER.readValue(jsonObject, JSON_MAP) : Map.of();
+			return jsonObject != null ? JSON_MAPPER.readValue(jsonObject, JSON_MAP) : Collections.emptyMap();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -295,8 +296,16 @@ public class Converter {
 	 * @return
 	 */
 	public static <T> Stream<T> toStream(Enumeration<T> enumeration, boolean parallel) {
-		return StreamSupport.stream(
-				Spliterators.spliteratorUnknownSize(enumeration.asIterator(), Spliterator.ORDERED), parallel
+		return StreamSupport.stream(Spliterators.spliteratorUnknownSize(
+			new Iterator<T>() {
+				public T next() {
+					return enumeration.nextElement();
+				}
+				public boolean hasNext() {
+					return enumeration.hasMoreElements();
+				}
+			},
+			Spliterator.ORDERED), parallel
 		);
 	}
 	
