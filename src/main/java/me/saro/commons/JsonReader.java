@@ -1,5 +1,6 @@
 package me.saro.commons;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -45,7 +46,7 @@ public class JsonReader {
 	 * @return
 	 */
 	public static JsonReader emptyObject() {
-		return new JsonReader(Map.of());
+		return new JsonReader(Collections.emptyMap());
 	}
 
 	/**
@@ -53,7 +54,7 @@ public class JsonReader {
 	 * @return
 	 */
 	public static JsonReader emptyList() {
-		return new JsonReader(List.of());
+		return new JsonReader(Collections.emptyList());
 	}
 
 	/**
