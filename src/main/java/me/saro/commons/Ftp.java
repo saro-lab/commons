@@ -130,6 +130,19 @@ public class Ftp implements Cloneable {
 	public List<FTPFile> listDirectories(Predicate<FTPFile> filter) throws IOException {
 		return Converter.asList(ftp.listDirectories()).stream().filter(filter).collect(Collectors.toList());
 	}
+	
+	/**
+	 * delete remote file
+	 * @param file
+	 * @return
+	 */
+	public boolean delete(FTPFile file) {
+		try {
+			return ftp.deleteFile(file.getName());
+		} catch (IOException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
+	}
 
 	/**
 	 * send file
@@ -143,18 +156,63 @@ public class Ftp implements Cloneable {
 			return ftp.storeFile(saveServerFileName, fis);
 		}
 	}
+	
+	/**
+	 * send file
+	 * @param localFile
+	 * @return
+	 * @throws IOException
+	 */
+	public boolean send(File localFile) throws IOException {
+		try (FileInputStream fis = new FileInputStream(localFile)) {
+			return ftp.storeFile(localFile.getName(), fis);
+		}
+	}
 
 	/**
-	 * read file
+	 * recv file
 	 * @param readServerFileName
 	 * @param localFile
 	 * @return
 	 * @throws IOException
 	 */
-	public boolean read(String readServerFileName, File localFile) throws IOException {
+	public boolean recv(String serverFileName, File localFile) throws IOException {
 		try (FileOutputStream fos = new FileOutputStream(localFile)) {
-			return ftp.retrieveFile(readServerFileName, fos);
+			return ftp.retrieveFile(serverFileName, fos);
 		}
+	}
+	
+	/**
+	 * recv file
+	 * @param serverFile
+	 * @param localFile
+	 * @return
+	 * @throws IOException
+	 */
+	public boolean recv(FTPFile serverFile, File localFile) throws IOException {
+		try (FileOutputStream fos = new FileOutputStream(localFile)) {
+			return ftp.retrieveFile(serverFile.getName(), fos);
+		}
+	}
+	
+	/**
+	 * recv file in directory
+	 * @param serverFiles
+	 * @param localDirectory
+	 * @return
+	 * @throws IOException
+	 */
+	public int recv(List<FTPFile> serverFiles, File localDirectory) throws IOException {
+		if (!localDirectory.exists() || !localDirectory.isDirectory()) {
+			throw new IOException(" not exsit or not directory");
+		}
+		int rv = 0;
+		for (FTPFile file : serverFiles) {
+			if (recv(file, new File(localDirectory.getAbsolutePath() + file.getName()))) {
+				rv++;
+			}
+		}
+		return rv;
 	}
 	
 	/**
