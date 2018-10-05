@@ -15,4 +15,5 @@ public @interface TextData {
 	boolean fill() default false;
 	char fillCharacter() default ' ';
 	DataAlign align() default DataAlign.left; 
+	DataFlow flow() default DataFlow.all;
 }
