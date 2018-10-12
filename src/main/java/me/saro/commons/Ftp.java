@@ -51,6 +51,8 @@ public class Ftp implements Cloneable {
 			ftp = new FTPClient();
 			ftp.connect(host, port);
 			ftp.login(user, pass);
+			// set based control keep alive reply timeout
+			ftp.setControlKeepAliveReplyTimeout(60000);
 		} catch (IOException e) {
 			self.throwConnectionError();
 		}
