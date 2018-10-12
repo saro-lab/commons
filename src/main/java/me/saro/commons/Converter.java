@@ -32,6 +32,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import me.saro.commons.converter.HashAlgorithm;
 import me.saro.commons.function.ThrowableBiFunction;
 import me.saro.commons.function.ThrowableFunction;
 
@@ -57,19 +58,6 @@ public class Converter {
 	// HAX convert array [00 ~ FF]
 	final static char[][] BYTE_TO_HEX_STR_MAP = IntStream.range(0, 256).boxed()
 			.map(i -> String.format("%02x", i).toCharArray()).toArray(char[][]::new);
-
-	final static public String HASH_ALGORITHM_MD5 = "MD5";
-	final static public String HASH_ALGORITHM_SHA1 = "SHA-1";
-	final static public String HASH_ALGORITHM_SHA_224 = "SHA-224";
-	final static public String HASH_ALGORITHM_SHA_256 = "SHA-256";
-	final static public String HASH_ALGORITHM_SHA_384 = "SHA-384";
-	final static public String HASH_ALGORITHM_SHA_512_224 = "SHA-512/224";
-	final static public String HASH_ALGORITHM_SHA_512_256 = "SHA-512/256";
-	final static public String HASH_ALGORITHM_SHA3_224 = "SHA3-224";
-	final static public String HASH_ALGORITHM_SHA3_256 = "SHA3-256";
-	final static public String HASH_ALGORITHM_SHA3_384 = "SHA3-384";
-	final static public String HASH_ALGORITHM_SHA3_512 = "SHA3-512";
-
 	
 	/**
 	 * split csv line
@@ -203,14 +191,14 @@ public class Converter {
 	
 	/**
 	 * to Hash
-	 * @param HASH_ALGORITHM
+	 * @param hashAlgorithm
 	 * SHA3 need to min jdk version 10
 	 * @param data
 	 * @return
 	 */
-	public static byte[] toHash(String HASH_ALGORITHM, byte[] data) {
+	public static byte[] toHash(HashAlgorithm hashAlgorithm, byte[] data) {
 		try {
-			return MessageDigest.getInstance(HASH_ALGORITHM).digest(data);
+			return MessageDigest.getInstance(hashAlgorithm.value()).digest(data);
 		} catch (NoSuchAlgorithmException e) {
 			throw new RuntimeException(e);
 		}
@@ -218,27 +206,27 @@ public class Converter {
 	
 	/**
 	 * to Hash
-	 * @param HASH_ALGORITHM
+	 * @param hashAlgorithm
 	 * @param text
 	 * SHA3 need to min jdk version 10
 	 * @param charset
 	 * @return
 	 */
-	public static byte[] toHash(String HASH_ALGORITHM, String text, String charset) {
-		return toHash(HASH_ALGORITHM, text.getBytes(Charset.forName(charset)));
+	public static byte[] toHash(HashAlgorithm hashAlgorithm, String text, String charset) {
+		return toHash(hashAlgorithm, text.getBytes(Charset.forName(charset)));
 	}
 	
 	/**
 	 * to Hash
 	 * <br>
 	 * charset is UTF-8
-	 * @param HASH_ALGORITHM
+	 * @param hashAlgorithm
 	 * @param text
 	 * SHA3 need to min jdk version 10
 	 * @return
 	 */
-	public static byte[] toHash(String HASH_ALGORITHM, String text) {
-		return toHash(HASH_ALGORITHM, text.getBytes(Charset.forName("UTF-8")));
+	public static byte[] toHash(HashAlgorithm hashAlgorithm, String text) {
+		return toHash(hashAlgorithm, text.getBytes(Charset.forName("UTF-8")));
 	}
 
 	/**
@@ -502,4 +490,5 @@ public class Converter {
 			throw e;
 		}
 	}
+	
 }
