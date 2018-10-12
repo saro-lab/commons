@@ -195,6 +195,7 @@ public class Converter {
 	 * SHA3 need to min jdk version 10
 	 * @param data
 	 * @return
+	 * @since 0.2
 	 */
 	public static byte[] toHash(HashAlgorithm hashAlgorithm, byte[] data) {
 		try {
@@ -211,6 +212,7 @@ public class Converter {
 	 * SHA3 need to min jdk version 10
 	 * @param charset
 	 * @return
+	 * @since 0.2
 	 */
 	public static byte[] toHash(HashAlgorithm hashAlgorithm, String text, String charset) {
 		return toHash(hashAlgorithm, text.getBytes(Charset.forName(charset)));
@@ -224,6 +226,7 @@ public class Converter {
 	 * @param text
 	 * SHA3 need to min jdk version 10
 	 * @return
+	 * @since 0.2
 	 */
 	public static byte[] toHash(HashAlgorithm hashAlgorithm, String text) {
 		return toHash(hashAlgorithm, text.getBytes(Charset.forName("UTF-8")));

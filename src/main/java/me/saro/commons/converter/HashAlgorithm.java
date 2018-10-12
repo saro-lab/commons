@@ -1,7 +1,7 @@
 package me.saro.commons.converter;
 
 /**
- * Converter
+ * Converter Hash Algorithm
  * @author		PARK Yong Seo
  * @since		0.2
  */
