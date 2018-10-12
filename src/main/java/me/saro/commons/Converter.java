@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -33,6 +34,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import me.saro.commons.converter.HashAlgorithm;
+import me.saro.commons.converter.NamingConvention;
 import me.saro.commons.function.ThrowableBiFunction;
 import me.saro.commons.function.ThrowableFunction;
 
@@ -492,6 +494,76 @@ public class Converter {
 		} catch (IOException e) {
 			throw e;
 		}
+	}
+	
+	/**
+	 * naming convention
+	 * @param fromNamingConvention
+	 * @param naming
+	 * @return
+	 * @since 0.2
+	 */
+	public static List<String> namingConvention(NamingConvention fromNamingConvention, String naming) {
+		if (naming.isEmpty()) {
+			return Collections.emptyList();
+		}
+		switch (fromNamingConvention) {
+			case dashes : return Arrays.asList(naming.toLowerCase().split("\\_"));
+			case underscores : return Arrays.asList(naming.toLowerCase().split("\\-"));
+			case camelCase : case pascalCase : {
+				List<String> list = new ArrayList<>();
+				char[] ch = naming.toCharArray();
+				ch[0] = Character.toLowerCase(ch[0]);
+				int pos = 0, i = 1;
+				for ( ; i < ch.length ; i++ ) {
+					if (Character.isUpperCase(ch[i])) {
+						ch[i] = Character.toLowerCase(ch[i]);
+						list.add(new String(ch, pos, i));
+						pos = i;
+					}
+				}
+				list.add(new String(ch, pos, i));
+				return list;
+			}
+		}
+		throw new IllegalArgumentException("unknown naming convention");
+	}
+	
+	/**
+	 * naming convention
+	 * @param toNamingConvention
+	 * @param words
+	 * @return
+	 * @since 0.2
+	 */
+	public static String namingConvention(NamingConvention toNamingConvention, List<String> words) {
+		Stream<String> wordStream = words.stream();
+		switch (toNamingConvention) {
+			case dashes : return wordStream.collect(Collectors.joining("-"));
+			case underscores : return wordStream.collect(Collectors.joining("_"));
+			case pascalCase : return wordStream.map(e -> e.substring(0, 1).toUpperCase() + e.substring(1)).collect(Collectors.joining(""));
+			case camelCase : {
+				switch (words.size()) {
+					case 0 : return "";
+					case 1 : return words.get(0);
+					default :
+						return words.get(0) + wordStream.skip(1).map(e -> e.substring(0, 1).toUpperCase() + e.substring(1)).collect(Collectors.joining(""));
+				}
+			}
+		}
+		throw new IllegalArgumentException("unknown naming convention");
+	}
+	
+	/**
+	 * naming convention
+	 * @param fromNamingConvention
+	 * @param toNamingConvention
+	 * @param words
+	 * @return
+	 * @since 0.2
+	 */
+	public static String namingConvention(NamingConvention fromNamingConvention, NamingConvention toNamingConvention, String naming) {
+		return namingConvention(toNamingConvention, namingConvention(fromNamingConvention, naming));
 	}
 	
 }
