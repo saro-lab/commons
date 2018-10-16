@@ -23,20 +23,20 @@ package me.saro.commons.function;
  */
 @FunctionalInterface
 public interface ThrowableTriConsumer<T, U, V> {
-	/**
-	 * @see
-	 * java.util.function.Consumer
-	 * 
-	 * @param t
-	 * input parameter type T
-	 * 
-	 * @param u
-	 * input parameter type U
-	 * 
-	 * @param v 
-	 * input parameter type V
-	 * 
-	 * @throws Exception
-	 */
-	void accept(T t, U u, V v) throws Exception;
+    /**
+     * @see
+     * java.util.function.Consumer
+     * 
+     * @param t
+     * input parameter type T
+     * 
+     * @param u
+     * input parameter type U
+     * 
+     * @param v 
+     * input parameter type V
+     * 
+     * @throws Exception
+     */
+    void accept(T t, U u, V v) throws Exception;
 }

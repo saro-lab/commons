@@ -20,17 +20,17 @@ package me.saro.commons.function;
  */
 @FunctionalInterface
 public interface ThrowableBiConsumer<T, U> {
-	/**
-	 * @see
-	 * java.util.function.Consumer
-	 * 
-	 * @param t
-	 * input parameter type T
-	 * 
-	 * @param u
-	 * input parameter type U
-	 * 
-	 * @throws Exception
-	 */
-	void accept(T t, U u) throws Exception;
+    /**
+     * @see
+     * java.util.function.Consumer
+     * 
+     * @param t
+     * input parameter type T
+     * 
+     * @param u
+     * input parameter type U
+     * 
+     * @throws Exception
+     */
+    void accept(T t, U u) throws Exception;
 }

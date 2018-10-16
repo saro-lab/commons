@@ -12,13 +12,13 @@ package me.saro.commons.function;
 @FunctionalInterface
 public interface StreamReadConsumer {
 
-	/**
-	 * read InputStream
-	 * @param buf 
-	 * buffer
-	 * @param len
-	 * buffer data length
-	 * @throws Exception
-	 */
-	void accept(byte[] buf, int len) throws Exception;
+    /**
+     * read InputStream
+     * @param buf 
+     * buffer
+     * @param len
+     * buffer data length
+     * @throws Exception
+     */
+    void accept(byte[] buf, int len) throws Exception;
 }

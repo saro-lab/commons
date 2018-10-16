@@ -23,20 +23,20 @@ package me.saro.commons.function;
  */
 @FunctionalInterface
 public interface ThrowableBiFunction<T, U, R> {
-	/**
-	 * @see
-	 * java.util.function.Function
-	 * 
-	 * @param t
-	 * input parameter type T
-	 * 
-	 * @param u
-	 * input parameter type U
-	 * 
-	 * @return
-	 * output return
-	 * 
-	 * @throws Exception
-	 */
-	R apply(T t, U u) throws Exception;
+    /**
+     * @see
+     * java.util.function.Function
+     * 
+     * @param t
+     * input parameter type T
+     * 
+     * @param u
+     * input parameter type U
+     * 
+     * @return
+     * output return
+     * 
+     * @throws Exception
+     */
+    R apply(T t, U u) throws Exception;
 }

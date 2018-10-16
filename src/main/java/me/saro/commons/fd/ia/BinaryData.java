@@ -10,6 +10,6 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.FIELD)
 public @interface BinaryData {
-	int offset() default -1;
-	DataFlow flow() default DataFlow.all;
+    int offset() default -1;
+    DataFlow flow() default DataFlow.all;
 }

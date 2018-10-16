@@ -14,12 +14,12 @@ package me.saro.commons.function;
  */
 @FunctionalInterface
 public interface ThrowableRunnable {
-	/**
-	 * @see
-	 * java.lang.Runnable
-	 * 
-	 * @throws
-	 * Exception
-	 */
-	void run() throws Exception;
+    /**
+     * @see
+     * java.lang.Runnable
+     * 
+     * @throws
+     * Exception
+     */
+    void run() throws Exception;
 }

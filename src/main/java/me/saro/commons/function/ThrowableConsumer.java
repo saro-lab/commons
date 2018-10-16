@@ -17,14 +17,14 @@ package me.saro.commons.function;
  */
 @FunctionalInterface
 public interface ThrowableConsumer<T> {
-	/**
-	 * @see
-	 * java.util.function.Consumer
-	 * 
-	 * @param t
-	 * input parameter type T
-	 * 
-	 * @throws Exception
-	 */
-	void accept(T t) throws Exception;
+    /**
+     * @see
+     * java.util.function.Consumer
+     * 
+     * @param t
+     * input parameter type T
+     * 
+     * @throws Exception
+     */
+    void accept(T t) throws Exception;
 }
