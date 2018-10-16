@@ -6,7 +6,7 @@ package me.saro.commons.fd.ia;
  * @since		0.2
  */
 public enum DataFlow {
-	read,
-	write,
-	all
+    read,
+    write,
+    all
 }

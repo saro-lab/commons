@@ -20,17 +20,17 @@ package me.saro.commons.function;
  */
 @FunctionalInterface
 public interface ThrowableFunction<T, R> {
-	/**
-	 * @see
-	 * java.util.function.Function
-	 * 
-	 * @param t
-	 * input parameter type T
-	 * 
-	 * @return
-	 * output return
-	 * 
-	 * @throws Exception
-	 */
-	R apply(T t) throws Exception;
+    /**
+     * @see
+     * java.util.function.Function
+     * 
+     * @param t
+     * input parameter type T
+     * 
+     * @return
+     * output return
+     * 
+     * @throws Exception
+     */
+    R apply(T t) throws Exception;
 }

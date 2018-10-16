@@ -10,10 +10,10 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.FIELD)
 public @interface TextData {
-	int offset() default -1;
-	int length() default -1;
-	boolean fill() default false;
-	char fillCharacter() default ' ';
-	DataAlign align() default DataAlign.left; 
-	DataFlow flow() default DataFlow.all;
+    int offset() default -1;
+    int length() default -1;
+    boolean fill() default false;
+    char fillCharacter() default ' ';
+    DataAlign align() default DataAlign.left; 
+    DataFlow flow() default DataFlow.all;
 }

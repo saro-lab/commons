@@ -6,23 +6,23 @@ package me.saro.commons.converter;
  * @since		0.2
  */
 public enum NamingConvention {
-	/**
-	 * camel case -&gt; camelCaseNamingConvention
-	 */
-	camelCase
+    /**
+     * camel case -&gt; camelCaseNamingConvention
+     */
+    camelCase
 
-	/**
-	 * pascal case -&gt; PascalCaseNamingConvention
-	 */
-,	pascalCase
+    /**
+     * pascal case -&gt; PascalCaseNamingConvention
+     */
+    ,	pascalCase
 
-	/**
-	 * underscores -&gt; underscores_naming_convention
-	 */
-,	underscores
+    /**
+     * underscores -&gt; underscores_naming_convention
+     */
+    ,	underscores
 
-	/**
-	 * dashes -&gt; dashes-naming-convention
-	 */
-,	dashes
+    /**
+     * dashes -&gt; dashes-naming-convention
+     */
+    ,	dashes
 }

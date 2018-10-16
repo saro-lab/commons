@@ -19,16 +19,16 @@ public class WebResult<T> {
 
     WebResult() {
     }
-    
+
     // http status
     @Getter @Setter(lombok.AccessLevel.PACKAGE) int status = -1;
-    
+
     // exception
     @Getter @Setter(lombok.AccessLevel.PACKAGE) Exception exception;
-    
+
     // headers
     @Getter @Setter(lombok.AccessLevel.PACKAGE) Map<String, List<String>> headers = Collections.emptyMap();
-    
+
     // response body data
     @Setter(lombok.AccessLevel.PACKAGE) T body;
 
@@ -39,7 +39,7 @@ public class WebResult<T> {
     public boolean isSuccess() {
         return status >= 200 && status < 300;
     }
-    
+
     /**
      * is status 3xx
      * @return
@@ -47,7 +47,7 @@ public class WebResult<T> {
     public boolean isStatus3xx() {
         return status >= 300 && status < 400;
     }
-    
+
     /**
      * is status 4xx
      * @return
@@ -55,7 +55,7 @@ public class WebResult<T> {
     public boolean isStatus4xx() {
         return status >= 400 && status < 500;
     }
-    
+
     /**
      * is status 5xx
      * @return

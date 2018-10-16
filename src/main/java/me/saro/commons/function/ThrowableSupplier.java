@@ -17,15 +17,15 @@ package me.saro.commons.function;
  */
 @FunctionalInterface
 public interface ThrowableSupplier<R> {
-	/**
-	 * @see
-	 * java.util.function.Supplier
-	 * 
-	 * @return
-	 * output return
-	 * 
-	 * @throws
-	 * Exception
-	 */
-	R get() throws Exception;
+    /**
+     * @see
+     * java.util.function.Supplier
+     * 
+     * @return
+     * output return
+     * 
+     * @throws
+     * Exception
+     */
+    R get() throws Exception;
 }

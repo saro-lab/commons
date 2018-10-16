@@ -6,17 +6,17 @@ package me.saro.commons;
  * @since		0.1
  */
 public class Valids {
-	
-	private Valids() {
-	}
 
-	/**
-	 * mail check
+    private Valids() {
+    }
+
+    /**
+     * mail check
      * <br>
      * - not allow Top-Level Domain
      * <br>
      * - not support unicode
-	 */
+     */
     final public static String IS_MAIL = "[_a-z0-9\\-]+(\\.[_a-z0-9\\-])*@([_a-z0-9\\-]+\\.)+[a-z]{2,}";
 
     /**

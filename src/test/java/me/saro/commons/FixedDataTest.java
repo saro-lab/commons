@@ -4,9 +4,9 @@ import org.junit.jupiter.api.Test;
 
 public class FixedDataTest {
 
-	@Test
-	public void test() throws Exception {
+    @Test
+    public void test() throws Exception {
 
-	}
+    }
 
 }

@@ -17,17 +17,17 @@ package me.saro.commons.function;
  */
 @FunctionalInterface
 public interface ThrowablePredicate<T> {
-	/**
-	 * @see
-	 * java.util.function.Predicate
-	 * 
-	 * @param t
-	 * input parameter type T
-	 * 
-	 * @return
-	 * test return
-	 * 
-	 * @throws Exception
-	 */
-	boolean test(T t) throws Exception;
+    /**
+     * @see
+     * java.util.function.Predicate
+     * 
+     * @param t
+     * input parameter type T
+     * 
+     * @return
+     * test return
+     * 
+     * @throws Exception
+     */
+    boolean test(T t) throws Exception;
 }

@@ -6,5 +6,5 @@ package me.saro.commons.fd.ia;
  * @since		0.2
  */
 public enum DataAlign {
-	left, right
+    left, right
 }
