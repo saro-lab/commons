@@ -32,88 +32,7 @@ compile 'me.saro:commons:0.1'
 
 
 
-# STATIC
 
-
-## Converter
-
-#### me.saro.commons.Converter
-
-```
-Converter.asList(T[]) : List<T>
-Converter.namingConvention(NamingConvention, List<String>) : String
-Converter.namingConvention(NamingConvention, NamingConvention, String) : String
-Converter.namingConvention(NamingConvention, String) : List<String>
-Converter.splitCsvLine(String) : String[]
-Converter.toByteArrayOutputStream(InputStream, int) : ByteArrayOutputStream
-Converter.toBytes(InputStream, int) : byte[]
-Converter.toClassByJson(String, TypeReference<T>) : T
-Converter.toHash(HashAlgorithm, String) : byte[]
-Converter.toHash(HashAlgorithm, String, String) : byte[]
-Converter.toHash(HashAlgorithm, byte[]) : byte[]
-Converter.toHex(byte[]) : String
-Converter.toJson(Object) : String
-Converter.toList(Enumeration<T>) : List<T>
-Converter.toList(Iterable<T>) : List<T>
-Converter.toMap(Object[]) : Map<K, V>
-Converter.toMapByJsonObject(String) : Map<String, Object>
-Converter.toMapListByJsonArray(String) : List<Map<String, Object>>
-Converter.toStream(Enumeration<T>) : Stream<T>
-Converter.toStream(Enumeration<T>, boolean) : Stream<T>
-Converter.toStream(Iterable<T>) : Stream<T>
-Converter.toStream(Iterable<T>, boolean) : Stream<T>
-Converter.toStreamByResultSet(ResultSet, ThrowableBiFunction<String[], Object[], R>) : Stream<R>
-Converter.toStreamByResultSet(ResultSet, ThrowableFunction<ResultSet, R>) : Stream<R>
-Converter.toStreamLineNotCloseByTextInputStream(InputStream, String) : Stream<String>
-Converter.toString(Exception) : String
-Converter.toString(File, String) : String
-Converter.toString(InputStream, String) : String
-Converter.toStringNotClose(InputStream, String) : String
-```
-
-
-## Utils
-
-#### me.saro.commons.Utils
-
-```
-Utils.createRandomBase62String(int, int) : String
-Utils.createRandomString(char[], int) : String
-Utils.createRandomString(char[], int, int) : String
-Utils.evl(String[]) : String
-Utils.inputStreamReader(InputStream, StreamReadConsumer) 
-Utils.nvl(T[]) : T
-Utils.openZipFromFile(File, ThrowableTriConsumer<String, ZipEntry, InputStream>) 
-Utils.openZipFromWeb(Web, ThrowableTriConsumer<String, ZipEntry, InputStream>) 
-Utils.openZipStreamNotClose(InputStream, ThrowableTriConsumer<String, ZipEntry, InputStream>) 
-Utils.random(long, long) : long
-```
-
-
-## Files
-
-#### me.saro.commons.Files
-
-```
-Files.attributesFilter(ThrowablePredicate<BasicFileAttributes>) : Predicate<File>
-Files.createFile(File, boolean, InputStream) 
-Files.createParentDirectoryForFile(File) : boolean
-Files.streamFiles(File) : Stream<File>
-Files.streamFiles(String) : Stream<File>
-Files.toBasicFileAttributes(File) : BasicFileAttributes
-```
-
-
-## Valids
-
-#### me.saro.commons.Valids
-
-```
-Valids.isMail(String, int) : boolean
-```
-
-
-## Lambdas
 
 #### me.saro.commons.Lambdas
 
@@ -162,28 +81,26 @@ writeJsonByClass(Object) : Web
 ```
 
 
-## Ftp
+## FTP
 
-#### me.saro.commons.Ftp
+#### me.saro.commons.ftp.FTP
 
 ```
-Ftp.open(InetAddress, int, String, String) : Ftp
-Ftp.open(String, int, String, String) : Ftp
+FTP.openFTP(InetAddress, int, String, String) : FTP
+FTP.openFTP(String, int, String, String) : FTP
+FTP.openFTPS(InetAddress, int, String, String) : FTP
+FTP.openFTPS(String, int, String, String) : FTP
+FTP.openSFTP(String, int, String, String) : FTP
 close() 
-delete(FTPFile) : boolean
-getWorkingDirectory() : String
-listDirectories() : List<FTPFile>
-listDirectories(Predicate<FTPFile>) : List<FTPFile>
-listFiles() : List<FTPFile>
-listFiles(Predicate<FTPFile>) : List<FTPFile>
-recv(FTPFile, File) : boolean
-recv(List<FTPFile>, File) : int
+delete(String) : boolean
+listDirectories() : List<String>
+listFiles() : List<String>
+mkdir(String) : boolean
+path() : String
+path(String) : boolean
 recv(String, File) : boolean
 send(File) : boolean
 send(String, File) : boolean
-setFileTypeAscii() : Ftp
-setFileTypeBinary() : Ftp
-setWorkingDirectory(String) : boolean
 ```
 
 
