@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
+import me.saro.commons.ftp.FTP;
 import me.saro.commons.web.Web;
 public class ReadmeTest {
 
@@ -27,7 +28,7 @@ public class ReadmeTest {
         System.out.println();
 
         outClassInfo(Web.class);
-        outClassInfo(Ftp.class);
+        outClassInfo(FTP.class);
         outClassInfo(DateFormat.class);
         outClassInfo(JsonReader.class);
 
