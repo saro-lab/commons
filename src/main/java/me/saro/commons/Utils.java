@@ -214,12 +214,16 @@ public class Utils {
      * @return
      * @throws InterruptedException
      */
-    public static <T, R> List<R> executeAllThreads(ExecutorService executorService, List<T> list, ThrowableFunction<T, R> map) throws InterruptedException {
-        return executorService
-            .invokeAll(list.parallelStream().<Callable<R>>map(e -> () -> map.apply(e)).collect(Collectors.toList()))
-            .parallelStream()
-            .map(Lambdas.<Future<R>, R>runtime(x -> x.get()))
-            .collect(Collectors.toList());
+    public static <T, R> List<R> executeAllThreads(ExecutorService executorService, List<T> list, ThrowableFunction<T, R> map) {
+        try {
+            return executorService
+                    .invokeAll(list.parallelStream().<Callable<R>>map(e -> () -> map.apply(e)).collect(Collectors.toList()))
+                    .parallelStream()
+                    .map(Lambdas.<Future<R>, R>runtime(x -> x.get()))
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
     
     /**
@@ -230,7 +234,7 @@ public class Utils {
      * @return
      * @throws InterruptedException
      */
-    public static <T, R> List<R> executeAllThreads(int nThreads, List<T> list, ThrowableFunction<T, R> map) throws InterruptedException {
+    public static <T, R> List<R> executeAllThreads(int nThreads, List<T> list, ThrowableFunction<T, R> map) {
         return executeAllThreads(Executors.newFixedThreadPool(nThreads), list, map);
     }
 }
