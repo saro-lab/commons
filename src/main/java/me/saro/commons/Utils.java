@@ -3,10 +3,17 @@ package me.saro.commons;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import me.saro.commons.function.StreamReadConsumer;
+import me.saro.commons.function.ThrowableFunction;
 import me.saro.commons.function.ThrowableTriConsumer;
 import me.saro.commons.web.Web;
 import me.saro.commons.web.WebResult;
@@ -197,5 +204,33 @@ public class Utils {
         })).getException() != null) {
             throw res.getException();
         }
+    }
+    
+    /**
+     * execute all threads
+     * @param executorService
+     * @param list
+     * @param map
+     * @return
+     * @throws InterruptedException
+     */
+    public static <T, R> List<R> executeAllThreads(ExecutorService executorService, List<T> list, ThrowableFunction<T, R> map) throws InterruptedException {
+        return executorService
+            .invokeAll(list.parallelStream().<Callable<R>>map(e -> () -> map.apply(e)).collect(Collectors.toList()))
+            .parallelStream()
+            .map(Lambdas.<Future<R>, R>runtime(x -> x.get()))
+            .collect(Collectors.toList());
+    }
+    
+    /**
+     * execute all threads
+     * @param nThreads
+     * @param list
+     * @param map
+     * @return
+     * @throws InterruptedException
+     */
+    public static <T, R> List<R> executeAllThreads(int nThreads, List<T> list, ThrowableFunction<T, R> map) throws InterruptedException {
+        return executeAllThreads(Executors.newFixedThreadPool(nThreads), list, map);
     }
 }
