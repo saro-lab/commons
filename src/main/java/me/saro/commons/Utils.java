@@ -212,7 +212,7 @@ public class Utils {
      * @param list
      * @param map
      * @return
-     * @throws InterruptedException
+     * @since 0.3
      */
     public static <T, R> List<R> executeAllThreads(ExecutorService executorService, List<T> list, ThrowableFunction<T, R> map) {
         try {
@@ -232,7 +232,7 @@ public class Utils {
      * @param list
      * @param map
      * @return
-     * @throws InterruptedException
+     * @since 0.3
      */
     public static <T, R> List<R> executeAllThreads(int nThreads, List<T> list, ThrowableFunction<T, R> map) {
         return executeAllThreads(Executors.newFixedThreadPool(nThreads), list, map);
