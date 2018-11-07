@@ -208,7 +208,7 @@ public class Utils {
     
     /**
      * execute all threads
-     * <b>WARNING : </b>this method does not shutdown ExecutorService instance
+     * <b>WARNING : </b>this method does not shutdown to ExecutorService instance
      * @param executorService
      * @param list
      * @param map
