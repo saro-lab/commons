@@ -208,6 +208,7 @@ public class Utils {
     
     /**
      * execute all threads
+     * <b>WARNING : </b>this method does not shutdown ExecutorService instance
      * @param executorService
      * @param list
      * @param map
@@ -235,6 +236,9 @@ public class Utils {
      * @since 0.3
      */
     public static <T, R> List<R> executeAllThreads(int nThreads, List<T> list, ThrowableFunction<T, R> map) {
-        return executeAllThreads(Executors.newFixedThreadPool(nThreads), list, map);
+        ExecutorService executorService = Executors.newFixedThreadPool(nThreads);
+        List<R> rv = executeAllThreads(executorService, list, map);
+        executorService.shutdown();
+        return rv;
     }
 }
