@@ -5,12 +5,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Optional;
 
 import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.ChannelSftp.LsEntry;
+import com.jcraft.jsch.ChannelSftp.LsEntrySelector;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
@@ -58,39 +58,82 @@ public class SFTP implements FTP {
     }
     
     @Override
-    @SuppressWarnings("unchecked")
     public List<String> listFiles() throws IOException {
         try {
-            return ((Stream<LsEntry>)channel.ls(path()).stream())
-            .map(e -> (LsEntry)e)
-            .filter(e -> !e.getAttrs().isDir())
-            .map(e -> e.getFilename())
-            .collect(Collectors.toList());
+            List<String> list = new ArrayList<String>();
+            
+            channel.ls(path(), e -> {
+                if (!e.getAttrs().isDir()) {
+                    list.add(e.getFilename());
+                }
+                return LsEntrySelector.CONTINUE;
+            });
+            
+            return list;
         } catch (SftpException e) {
             throw new IOException(e);
         }
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<String> listDirectories() throws IOException {
         try {
-            return ((Stream<LsEntry>)channel.ls(path()).stream())
-            .map(e -> (LsEntry)e)
-            .filter(e -> e.getAttrs().isDir())
-            .filter(e -> !".".equals(e.getFilename()) && !"..".equals(e.getFilename()))
-            .map(e -> e.getFilename())
-            .collect(Collectors.toList());
+            List<String> list = new ArrayList<String>();
+            
+            channel.ls(path(), e -> {
+                if (e.getAttrs().isDir()) {
+                    String name = e.getFilename();
+                    switch (name) {
+                        case "." : case ".." :  return LsEntrySelector.CONTINUE;
+                    }
+                    list.add(name);
+                }
+                return LsEntrySelector.CONTINUE;
+            });
+            
+            return list;
         } catch (SftpException e) {
+            throw new IOException(e);
+        }
+    }
+    
+    @Override
+    public boolean hasFile(String filename) throws IOException {
+        try {
+            return Optional.of(channel.lstat(path() + "/" + filename))
+                    .filter(e -> !e.isDir()).isPresent();
+        } catch (SftpException e) {
+            if (e.id == ChannelSftp.SSH_FX_NO_SUCH_FILE) {
+                return false;
+            }
+            throw new IOException(e);
+        }
+    }
+    
+    @Override
+    public boolean hasDirectory(String directoryname) throws IOException {
+        try {
+            return Optional.of(channel.lstat(path() + "/" + directoryname))
+                    .filter(e -> e.isDir()).isPresent();
+        } catch (SftpException e) {
+            if (e.id == ChannelSftp.SSH_FX_NO_SUCH_FILE) {
+                return false;
+            }
             throw new IOException(e);
         }
     }
 
     @Override
-    public boolean delete(String pathname) throws IOException {
+    public boolean delete(String filename) throws IOException {
         try {
-            channel.rm(pathname);
-            return true;
+            if (hasFile(filename)) {
+                channel.rm(filename);
+                return true;
+            } else if (hasDirectory(filename)) {
+                channel.rmdir(filename);
+                return true;
+            }
+           return false;
         } catch (Exception e) {
             throw new IOException(e);
         }
@@ -112,12 +155,15 @@ public class SFTP implements FTP {
     }
 
     @Override
-    public boolean recv(String remoteFileName, File localFile) throws IOException {
+    public boolean recv(String remoteFilename, File localFile) throws IOException {
+        if (!hasFile(remoteFilename)) {
+            return false;
+        }
         if (localFile.exists()) {
             localFile.delete();
         }
         try (FileOutputStream fos = new FileOutputStream(localFile)) {
-            channel.get(remoteFileName, fos);
+            channel.get(remoteFilename, fos);
             return true;
         } catch (Exception e) {
             throw new IOException(e);
