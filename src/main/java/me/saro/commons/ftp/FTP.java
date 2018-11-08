@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.exc.IgnoredPropertyException;
+
 /**
  * ftp
  * <br>
@@ -19,19 +21,19 @@ import java.util.List;
 public interface FTP extends Closeable {
     
     public static FTP openFTP(InetAddress host, int port, String user, String pass) throws IOException {
-        return new FTPS(host, port, user, pass, false);
+        return new FTPS(host, port, user, pass, false, false);
     }
     
     public static FTP openFTP(String host, int port, String user, String pass) throws IOException {
-        return new FTPS(InetAddress.getByName(host), port, user, pass, false);
+        return new FTPS(InetAddress.getByName(host), port, user, pass, false, false);
     }
     
-    public static FTP openFTPS(InetAddress host, int port, String user, String pass) throws IOException {
-        return new FTPS(host, port, user, pass, true);
+    public static FTP openFTPS(InetAddress host, int port, String user, String pass, boolean ignoreCertificate) throws IOException {
+        return new FTPS(host, port, user, pass, true, ignoreCertificate);
     }
     
-    public static FTP openFTPS(String host, int port, String user, String pass) throws IOException {
-        return new FTPS(InetAddress.getByName(host), port, user, pass, true);
+    public static FTP openFTPS(String host, int port, String user, String pass, boolean ignoreCertificate) throws IOException {
+        return new FTPS(InetAddress.getByName(host), port, user, pass, true, ignoreCertificate);
     }
     
     public static FTP openSFTP(String host, int port, String user, String pass) throws IOException {

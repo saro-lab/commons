@@ -18,7 +18,7 @@ public class FtpTest {
     public void example() throws IOException {
         
         String host = "localhost";
-        int port = 22;
+        int port = 990; // FTP 21, FTPS 990, SFTP 22
         String user = "testuser";
         String pass = "test";
         
@@ -32,7 +32,7 @@ public class FtpTest {
             fos.write("the test file".getBytes());
         }
         
-        try (FTP ftp = FTP.openSFTP(host, port, user, pass)) {
+        try (FTP ftp = FTP.openFTPS(host, port, user, pass, true)) {
             
             System.out.println("==================================");
             System.out.println("## now path");
@@ -76,9 +76,9 @@ public class FtpTest {
             ftp.recv("tmp", new File(path2+"/tmp")); // is not file, return false; not recv
             
             // delete
-            ftp.delete("tmp");
-            ftp.delete("test-new");
-            ftp.delete("test.dat");
+            //ftp.delete("tmp");
+            //ftp.delete("test-new");
+            //ftp.delete("test.dat");
             
             System.out.println("==================================");            
             System.out.println("## listDirectories");

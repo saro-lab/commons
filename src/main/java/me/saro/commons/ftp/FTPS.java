@@ -5,12 +5,17 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPSClient;
 
 /**
@@ -20,10 +25,20 @@ public class FTPS implements FTP {
 
     final FTPClient ftp;
     
-    public FTPS(InetAddress host, int port, String user, String pass, boolean isFTPS) throws IOException {
-        ftp = isFTPS ? new FTPSClient() : new FTPClient();
+    public FTPS(InetAddress host, int port, String user, String pass, boolean isFTPS, boolean ignoreCertificate) throws IOException {
+        if (isFTPS) {
+            ftp = new FTPSClient(true);
+        } else {
+            ftp = new FTPClient();
+        }
         try {
             ftp.connect(host, port);
+            if (isFTPS) {
+                FTPSClient fs = (FTPSClient)ftp;
+                fs.execPBSZ(0);
+                fs.execPROT("P");
+                fs.enterLocalPassiveMode();
+            }
             ftp.login(user, pass);
             // set based control keep alive reply timeout
             ftp.setControlKeepAliveReplyTimeout(60000);
@@ -50,12 +65,14 @@ public class FTPS implements FTP {
     
     @Override
     public boolean hasFile(String filename) throws IOException {
-        return Optional.of(ftp.mlistFile(path() + "/" + filename)).filter(e -> e.isFile()).isPresent();
+        FTPFile ff = ftp.mlistFile(path() + "/" + filename);
+        return ff != null && ff.isFile();
     }
     
     @Override
     public boolean hasDirectory(String directoryname) throws IOException {
-        return Optional.of(ftp.mlistFile(path() + "/" + directoryname)).filter(e -> e.isDirectory()).isPresent();
+        FTPFile ff = ftp.mlistFile(path() + "/" + directoryname);
+        return ff != null && ff.isDirectory();
     }
 
     @Override
@@ -117,4 +134,16 @@ public class FTPS implements FTP {
         }
     }
 
+    TrustManager[] IGNORED_TRUST_MANAGERS = new TrustManager[] { new X509TrustManager() {
+        @Override
+        public X509Certificate[] getAcceptedIssuers() {
+            return null;
+        }
+        @Override
+        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        }
+        @Override
+        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        }
+    } };
 }
