@@ -78,6 +78,7 @@ public class SFTP implements FTP {
             return ((Stream<LsEntry>)channel.ls(path()).stream())
             .map(e -> (LsEntry)e)
             .filter(e -> e.getAttrs().isDir())
+            .filter(e -> !".".equals(e.getFilename()) && !"..".equals(e.getFilename()))
             .map(e -> e.getFilename())
             .collect(Collectors.toList());
         } catch (SftpException e) {
