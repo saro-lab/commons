@@ -1,5 +1,7 @@
 package me.saro.commons.function;
 
+import java.util.function.BiFunction;
+
 /**
  * Throwable <code>BiFunction</code>
  * 
@@ -39,4 +41,21 @@ public interface ThrowableBiFunction<T, U, R> {
      * @throws Exception
      */
     R apply(T t, U u) throws Exception;
+    
+    /**
+     * throws Exception lambda to throws RuntimeException lambda
+     * @param biFunction
+     * @return
+     * @since
+     * 0.6
+     */
+    public static <T, U, R> BiFunction<T, U, R> runtime(ThrowableBiFunction<T, U, R> biFunction) {
+        return (t, u) -> {
+            try {
+                return biFunction.apply(t, u);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        };
+    }
 }

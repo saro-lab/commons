@@ -1,5 +1,7 @@
 package me.saro.commons.function;
 
+import java.util.function.Supplier;
+
 /**
  * Throwable <code>Supplier</code>
  * 
@@ -28,4 +30,21 @@ public interface ThrowableSupplier<R> {
      * Exception
      */
     R get() throws Exception;
+    
+    /**
+     * throws Exception lambda to throws RuntimeException lambda
+     * @param supplier
+     * @return
+     * @since
+     * 0.6
+     */
+    public static <R> Supplier<R> runtime(ThrowableSupplier<R> supplier) {
+        return () -> {
+            try {
+                return supplier.get();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        };
+    }
 }

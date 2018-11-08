@@ -1,5 +1,7 @@
 package me.saro.commons.function;
 
+import java.util.function.Consumer;
+
 /**
  * Throwable <code>Consumer</code>
  * 
@@ -27,4 +29,21 @@ public interface ThrowableConsumer<T> {
      * @throws Exception
      */
     void accept(T t) throws Exception;
+    
+    /**
+     * throws Exception lambda to throws RuntimeException lambda
+     * @param consumer
+     * @return
+     * @since
+     * 0.6
+     */
+    public static <T> Consumer<T> runtime(ThrowableConsumer<T> consumer) {
+        return t -> {
+            try {
+                consumer.accept(t);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        };
+    }
 }
