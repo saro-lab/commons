@@ -11,14 +11,14 @@
 <dependency>
   <groupId>me.saro</groupId>
   <artifactId>commons</artifactId>
-  <version>0.4</version>
+  <version>0.5</version>
 </dependency>
 ```
 
 ## gradle
 
 ```
-compile 'me.saro:commons:0.4'
+compile 'me.saro:commons:0.5'
 ```
 
 ## repository
@@ -176,6 +176,8 @@ FTP.openFTPS(String, int, String, String) : FTP
 FTP.openSFTP(String, int, String, String) : FTP
 close() 
 delete(String) : boolean
+hasDirectory(String) : boolean
+hasFile(String) : boolean
 listDirectories() : List<String>
 listFiles() : List<String>
 mkdir(String) : boolean
@@ -268,4 +270,3 @@ ThrowableFunction<T, R>
 ThrowableBiFunction<T, U, R>
 ThrowableTriFunction<T, U, V, R>
 ```
-`
