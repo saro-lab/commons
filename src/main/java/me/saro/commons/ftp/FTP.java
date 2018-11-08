@@ -1,5 +1,6 @@
 package me.saro.commons.ftp;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -15,7 +16,7 @@ import java.util.List;
  * org.apache.commons.net.ftp.FTPClient
  * com.jcraft.jsch.JSch
  */
-public interface FTP extends Cloneable {
+public interface FTP extends Closeable {
     
     public static FTP openFTP(InetAddress host, int port, String user, String pass) throws IOException {
         return new FTPS(host, port, user, pass, false);
