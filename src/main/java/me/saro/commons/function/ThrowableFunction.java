@@ -1,5 +1,7 @@
 package me.saro.commons.function;
 
+import java.util.function.Function;
+
 /**
  * Throwable <code>Function</code>
  * 
@@ -33,4 +35,21 @@ public interface ThrowableFunction<T, R> {
      * @throws Exception
      */
     R apply(T t) throws Exception;
+    
+    /**
+     * throws Exception lambda to throws RuntimeException lambda
+     * @param function
+     * @return
+     * @since
+     * 0.6
+     */
+    public static <T, R> Function<T, R> runtime(ThrowableFunction<T, R> function) {
+        return t -> {
+            try {
+                return function.apply(t);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        };
+    }
 }

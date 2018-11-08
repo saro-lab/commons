@@ -1,5 +1,7 @@
 package me.saro.commons.function;
 
+import java.util.function.BiConsumer;
+
 /**
  * Throwable <code>BiConsumer</code>
  * 
@@ -33,4 +35,21 @@ public interface ThrowableBiConsumer<T, U> {
      * @throws Exception
      */
     void accept(T t, U u) throws Exception;
+    
+    /**
+     * throws Exception lambda to throws RuntimeException lambda
+     * @param biConsumer
+     * @return
+     * @since
+     * 0.6
+     */
+    public static <T, U> BiConsumer<T, U> runtime(ThrowableBiConsumer<T, U> biConsumer) {
+        return (t, u) -> {
+            try {
+                biConsumer.accept(t, u);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        };
+    }
 }

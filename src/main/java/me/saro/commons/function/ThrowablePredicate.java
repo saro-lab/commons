@@ -1,5 +1,7 @@
 package me.saro.commons.function;
 
+import java.util.function.Predicate;
+
 /**
  * Throwable <code>Predicate</code>
  * 
@@ -30,4 +32,19 @@ public interface ThrowablePredicate<T> {
      * @throws Exception
      */
     boolean test(T t) throws Exception;
+    
+    /**
+     * throws Exception lambda to throws RuntimeException lambda
+     * @param runnable
+     * @return
+     */
+    public static <T> Predicate<T> runtime(ThrowablePredicate<T> throwablePredicate) {
+        return t -> {
+            try {
+                return throwablePredicate.test(t);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        };
+    }
 }
