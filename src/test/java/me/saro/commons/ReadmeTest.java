@@ -22,7 +22,14 @@ public class ReadmeTest {
         outClassInfo(Utils.class);
         outClassInfo(Files.class);
         outClassInfo(Valids.class);
-        outClassInfo(Lambdas.class);
+        
+//        outClassInfo(ThrowableBiConsumer.class);
+//        outClassInfo(ThrowableBiFunction.class);
+//        outClassInfo(ThrowableConsumer.class);
+//        outClassInfo(ThrowableFunction.class);
+//        outClassInfo(ThrowablePredicate.class);
+//        outClassInfo(ThrowableRunnable.class);
+//        outClassInfo(ThrowableSupplier.class);
 
         System.out.println("# INSTANCE");
         System.out.println();
