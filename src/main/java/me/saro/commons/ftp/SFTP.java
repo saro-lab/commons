@@ -140,9 +140,9 @@ public class SFTP implements FTP {
     }
 
     @Override
-    public boolean send(String saveFileName, File localFile) throws IOException {
+    public boolean send(String saveFilename, File localFile) throws IOException {
         try (InputStream input = new FileInputStream(localFile)) {
-            channel.put(input, saveFileName);
+            channel.put(input, saveFilename);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

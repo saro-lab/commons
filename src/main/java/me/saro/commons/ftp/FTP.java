@@ -93,12 +93,12 @@ public interface FTP extends Closeable {
     
     /**
      * send file
-     * @param saveServerFileName
+     * @param saveFilename
      * @param localFile
      * @return
      * @throws IOException
      */
-    public boolean send(String saveFileName, File localFile) throws IOException;
+    public boolean send(String saveFilename, File localFile) throws IOException;
     
     /**
      * send file
