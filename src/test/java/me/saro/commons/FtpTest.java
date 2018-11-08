@@ -1,6 +1,8 @@
 package me.saro.commons;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 
@@ -13,32 +15,37 @@ public class FtpTest {
           //example();
     }
 
-    public void example() {
-        // 
-        String host = "host";
-        int port = 0;
-        String user = "user";
-        String pass = "pass";
+    public void example() throws IOException {
         
-        String path1 = "";
-        String path2 = "";
+        String host = "localhost";
+        int port = 22;
+        String user = "testuser";
+        String pass = "test";
+        
+        String path1 = "C:/test/out";
+        String path2 = "C:/test/in";
+        
+        new File(path1).mkdirs();
+        new File(path2).mkdirs();
+        
+        try (FileOutputStream fos = new FileOutputStream(path1+"/test.dat")) {
+            fos.write("the test file".getBytes());
+        }
         
         try (FTP ftp = FTP.openSFTP(host, port, user, pass)) {
             
             System.out.println("==================================");
-            System.out.println("now path");
+            System.out.println("## now path");
             System.out.println(ftp.path());
-            
-            System.out.println("listDirectories");
+            System.out.println("## listDirectories");
             ftp.listDirectories().forEach(e -> System.out.println(e));
-            
-            System.out.println("listFiles");
+            System.out.println("## listFiles");
             ftp.listFiles().forEach(e -> System.out.println(e));
             System.out.println("==================================");
             
             // send file
-            ftp.send(new File(path1+"test.dat"));
-            ftp.send("test-new", new File(path1+"test.dat"));
+            ftp.send(new File(path1+"/test.dat"));
+            ftp.send("test-new", new File(path1+"/test.dat"));
             
             // mkdir
             ftp.mkdir("tmp");
@@ -48,7 +55,7 @@ public class FtpTest {
             ftp.path(pwd+"/tmp");
             
             System.out.println("==================================");
-            System.out.println("now path");
+            System.out.println("## now path");
             System.out.println(ftp.path());
             System.out.println("==================================");
             
@@ -56,19 +63,17 @@ public class FtpTest {
             ftp.path(pwd);
             
             System.out.println("==================================");
-            System.out.println("now path");
+            System.out.println("## now path");
             System.out.println(ftp.path());
-            
-            System.out.println("listDirectories");
+            System.out.println("## listDirectories");
             ftp.listDirectories().forEach(e -> System.out.println(e));
-            
-            System.out.println("listFiles");
+            System.out.println("## listFiles");
             ftp.listFiles().forEach(e -> System.out.println(e));
             System.out.println("==================================");
             
             // recv file
-            ftp.recv("test.dat", new File(path2+"test.dat"));
-            ftp.recv("tmp", new File(path2+"tmp")); // is not file, return false; not recv
+            ftp.recv("test.dat", new File(path2+"/test.dat"));
+            ftp.recv("tmp", new File(path2+"/tmp")); // is not file, return false; not recv
             
             // delete
             ftp.delete("tmp");
@@ -76,10 +81,9 @@ public class FtpTest {
             ftp.delete("test.dat");
             
             System.out.println("==================================");            
-            System.out.println("listDirectories");
+            System.out.println("## listDirectories");
             ftp.listDirectories().forEach(e -> System.out.println(e));
-            
-            System.out.println("listFiles");
+            System.out.println("## listFiles");
             ftp.listFiles().forEach(e -> System.out.println(e));
             System.out.println("==================================");
             
