@@ -68,12 +68,28 @@ public interface FTP extends Closeable {
     public List<String> listDirectories() throws IOException;
     
     /**
+     * has file in path
+     * @param filename
+     * @return
+     * @throws IOException
+     */
+    public boolean hasFile(String filename) throws IOException;
+    
+    /**
+     * has directory in path
+     * @param directoryname
+     * @return
+     * @throws IOException
+     */
+    public boolean hasDirectory(String directoryname) throws IOException;
+    
+    /**
      * remove file
      * @param file
      * @return
      * @throws IOException
      */
-    public boolean delete(String pathname) throws IOException;
+    public boolean delete(String filename) throws IOException;
     
     /**
      * send file
