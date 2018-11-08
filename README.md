@@ -114,20 +114,6 @@ Files.toBasicFileAttributes(File) : BasicFileAttributes
 Valids.isMail(String, int) : boolean
 ```
 
-
-## Lambdas
-
-#### me.saro.commons.Lambdas
-
-```
-Lambdas.runtime(ThrowableBiConsumer<T, U>) : BiConsumer<T, U>
-Lambdas.runtime(ThrowableBiFunction<T, U, R>) : BiFunction<T, U, R>
-Lambdas.runtime(ThrowableConsumer<T>) : Consumer<T>
-Lambdas.runtime(ThrowableFunction<T, R>) : Function<T, R>
-Lambdas.runtime(ThrowableRunnable) : Runnable
-Lambdas.runtime(ThrowableSupplier<R>) : Supplier<R>
-```
-
 # INSTANCE
 
 
