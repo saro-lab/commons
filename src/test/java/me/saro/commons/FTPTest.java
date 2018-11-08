@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import me.saro.commons.ftp.FTP;
 
-public class FtpTest {
+public class FTPTest {
 
     @Test
     public void test() throws Exception {
