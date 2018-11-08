@@ -12,7 +12,7 @@ public class FtpTest {
 
     @Test
     public void test() throws Exception {
-          example();
+          //example();
     }
 
     public void example() throws IOException {
