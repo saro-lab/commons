@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,6 +27,7 @@ public class FTPS implements FTP {
             ftp.login(user, pass);
             // set based control keep alive reply timeout
             ftp.setControlKeepAliveReplyTimeout(60000);
+            // use only BINARY
             ftp.setFileType(FTPClient.BINARY_FILE_TYPE);
         } catch (IOException e) {
            try {
@@ -48,12 +50,12 @@ public class FTPS implements FTP {
     
     @Override
     public boolean hasFile(String filename) throws IOException {
-        throw new IOException("not support");
+        return Optional.of(ftp.mlistFile(path() + "/" + filename)).filter(e -> e.isFile()).isPresent();
     }
     
     @Override
     public boolean hasDirectory(String directoryname) throws IOException {
-        throw new IOException("not support");
+        return Optional.of(ftp.mlistFile(path() + "/" + directoryname)).filter(e -> e.isDirectory()).isPresent();
     }
 
     @Override
@@ -68,13 +70,18 @@ public class FTPS implements FTP {
 
     @Override
     public boolean delete(String filename) throws IOException {
-        return ftp.deleteFile(filename);
+        if (hasFile(filename)) {
+            return ftp.deleteFile(filename);
+        } else if (hasDirectory(filename)) {
+            return ftp.removeDirectory(filename);
+        }
+        return false;
     }
 
     @Override
-    public boolean send(String saveFileName, File localFile) throws IOException {
+    public boolean send(String saveFilename, File localFile) throws IOException {
         try (FileInputStream fis = new FileInputStream(localFile)) {
-            return ftp.storeFile(saveFileName, fis);
+            return ftp.storeFile(saveFilename, fis);
         }
     }
 
@@ -85,8 +92,12 @@ public class FTPS implements FTP {
 
     @Override
     public boolean recv(String remoteFilename, File localFile) throws IOException {
-        try (FileOutputStream fos = new FileOutputStream(localFile)) {
-            return ftp.retrieveFile(remoteFilename, fos);
+        if (hasFile(remoteFilename)) {
+            try (FileOutputStream fos = new FileOutputStream(localFile)) {
+                return ftp.retrieveFile(remoteFilename, fos);
+            }   
+        } else {
+            return false;
         }
     }
     
