@@ -12,13 +12,13 @@ public class FtpTest {
 
     @Test
     public void test() throws Exception {
-          //example();
+          example();
     }
 
     public void example() throws IOException {
         
         String host = "localhost";
-        int port = 990; // FTP 21, FTPS 990, SFTP 22
+        int port = 21; // FTP 21, FTPS 990, SFTP 22
         String user = "testuser";
         String pass = "test";
         
@@ -32,7 +32,7 @@ public class FtpTest {
             fos.write("the test file".getBytes());
         }
         
-        try (FTP ftp = FTP.openFTPS(host, port, user, pass, true)) {
+        try (FTP ftp = FTP.openFTP(host, port, user, pass)) {
             
             System.out.println("==================================");
             System.out.println("## now path");

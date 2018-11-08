@@ -25,7 +25,7 @@ public class FTPS implements FTP {
 
     final FTPClient ftp;
     
-    public FTPS(InetAddress host, int port, String user, String pass, boolean isFTPS, boolean ignoreCertificate) throws IOException {
+    public FTPS(InetAddress host, int port, String user, String pass, boolean isFTPS) throws IOException {
         if (isFTPS) {
             ftp = new FTPSClient(true);
         } else {
