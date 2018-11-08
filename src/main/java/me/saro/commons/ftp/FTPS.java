@@ -45,6 +45,16 @@ public class FTPS implements FTP {
     public String path() throws IOException {
         return ftp.printWorkingDirectory();
     }
+    
+    @Override
+    public boolean hasFile(String filename) throws IOException {
+        throw new IOException("not support");
+    }
+    
+    @Override
+    public boolean hasDirectory(String directoryname) throws IOException {
+        throw new IOException("not support");
+    }
 
     @Override
     public List<String> listFiles() throws IOException {
@@ -57,8 +67,8 @@ public class FTPS implements FTP {
     }
 
     @Override
-    public boolean delete(String pathname) throws IOException {
-        return ftp.deleteFile(pathname);
+    public boolean delete(String filename) throws IOException {
+        return ftp.deleteFile(filename);
     }
 
     @Override
@@ -74,9 +84,9 @@ public class FTPS implements FTP {
     }
 
     @Override
-    public boolean recv(String remoteFileName, File localFile) throws IOException {
+    public boolean recv(String remoteFilename, File localFile) throws IOException {
         try (FileOutputStream fos = new FileOutputStream(localFile)) {
-            return ftp.retrieveFile(remoteFileName, fos);
+            return ftp.retrieveFile(remoteFilename, fos);
         }
     }
     

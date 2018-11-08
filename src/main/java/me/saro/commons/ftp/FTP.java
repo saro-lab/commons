@@ -115,7 +115,7 @@ public interface FTP extends Closeable {
      * @return
      * @throws IOException
      */
-    public boolean recv(String remoteFileName, File localFile) throws IOException;
+    public boolean recv(String remoteFilename, File localFile) throws IOException;
     
     /**
      * make new directory
