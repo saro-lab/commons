@@ -1,13 +1,10 @@
 package me.saro.commons.fd;
 
-import lombok.Data;
-
 /**
  * 
  * @author		PARK Yong Seo
  * @since		0.2
  */
-@Data
 public class FixedDataMapper {
     Class<?> clazz;
     String charset;
