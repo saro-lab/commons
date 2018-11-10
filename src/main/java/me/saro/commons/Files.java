@@ -36,7 +36,7 @@ public class Files {
      * @return
      * @throws IOException
      */
-    public static boolean createParentDirectoryForFile(File directoryChildFile) throws IOException {
+    private static boolean createParentDirectoryForFile(File directoryChildFile) throws IOException {
         File parent = directoryChildFile.getParentFile();
         if (parent == null) {
             throw new IOException("create file error : invalid child file for create directory : " + directoryChildFile.getAbsolutePath());
