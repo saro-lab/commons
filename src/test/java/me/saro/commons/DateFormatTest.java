@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.junit.jupiter.api.Test;
 
-public class DataFormatTest {
+public class DateFormatTest {
 
     @Test
     public void test() throws Exception {
