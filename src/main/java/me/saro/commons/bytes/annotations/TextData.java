@@ -42,7 +42,7 @@ public @interface TextData {
      * charset
      * @return
      */
-    String charset() default "UTF-8";
+    String charset();
     
     /**
      * align
