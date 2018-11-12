@@ -1,6 +1,7 @@
 package me.saro.commons.bytes;
 
 import java.nio.ByteBuffer;
+import java.util.stream.IntStream;
 
 /**
  * bytes
@@ -8,7 +9,34 @@ import java.nio.ByteBuffer;
  * @since       1.0
  */
 public class Bytes {
+    
     private Bytes() {
+    }
+    
+    // HAX convert array [00 ~ FF]
+    final static char[][] BYTE_TO_HEX_STR_MAP = IntStream.range(0, 256).boxed()
+            .map(i -> String.format("%02x", i).toCharArray()).toArray(char[][]::new);
+    
+    /**
+     * bytes to hex
+     * @param bytes
+     * @return
+     */
+    public static String toHex(byte[] bytes) {
+        StringBuilder rv = new StringBuilder((bytes.length * 2) + 10);
+        for (byte b : bytes) {
+            rv.append(BYTE_TO_HEX_STR_MAP[((int) b) & 0xff]);
+        }
+        return rv.toString();
+    }
+    
+    /**
+     * short to bytes
+     * @param val
+     * @return
+     */
+    public static byte[] toBytes(short val) {
+        return ByteBuffer.allocate(2).putShort(val).array();
     }
     
     /**
