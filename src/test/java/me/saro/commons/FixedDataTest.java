@@ -29,11 +29,12 @@ public class FixedDataTest {
         
         System.out.println(Bytes.toHex(fd.toBytes(new Abc())));
         
-//        Tests.timestamp(() -> {
-//          for (int i = 0 ; i < 10000 ; i++) {
-//              fd.toClass(aaa);
-//          }
-//        });
+        Tests.timestamp(() -> {
+          for (int i = 0 ; i < 10000 ; i++) {
+              //fd.toClass(aaa);
+              fd.toBytes(new Abc());
+          }
+        });
     }
 
     
