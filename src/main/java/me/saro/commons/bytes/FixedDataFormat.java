@@ -4,14 +4,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import me.saro.commons.Converter;
 import me.saro.commons.bytes.annotations.BinaryData;
 import me.saro.commons.bytes.annotations.FixedData;
 import me.saro.commons.bytes.annotations.TextData;
@@ -145,19 +143,19 @@ public class FixedDataFormat<T> {
                     bytes[s] = (byte)val;
                 return;
                 case "short" : case "java.lang.Short" :
-                    System.arraycopy(ByteBuffer.allocate(2).putShort((short)val).array(), 0, bytes, s, 2);
+                    System.arraycopy(Bytes.toBytes((short)val), 0, bytes, s, 2);
                 return;
                 case "int" : case "java.lang.Integer" :
-                    System.arraycopy(ByteBuffer.allocate(4).putInt((int)val).array(), 0, bytes, s, 4);
+                    System.arraycopy(Bytes.toBytes((int)val), 0, bytes, s, 4);
                 return;
                 case "long" : case "java.lang.Long" : 
-                    System.arraycopy(ByteBuffer.allocate(8).putLong((long)val).array(), 0, bytes, s, 8);
+                    System.arraycopy(Bytes.toBytes((long)val), 0, bytes, s, 8);
                 return;
                 case "float" : case "java.lang.Float" : 
-                    System.arraycopy(ByteBuffer.allocate(4).putFloat((float)val).array(), 0, bytes, s, 4);
+                    System.arraycopy(Bytes.toBytes((float)val), 0, bytes, s, 4);
                 return;
                 case "double" : case "java.lang.Double" : 
-                    System.arraycopy(ByteBuffer.allocate(8).putDouble((double)val).array(), 0, bytes, s, 8);
+                    System.arraycopy(Bytes.toBytes((double)val), 0, bytes, s, 8);
                 return;
                 default : 
                     throw new IllegalArgumentException("type ["+type+"] does not support");
@@ -212,16 +210,16 @@ public class FixedDataFormat<T> {
                     field.setShort(obj, Bytes.toShort(bytes, s));
                 return;
                 case "int" : case "java.lang.Integer" :
-                    field.setInt(obj, ByteBuffer.wrap(bytes, s, 4).getInt());
+                    field.setInt(obj, Bytes.toInt(bytes, s));
                 return;
                 case "long" : case "java.lang.Long" : 
-                    field.setLong(obj, ByteBuffer.wrap(bytes, s, 4).getLong());
+                    field.setLong(obj, Bytes.toLong(bytes, s));
                 return;
                 case "float" : case "java.lang.Float" : 
-                    field.setFloat(obj, ByteBuffer.wrap(bytes, s, 4).getFloat());
+                    field.setFloat(obj, Bytes.toFloat(bytes, s));
                 return;
                 case "double" : case "java.lang.Double" : 
-                    field.setDouble(obj, ByteBuffer.wrap(bytes, s, 4).getDouble());
+                    field.setDouble(obj, Bytes.toDouble(bytes, s));
                 return;
                 default : 
                     throw new IllegalArgumentException("type ["+type+"] does not support");
