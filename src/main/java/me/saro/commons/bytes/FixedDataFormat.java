@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import me.saro.commons.Converter;
 import me.saro.commons.bytes.annotations.BinaryData;
 import me.saro.commons.bytes.annotations.FixedData;
 import me.saro.commons.bytes.annotations.TextData;
@@ -138,25 +139,25 @@ public class FixedDataFormat<T> {
             
             switch (type) {
                 case "[B" : case "[Ljava.lang.Byte;" :
-                    System.arraycopy(val, s, bytes, 0, arrayLength);
+                    System.arraycopy(val, 0, bytes, s, arrayLength);
                 return;
                 case "byte" : case "java.lang.Byte" :
                     bytes[s] = (byte)val;
                 return;
                 case "short" : case "java.lang.Short" :
-                    ///field.setShort(obj, ByteBuffer.wrap(bytes, s, 2).getShort());
+                    System.arraycopy(ByteBuffer.allocate(2).putShort((short)val).array(), 0, bytes, s, 2);
                 return;
                 case "int" : case "java.lang.Integer" :
-                    //field.setInt(obj, ByteBuffer.wrap(bytes, s, 4).getInt());
+                    System.arraycopy(ByteBuffer.allocate(4).putInt((int)val).array(), 0, bytes, s, 4);
                 return;
                 case "long" : case "java.lang.Long" : 
-                    //field.setLong(obj, ByteBuffer.wrap(bytes, s, 4).getLong());
+                    System.arraycopy(ByteBuffer.allocate(8).putLong((long)val).array(), 0, bytes, s, 8);
                 return;
                 case "float" : case "java.lang.Float" : 
-                    //field.setFloat(obj, ByteBuffer.wrap(bytes, s, 4).getFloat());
+                    System.arraycopy(ByteBuffer.allocate(4).putFloat((float)val).array(), 0, bytes, s, 4);
                 return;
                 case "double" : case "java.lang.Double" : 
-                    //field.setDouble(obj, ByteBuffer.wrap(bytes, s, 4).getDouble());
+                    System.arraycopy(ByteBuffer.allocate(8).putDouble((double)val).array(), 0, bytes, s, 8);
                 return;
                 default : 
                     throw new IllegalArgumentException("type ["+type+"] does not support");
@@ -208,7 +209,7 @@ public class FixedDataFormat<T> {
                     field.setByte(obj, bytes[s]);
                 return;
                 case "short" : case "java.lang.Short" :
-                    field.setShort(obj, ByteBuffer.wrap(bytes, s, 2).getShort());
+                    field.setShort(obj, Bytes.toShort(bytes, s));
                 return;
                 case "int" : case "java.lang.Integer" :
                     field.setInt(obj, ByteBuffer.wrap(bytes, s, 4).getInt());
