@@ -177,7 +177,46 @@ public class FixedDataFormat<T> {
         boolean unsigned = da.unsigned();
         String charset = "".equals(da.charset()) ? fixedData.charset() : da.charset();
         
-        
+        toBytesOrders.add((clazz, bytes, offset) -> {
+            int s = offset + dfOffset;
+            Object val = field.get(clazz);
+            String str;
+            
+            if (val == null) {
+                return;
+            }
+            
+            // need to unsigned
+            convert : switch (type) {
+                case "java.lang.String" :
+                    str = (String)val;
+                break convert;
+                case "byte" : case "java.lang.Byte" :
+                    str = Byte.toString((byte)val);
+                break convert;
+                case "short" : case "java.lang.Short" :
+                    str = Short.toString((short)val);
+                break convert;
+                case "int" : case "java.lang.Integer" :
+                    str = Integer.toString((int)val);
+                break convert;
+                case "long" : case "java.lang.Long" : 
+                    str = Long.toString((long)val);
+                break convert;
+                case "float" : case "java.lang.Float" : 
+                    str = Float.toString((float)val);
+                break convert;
+                case "double" : case "java.lang.Double" : 
+                    str = Double.toString((double)val);
+                break convert;
+                default : 
+                    throw new IllegalArgumentException("type ["+type+"] does not support");
+            }
+            
+            if (str.length() > dfLength) {
+                throw new IllegalArgumentException("test - out of index");
+            }
+        });
     }
     
     /**
