@@ -12,8 +12,9 @@ import org.apache.poi.ss.usermodel.Workbook;
 /**
  * excel
  * @author      PARK Yong Seo
- * @since       0.6
+ * @since       not yet
  */
+@Deprecated
 public class Excel {
     
     final Workbook book;
