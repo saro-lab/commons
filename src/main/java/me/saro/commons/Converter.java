@@ -32,6 +32,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import me.saro.commons.bytes.Bytes;
 import me.saro.commons.converter.HashAlgorithm;
 import me.saro.commons.converter.NamingConvention;
 import me.saro.commons.function.ThrowableBiFunction;
@@ -227,6 +228,20 @@ public class Converter {
      */
     public static byte[] toHash(HashAlgorithm hashAlgorithm, String text) {
         return toHash(hashAlgorithm, text.getBytes(Charset.forName("UTF-8")));
+    }
+    
+    /**
+     * 
+     * @param hashAlgorithm
+     * @param text
+     * @return
+     */
+    public static String toHashHex(HashAlgorithm hashAlgorithm, String text, String charset) {
+        return Bytes.toHex(toHash(hashAlgorithm, text.getBytes(Charset.forName("UTF-8"))));
+    }
+    
+    public static String toHashHex(HashAlgorithm hashAlgorithm, String text) {
+        return Bytes.toHex(toHash(hashAlgorithm, text.getBytes(Charset.forName("UTF-8"))));
     }
 
     /**
