@@ -7,7 +7,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -26,7 +25,6 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -57,10 +55,6 @@ public class Converter {
     final static ObjectMapper JSON_MAPPER = new ObjectMapper();
     final static TypeReference<Map<String, Object>> JSON_MAP = new TypeReference<Map<String,Object>>() {};
     final static TypeReference<List<Map<String, Object>>> JSON_MAP_LIST = new TypeReference<List<Map<String,Object>>>() {};
-
-    // HAX convert array [00 ~ FF]
-    final static char[][] BYTE_TO_HEX_STR_MAP = IntStream.range(0, 256).boxed()
-            .map(i -> String.format("%02x", i).toCharArray()).toArray(char[][]::new);
 
     /**
      * split csv line
@@ -233,19 +227,6 @@ public class Converter {
      */
     public static byte[] toHash(HashAlgorithm hashAlgorithm, String text) {
         return toHash(hashAlgorithm, text.getBytes(Charset.forName("UTF-8")));
-    }
-
-    /**
-     * bytes to hex
-     * @param bytes
-     * @return
-     */
-    public static String toHex(byte[] bytes) {
-        StringBuilder rv = new StringBuilder((bytes.length * 2) + 10);
-        for (byte b : bytes) {
-            rv.append(BYTE_TO_HEX_STR_MAP[((int) b) & 0xff]);
-        }
-        return rv.toString();
     }
 
     /**
@@ -565,14 +546,5 @@ public class Converter {
      */
     public static String namingConvention(NamingConvention fromNamingConvention, NamingConvention toNamingConvention, String naming) {
         return namingConvention(toNamingConvention, namingConvention(fromNamingConvention, naming));
-    }
-    
-    /**
-     * short to bytes
-     * @param val
-     * @return
-     */
-    public static byte[] toBytes(short val) {
-        return ByteBuffer.allocate(2).putShort(val).array();
     }
 }
