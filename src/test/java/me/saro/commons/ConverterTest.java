@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
+import me.saro.commons.bytes.Bytes;
 import me.saro.commons.converter.HashAlgorithm;
 import me.saro.commons.converter.NamingConvention;
 
@@ -21,7 +22,7 @@ public class ConverterTest {
 
         assertEquals(5, Converter.splitCsvLine("aaa,bbb,ccc,\"ddd,eee\",fff").length);
 
-        assertEquals("00ff", Converter.toHex(new byte[] {0, -1}));
+        assertEquals("00ff", Bytes.toHex(new byte[] {0, -1}));
 
         assertEquals(
                 "a1b2c3",
@@ -33,7 +34,7 @@ public class ConverterTest {
     @Test
     public void toHash() {
         // Converter.HASH_ALGORITHM_SHA3* minimum java version is 10 
-        assertEquals("2ce5bebfa51bf5b222a5c8977d3c1d37875703d3", Converter.toHex(Converter.toHash(HashAlgorithm.SHA1, "SARO")));
+        assertEquals("2ce5bebfa51bf5b222a5c8977d3c1d37875703d3", Bytes.toHex(Converter.toHash(HashAlgorithm.SHA1, "SARO")));
     }
 
     @Test
