@@ -25,7 +25,6 @@ public class ReadmeTest {
         outClassInfo(Utils.class);
         outClassInfo(Files.class);
         outClassInfo(Valids.class);
-        outClassInfo(FixedDataFormat.class);
         outClassInfo(Tests.class);
         
 //        outClassInfo(ThrowableBiConsumer.class);
@@ -39,6 +38,7 @@ public class ReadmeTest {
         System.out.println("# INSTANCE");
         System.out.println();
 
+        outClassInfo(FixedDataFormat.class);
         outClassInfo(Web.class);
         outClassInfo(FTP.class);
         outClassInfo(DateFormat.class);
