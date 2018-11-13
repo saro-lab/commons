@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -24,15 +25,16 @@ import me.saro.commons.function.ThrowableSupplier;
  */
 public class FixedDataFormat<T> {
     
-    Class<T> clazz;
-    FixedData fixedData;
-    Supplier<T> newInstance;
-    List<FixedDataBytesToClass> toClassOrders = new ArrayList<>();
-    List<FixedDataClassToBytes> toBytesOrders = new ArrayList<>();
+    final Class<T> clazz;
+    final FixedData fixedData;
+    final Supplier<T> newInstance;
+    final List<FixedDataBytesToClass> toClassOrders = Collections.synchronizedList(new ArrayList<>());
+    final List<FixedDataClassToBytes> toBytesOrders = Collections.synchronizedList(new ArrayList<>());
     
     // private
     private FixedDataFormat(Class<T> clazz, Supplier<T> newInstance) {
         this.clazz = clazz;
+        fixedData = clazz.getDeclaredAnnotation(FixedData.class);
         this.newInstance = newInstance;
     }
     
@@ -94,7 +96,6 @@ public class FixedDataFormat<T> {
      */
     private FixedDataFormat<T> init() {
         
-        fixedData = clazz.getDeclaredAnnotation(FixedData.class);
         if (fixedData == null) {
             throw new IllegalArgumentException(clazz.getName() + " need to Declared @FixedData Annotation");
         }
@@ -128,6 +129,7 @@ public class FixedDataFormat<T> {
         String type = field.getType().getName();
         
         toBytesOrders.add((clazz, bytes, offset) -> {
+            
             int s = offset + dfOffset;
             Object val = field.get(clazz);
             
