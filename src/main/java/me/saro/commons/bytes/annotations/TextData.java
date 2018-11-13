@@ -33,13 +33,21 @@ public @interface TextData {
     char fill() default ' ';
     
     /**
-     * is unsigned number
+     * is unsigned of the number type<br>
+     * support : byte, short, int, long
      * @return
      */
     boolean unsigned() default false;
     
     /**
-     * charset
+     * radix of the number type<br>
+     * support : byte, short, int, long
+     */
+    int radix() default 10;
+    
+    /**
+     * charset<br>
+     * support only String
      * @return
      */
     String charset() default "";
