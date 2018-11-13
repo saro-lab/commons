@@ -176,6 +176,7 @@ public class FixedDataFormat<T> {
         String type = field.getType().getName();
         boolean unsigned = da.unsigned();
         String charset = "".equals(da.charset()) ? fixedData.charset() : da.charset();
+        int radix = da.radix();
         
         toBytesOrders.add((clazz, bytes, offset) -> {
             int s = offset + dfOffset;
@@ -192,16 +193,12 @@ public class FixedDataFormat<T> {
                     str = (String)val;
                 break convert;
                 case "byte" : case "java.lang.Byte" :
-                    str = Byte.toString((byte)val);
-                break convert;
                 case "short" : case "java.lang.Short" :
-                    str = Short.toString((short)val);
-                break convert;
                 case "int" : case "java.lang.Integer" :
-                    str = Integer.toString((int)val);
+                    str = unsigned ? Integer.toUnsignedString((int)val, radix) : Integer.toString((int)val, radix);
                 break convert;
                 case "long" : case "java.lang.Long" : 
-                    str = Long.toString((long)val);
+                    str = unsigned ? Long.toUnsignedString((long)val, radix) : Long.toString((long)val, radix);
                 break convert;
                 case "float" : case "java.lang.Float" : 
                     str = Float.toString((float)val);
@@ -214,8 +211,10 @@ public class FixedDataFormat<T> {
             }
             
             if (str.length() > dfLength) {
-                throw new IllegalArgumentException("test - out of index");
+                throw new IllegalArgumentException("["+str+"] is out of range of "+field.getName());
             }
+            
+            
         });
     }
     
@@ -279,6 +278,7 @@ public class FixedDataFormat<T> {
         String type = field.getType().getName();
         boolean unsigned = da.unsigned();
         String charset = "".equals(da.charset()) ? fixedData.charset() : da.charset();
+        int radix = da.radix();
         
         if (dfLength < 1) {
             throw new IllegalArgumentException("length must over then 1");
@@ -314,16 +314,16 @@ public class FixedDataFormat<T> {
                 try {
                     switch (type) {
                         case "byte" : case "java.lang.Byte" :
-                            field.set(obj, (byte)Integer.parseInt(val));
+                            field.set(obj, (byte)Integer.parseInt(val, radix));
                         return;
                         case "short" : case "java.lang.Short" :
-                            field.set(obj, (short)Integer.parseInt(val));
+                            field.set(obj, (short)Integer.parseInt(val, radix));
                         return;
                         case "int" : case "java.lang.Integer" :
-                            field.set(obj, unsigned ? (int)Long.parseLong(val) : Integer.parseInt(val));
+                            field.set(obj, unsigned ? (int)Long.parseLong(val, radix) : Integer.parseInt(val, radix));
                         return;
                         case "long" : case "java.lang.Long" : 
-                            field.set(obj, unsigned ? Long.parseUnsignedLong(val) : Long.parseLong(val));
+                            field.set(obj, unsigned ? Long.parseUnsignedLong(val, radix) : Long.parseLong(val, radix));
                         return;
                         case "float" : case "java.lang.Float" : 
                             field.set(obj, Float.parseFloat(val));
