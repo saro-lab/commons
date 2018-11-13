@@ -255,22 +255,22 @@ public class FixedDataFormat<T> {
                     field.set(obj, Arrays.copyOfRange(bytes, s, s + arrayLength));
                 return;
                 case "byte" : case "java.lang.Byte" :
-                    field.setByte(obj, bytes[s]);
+                    field.set(obj, bytes[s]);
                 return;
                 case "short" : case "java.lang.Short" :
-                    field.setShort(obj, Bytes.toShort(bytes, s));
+                    field.set(obj, Bytes.toShort(bytes, s));
                 return;
                 case "int" : case "java.lang.Integer" :
-                    field.setInt(obj, Bytes.toInt(bytes, s));
+                    field.set(obj, Bytes.toInt(bytes, s));
                 return;
                 case "long" : case "java.lang.Long" : 
-                    field.setLong(obj, Bytes.toLong(bytes, s));
+                    field.set(obj, Bytes.toLong(bytes, s));
                 return;
                 case "float" : case "java.lang.Float" : 
-                    field.setFloat(obj, Bytes.toFloat(bytes, s));
+                    field.set(obj, Bytes.toFloat(bytes, s));
                 return;
                 case "double" : case "java.lang.Double" : 
-                    field.setDouble(obj, Bytes.toDouble(bytes, s));
+                    field.set(obj, Bytes.toDouble(bytes, s));
                 return;
                 default : 
                     throw new IllegalArgumentException("type ["+type+"] does not support");
