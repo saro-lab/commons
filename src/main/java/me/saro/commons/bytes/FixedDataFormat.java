@@ -67,21 +67,21 @@ public class FixedDataFormat<T> {
         return toClass(bytes, 0);
     }
     
-    public void bindBytes(byte[] outputBytes, int offset, T clazz) {
+    public void bindBytes(byte[] outputBytes, int offset, T obj) {
         Arrays.fill(outputBytes, offset, offset + fixedData.size(), fixedData.fill());
-        toBytesOrders.parallelStream().forEach(ThrowableConsumer.runtime(e -> e.order(clazz, outputBytes, offset)));
+        toBytesOrders.parallelStream().forEach(ThrowableConsumer.runtime(e -> e.order(obj, outputBytes, offset)));
     }
     
-    public void bindBytes(OutputStream out, T clazz) throws IOException {
+    public void bindBytes(OutputStream out, T obj) throws IOException {
         byte[] buf = new byte[fixedData.size()];
-        bindBytes(buf, 0, clazz);
+        bindBytes(buf, 0, obj);
         out.write(buf);
     }
     
-    public byte[] toBytes(T clazz) {
+    public byte[] toBytes(T obj) {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bindBytes(baos, clazz);
+            bindBytes(baos, obj);
             return baos.toByteArray();
         } catch (IOException e) {
             throw new RuntimeException(e);
