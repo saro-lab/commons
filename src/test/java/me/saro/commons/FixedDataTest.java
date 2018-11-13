@@ -2,6 +2,8 @@ package me.saro.commons;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.UnsupportedEncodingException;
+
 import org.junit.jupiter.api.Test;
 
 import lombok.AllArgsConstructor;
@@ -42,31 +44,36 @@ public class FixedDataTest {
     }
     
     @Test
-    public void text() {
-        try {
-            FixedDataFormat<TextStruct> format = FixedDataFormat.create(TextStruct.class, TextStruct::new);
-            
-            TextStruct ts = new TextStruct((byte)-1/* -1 == 255 */, (short)-321, 32123, -21L, 12.3F, -342.5D, "가나다", "abc");
-            
-            byte[] bytes = format.toBytes(ts);
-            assertEquals(bytes.length, 100);
-            
-            String text = new String(bytes, "UTF-8");
-            System.out.println(text);
-            assertEquals(text, "255-321   0000007d7b-21                 12.3                -342.5              가나다        abc");
-            
-            TextStruct ts2 = format.toClass(text.getBytes("UTF-8"));
-            System.out.println(ts2);
-            assertEquals(ts, ts2);
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void text() throws UnsupportedEncodingException {
+        FixedDataFormat<TextStruct> format = FixedDataFormat.create(TextStruct.class, TextStruct::new);
+        
+        TextStruct ts = new TextStruct((byte)-1/* -1 == 255 */, (short)-321, 32123, -21L, 12.3F, -342.5D, "가나다", "abc");
+        
+        byte[] bytes = format.toBytes(ts);
+        assertEquals(bytes.length, 100);
+        
+        String text = new String(bytes, "UTF-8");
+        System.out.println(text);
+        assertEquals(text, "255-321   0000007d7b-21                 12.3                -342.5              가나다        abc");
+        
+        TextStruct ts2 = format.toClass(text.getBytes("UTF-8"));
+        System.out.println(ts2);
+        assertEquals(ts, ts2);
     }
     
     @Test
     public void mixed() {
-       
+        FixedDataFormat<MixedStruct> format = FixedDataFormat.create(MixedStruct.class, MixedStruct::new);
+        MixedStruct ms = new MixedStruct("Yong Seo", "PARK", 1);
+        
+        byte[] bytes = format.toBytes(ms);
+        
+        assertEquals(bytes.length, 34);
+        
+        System.out.println(Bytes.toHex(bytes));
+        assertEquals(Bytes.toHex(bytes), "596f6e672053656f202020202020205041524b202020202020202020202000000001");
+        
+        assertEquals(ms, format.toClass(bytes, 0));
     }
     
     @Data
@@ -126,5 +133,21 @@ public class FixedDataTest {
         
         @TextData(offset=90, length=10, align=TextDataAlign.right)
         String rightText;
+    }
+    
+    @Data
+    @FixedData(size=34, charset="UTF-8")
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MixedStruct {
+        
+        @TextData(offset=0, length=15)
+        String firstName;
+        
+        @TextData(offset=15, length=15)
+        String lastName;
+        
+        @BinaryData(offset=30)
+        int memberId;
     }
 }
