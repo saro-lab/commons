@@ -171,7 +171,6 @@ public class FixedDataFormat<T> {
     private void bindToBytesOrder(Field field, TextData da) {
         int dfOffset = da.offset();
         int dfLength = da.length();
-        char dfFill = da.fill();
         boolean isLeft = da.align() == TextDataAlign.left;
         String type = field.getType().getName();
         boolean unsigned = da.unsigned();
@@ -180,41 +179,55 @@ public class FixedDataFormat<T> {
         
         toBytesOrders.add((clazz, bytes, offset) -> {
             int s = offset + dfOffset;
+            byte fill = da.fill();
             Object val = field.get(clazz);
-            String str;
+            byte[] vbytes;
             
             if (val == null) {
+                int e = s + dfLength;
+                for (; s < e ; s++) {
+                    bytes[s] = fill;
+                }
                 return;
             }
             
-            // need to unsigned
             convert : switch (type) {
                 case "java.lang.String" :
-                    str = (String)val;
+                    vbytes = ((String)val).getBytes(charset);
                 break convert;
                 case "byte" : case "java.lang.Byte" :
                 case "short" : case "java.lang.Short" :
                 case "int" : case "java.lang.Integer" :
-                    str = unsigned ? Integer.toUnsignedString((int)val, radix) : Integer.toString((int)val, radix);
+                    vbytes = (unsigned ? Integer.toUnsignedString((int)val, radix) : Integer.toString((int)val, radix)).getBytes();
                 break convert;
                 case "long" : case "java.lang.Long" : 
-                    str = unsigned ? Long.toUnsignedString((long)val, radix) : Long.toString((long)val, radix);
+                    vbytes = (unsigned ? Long.toUnsignedString((long)val, radix) : Long.toString((long)val, radix)).getBytes();
                 break convert;
                 case "float" : case "java.lang.Float" : 
-                    str = Float.toString((float)val);
+                    vbytes = (Float.toString((float)val)).getBytes();
                 break convert;
                 case "double" : case "java.lang.Double" : 
-                    str = Double.toString((double)val);
+                    vbytes = (Double.toString((double)val)).getBytes();
                 break convert;
                 default : 
                     throw new IllegalArgumentException("type ["+type+"] does not support");
             }
             
-            if (str.length() > dfLength) {
-                throw new IllegalArgumentException("["+str+"] is out of range of "+field.getName());
+            int vLen = vbytes.length;
+            if (vLen > dfLength) {
+                throw new IllegalArgumentException("["+new String(vbytes, charset)+"] is out of range of "+field.getName());
+            } else if (isLeft) {
+                System.arraycopy(vbytes, 0, bytes, s, vLen);
+                for (int e = s + dfLength, i = (s + vLen) ; i < e ; i++) {
+                    bytes[i] = fill;
+                }
+            } else {
+                int e = s + vLen;
+                for (; s < e ; s++) {
+                    bytes[s] = fill;
+                }
+                System.arraycopy(vbytes, 0, bytes, s, dfLength - vLen);
             }
-            
-            
         });
     }
     
@@ -273,7 +286,7 @@ public class FixedDataFormat<T> {
     private void bindToClassOrder(Field field, TextData da) {
         int dfOffset = da.offset();
         int dfLength = da.length();
-        char dfFill = da.fill();
+        byte dfFill = da.fill();
         boolean isLeft = da.align() == TextDataAlign.left;
         String type = field.getType().getName();
         boolean unsigned = da.unsigned();
@@ -287,7 +300,7 @@ public class FixedDataFormat<T> {
         toClassOrders.add((obj, bytes, offset) -> {
             int s = offset + dfOffset;
             int e = s + dfLength;
-            char fill = dfFill;
+            byte fill = dfFill;
             String val;
             stop : if (isLeft) {
                 while (s < e) {
