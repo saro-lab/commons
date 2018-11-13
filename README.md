@@ -139,6 +139,17 @@ Valids.isMail(String, int) : boolean
 ```
 
 
+## Tests
+
+#### me.saro.commons.Tests
+
+```
+Tests.timestamp(ThrowableRunnable) : long
+```
+
+# INSTANCE
+
+
 ## FixedDataFormat
 
 #### me.saro.commons.bytes.FixedDataFormat
@@ -152,17 +163,6 @@ toBytes(T) : byte[]
 toClass(byte[]) : T
 toClass(byte[], int) : T
 ```
-
-
-## Tests
-
-#### me.saro.commons.Tests
-
-```
-Tests.timestamp(ThrowableRunnable) : long
-```
-
-# INSTANCE
 
 
 ## Web
