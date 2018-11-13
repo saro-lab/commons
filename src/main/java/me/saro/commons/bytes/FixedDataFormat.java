@@ -241,8 +241,6 @@ public class FixedDataFormat<T> {
         int arrayLength = da.arrayLength();
         String type = field.getType().getName();
         
-        System.out.println("타입확인" + type);
-        
         if (type.startsWith("[") && arrayLength < 1) {
             throw new IllegalArgumentException("arrayLength must over then 1");
         }
