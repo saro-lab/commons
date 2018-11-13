@@ -198,7 +198,11 @@ public class FixedDataFormat<T> {
                     vbytes = ((String)val).getBytes(charset);
                 break convert;
                 case "byte" : case "java.lang.Byte" :
+                    vbytes = Integer.toString(unsigned ? Byte.toUnsignedInt((byte)val) : (int)(byte)val, radix).getBytes();
+                break convert;
                 case "short" : case "java.lang.Short" :
+                    vbytes = Integer.toString(unsigned ? Short.toUnsignedInt((short)val) : (int)(short)val, radix).getBytes();
+                break convert;
                 case "int" : case "java.lang.Integer" :
                     vbytes = (unsigned ? Integer.toUnsignedString((int)val, radix) : Integer.toString((int)val, radix)).getBytes();
                 break convert;
@@ -224,11 +228,11 @@ public class FixedDataFormat<T> {
                     bytes[i] = fill;
                 }
             } else {
-                int e = s + vLen;
+                int e = s + (dfLength - vLen);
                 for (; s < e ; s++) {
                     bytes[s] = fill;
                 }
-                System.arraycopy(vbytes, 0, bytes, s, dfLength - vLen);
+                System.arraycopy(vbytes, 0, bytes, s, vLen);
             }
         });
     }
