@@ -30,7 +30,7 @@ public @interface TextData {
      * base fill
      * @return
      */
-    char fill() default ' ';
+    byte fill() default ' ';
     
     /**
      * is unsigned of the number type<br>
