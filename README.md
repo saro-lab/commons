@@ -11,14 +11,14 @@
 <dependency>
   <groupId>me.saro</groupId>
   <artifactId>commons</artifactId>
-  <version>0.5</version>
+  <version>1.0</version>
 </dependency>
 ```
 
 ## gradle
 
 ```
-compile 'me.saro:commons:0.5'
+compile 'me.saro:commons:1.0'
 ```
 
 ## repository
@@ -51,7 +51,8 @@ Converter.toClassByJson(String, TypeReference<T>) : T
 Converter.toHash(HashAlgorithm, String) : byte[]
 Converter.toHash(HashAlgorithm, String, String) : byte[]
 Converter.toHash(HashAlgorithm, byte[]) : byte[]
-Converter.toHex(byte[]) : String
+Converter.toHashHex(HashAlgorithm, String) : String
+Converter.toHashHex(HashAlgorithm, String, String) : String
 Converter.toJson(Object) : String
 Converter.toList(Enumeration<T>) : List<T>
 Converter.toList(Iterable<T>) : List<T>
@@ -69,6 +70,30 @@ Converter.toString(Exception) : String
 Converter.toString(File, String) : String
 Converter.toString(InputStream, String) : String
 Converter.toStringNotClose(InputStream, String) : String
+```
+
+
+## Bytes
+
+#### me.saro.commons.bytes.Bytes
+
+```
+Bytes.toBytes(double) : byte[]
+Bytes.toBytes(float) : byte[]
+Bytes.toBytes(int) : byte[]
+Bytes.toBytes(long) : byte[]
+Bytes.toBytes(short) : byte[]
+Bytes.toDouble(byte[]) : double
+Bytes.toDouble(byte[], int) : double
+Bytes.toFloat(byte[]) : float
+Bytes.toFloat(byte[], int) : float
+Bytes.toHex(byte[]) : String
+Bytes.toInt(byte[]) : int
+Bytes.toInt(byte[], int) : int
+Bytes.toLong(byte[]) : long
+Bytes.toLong(byte[], int) : long
+Bytes.toShort(byte[]) : short
+Bytes.toShort(byte[], int) : short
 ```
 
 
@@ -99,7 +124,6 @@ Utils.random(long, long) : long
 ```
 Files.attributesFilter(ThrowablePredicate<BasicFileAttributes>) : Predicate<File>
 Files.createFile(File, boolean, InputStream) 
-Files.createParentDirectoryForFile(File) : boolean
 Files.streamFiles(File) : Stream<File>
 Files.streamFiles(String) : Stream<File>
 Files.toBasicFileAttributes(File) : BasicFileAttributes
@@ -112,6 +136,30 @@ Files.toBasicFileAttributes(File) : BasicFileAttributes
 
 ```
 Valids.isMail(String, int) : boolean
+```
+
+
+## FixedDataFormat
+
+#### me.saro.commons.bytes.FixedDataFormat
+
+```
+FixedDataFormat.create(Class<T>) : FixedDataFormat<T>
+FixedDataFormat.create(Class<T>, Supplier<T>) : FixedDataFormat<T>
+bindBytes(OutputStream, T) 
+bindBytes(byte[], int, T) 
+toBytes(T) : byte[]
+toClass(byte[]) : T
+toClass(byte[], int) : T
+```
+
+
+## Tests
+
+#### me.saro.commons.Tests
+
+```
+Tests.timestamp(ThrowableRunnable) : long
 ```
 
 # INSTANCE
