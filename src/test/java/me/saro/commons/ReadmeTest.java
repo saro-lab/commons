@@ -7,6 +7,8 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
+import me.saro.commons.bytes.Bytes;
+import me.saro.commons.bytes.FixedDataFormat;
 import me.saro.commons.ftp.FTP;
 import me.saro.commons.web.Web;
 public class ReadmeTest {
@@ -19,9 +21,12 @@ public class ReadmeTest {
         System.out.println();
 
         outClassInfo(Converter.class);
+        outClassInfo(Bytes.class);
         outClassInfo(Utils.class);
         outClassInfo(Files.class);
         outClassInfo(Valids.class);
+        outClassInfo(FixedDataFormat.class);
+        outClassInfo(Tests.class);
         
 //        outClassInfo(ThrowableBiConsumer.class);
 //        outClassInfo(ThrowableBiFunction.class);
