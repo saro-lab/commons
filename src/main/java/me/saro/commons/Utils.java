@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.List;
+import java.util.TimerTask;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -12,7 +13,9 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import lombok.SneakyThrows;
 import me.saro.commons.function.StreamReadConsumer;
+import me.saro.commons.function.ThrowableConsumer;
 import me.saro.commons.function.ThrowableFunction;
 import me.saro.commons.function.ThrowableTriConsumer;
 import me.saro.commons.web.Web;
@@ -267,5 +270,19 @@ public class Utils {
             } catch (Exception e) {
             }
         }
+    }
+    
+    /**
+     * timertask
+     * @param delay
+     * @param task
+     * @return
+     */
+    public static TimerTask timerTask(long delay, ThrowableConsumer<TimerTask> task) {
+        return new TimerTask() {
+            @Override @SneakyThrows public void run() {
+                task.accept(this);
+            }
+        };
     }
 }
