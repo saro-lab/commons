@@ -52,4 +52,21 @@ public interface ThrowableBiConsumer<T, U> {
             }
         };
     }
+    
+    /**
+     * ignore exception<br>
+     * this method recommend only special situation 
+     * @param biConsumer
+     * @return
+     * @since
+     * 1.1
+     */
+    public static <T, U> BiConsumer<T, U> ignore(ThrowableBiConsumer<T, U> biConsumer) {
+        return (t, u) -> {
+            try {
+                biConsumer.accept(t, u);
+            } catch (Exception e) {
+            }
+        };
+    }
 }
