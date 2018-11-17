@@ -39,4 +39,21 @@ public interface ThrowableRunnable {
             }
         };
     }
+    
+    /**
+     * ignore exception<br>
+     * this method recommend only special situation 
+     * @param runnable
+     * @return
+     * @since
+     * 1.1
+     */
+    public static Runnable ignore(ThrowableRunnable runnable) {
+        return () -> {
+            try {
+                runnable.run();
+            } catch (Exception e) {
+            }
+        };
+    }
 }

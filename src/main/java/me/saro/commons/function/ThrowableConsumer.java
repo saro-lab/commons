@@ -46,4 +46,21 @@ public interface ThrowableConsumer<T> {
             }
         };
     }
+    
+    /**
+     * ignore exception<br>
+     * this method recommend only special situation 
+     * @param consumer
+     * @return
+     * @since
+     * 1.1
+     */
+    public static <T> Consumer<T> ignore(ThrowableConsumer<T> consumer) {
+        return t -> {
+            try {
+                consumer.accept(t);
+            } catch (Exception e) {
+            }
+        };
+    }
 }
