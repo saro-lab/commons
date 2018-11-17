@@ -274,11 +274,10 @@ public class Utils {
     
     /**
      * timertask
-     * @param delay
      * @param task
      * @return
      */
-    public static TimerTask timerTask(long delay, ThrowableConsumer<TimerTask> task) {
+    public static TimerTask timerTask(ThrowableConsumer<TimerTask> task) {
         return new TimerTask() {
             @Override @SneakyThrows public void run() {
                 task.accept(this);
