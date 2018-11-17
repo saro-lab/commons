@@ -1,5 +1,6 @@
 package me.saro.commons;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -239,5 +240,32 @@ public class Utils {
         List<R> rv = executeAllThreads(executorService, list, map);
         executorService.shutdown();
         return rv;
+    }
+    
+    /**
+     * forced close without exception 
+     * @param closeable
+     */
+    public static void kill(Closeable closeable) {
+        if (closeable != null) {
+            try (Closeable tmp = closeable) {
+            } catch (Exception e) {
+            }
+        }
+    }
+    
+    /**
+     * kill thread without exception 
+     * @param thread
+     */
+    public static void kill(Thread thread) {
+        if (thread != null) {
+            try {
+                if (thread.isInterrupted()) {
+                    thread.interrupt();
+                }
+            } catch (Exception e) {
+            }
+        }
     }
 }
