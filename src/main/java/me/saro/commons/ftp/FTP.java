@@ -128,7 +128,9 @@ public interface FTP extends Closeable {
      * @return
      * @throws IOException
      */
-    public boolean send(File localFile) throws IOException;
+    default public boolean send(File localFile) throws IOException {
+        return send(localFile.getName(), localFile);
+    }
 
     /**
      * recv file

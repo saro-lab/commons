@@ -150,11 +150,6 @@ public class SFTP implements FTP {
     }
 
     @Override
-    public boolean send(File localFile) throws IOException {
-        return send(localFile.getName(), localFile);
-    }
-
-    @Override
     public boolean recv(String remoteFilename, File localFile) throws IOException {
         if (!hasFile(remoteFilename)) {
             return false;
