@@ -58,11 +58,22 @@ public interface FTP extends Closeable {
     public boolean path(String pathname) throws IOException;
 
     /**
-     * get now path
+     * get now path<br>
+     * same method path(), pwd()
      * @return
      * @throws IOException
      */
     public String path() throws IOException;
+    
+    /**
+     * print working directory<br>
+     * same method path(), pwd()
+     * @return
+     * @throws IOException
+     */
+    default public String pwd() throws IOException {
+        return path();
+    }
     
     /**
      * get file list in now path
