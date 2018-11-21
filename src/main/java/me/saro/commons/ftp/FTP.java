@@ -146,20 +146,6 @@ public interface FTP extends Closeable {
     }
     
     /**
-     * recv file to the local directory
-     * @param remoteFilename
-     * @param localDirectory
-     * @return
-     * @throws IOException
-     */
-    default public boolean recvToDirectory(String remoteFilename, File localDirectory) throws IOException {
-        if (!localDirectory.exists() || !localDirectory.isDirectory()) {
-            throw new IOException(localDirectory.getAbsolutePath() + " is not Directory");
-        }
-        return recv(remoteFilename, new File(localDirectory, remoteFilename));
-    }
-    
-    /**
      * make new directory
      * @param createDirectoryName
      * @return
