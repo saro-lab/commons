@@ -18,22 +18,92 @@ import java.util.List;
  */
 public interface FTP extends Closeable {
     
+    /**
+     * open ftp
+     * @param host
+     * ip or domain
+     * @param port
+     * port (ftp basic port 21)
+     * @param user
+     * username
+     * @param pass
+     * password
+     * @return
+     * FTP Object
+     * @throws IOException
+     */
     public static FTP openFTP(InetAddress host, int port, String user, String pass) throws IOException {
         return new FTPS(host, port, user, pass, false);
     }
     
+    /**
+     * open ftp
+     * @param host
+     * ip or domain
+     * @param port
+     * port (ftp basic port 21)
+     * @param user
+     * username
+     * @param pass
+     * password
+     * @return
+     * FTP Object
+     * @throws IOException
+     */
     public static FTP openFTP(String host, int port, String user, String pass) throws IOException {
         return new FTPS(InetAddress.getByName(host), port, user, pass, false);
     }
     
+    /**
+     * open ftps
+     * @param host
+     * ip or domain
+     * @param port
+     * port (ftps basic port 990)
+     * @param user
+     * username
+     * @param pass
+     * password
+     * @return
+     * FTP Object
+     * @throws IOException
+     */
     public static FTP openFTPS(InetAddress host, int port, String user, String pass) throws IOException {
         return new FTPS(host, port, user, pass, true);
     }
     
+    /**
+     * open ftps
+     * @param host
+     * ip or domain
+     * @param port
+     * port (ftps basic port 990)
+     * @param user
+     * username
+     * @param pass
+     * password
+     * @return
+     * FTP Object
+     * @throws IOException
+     */
     public static FTP openFTPS(String host, int port, String user, String pass) throws IOException {
         return new FTPS(InetAddress.getByName(host), port, user, pass, true);
     }
     
+    /**
+     * open sftp
+     * @param host
+     * ip or domain
+     * @param port
+     * port (sftp basic port 22)
+     * @param user
+     * username
+     * @param pass
+     * password
+     * @return
+     * FTP Object
+     * @throws IOException
+     */
     public static FTP openSFTP(String host, int port, String user, String pass) throws IOException {
         return new SFTP(host, port, user, pass);
     }
