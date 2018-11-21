@@ -103,11 +103,6 @@ public class FTPS implements FTP {
     }
 
     @Override
-    public boolean send(File localFile) throws IOException {
-        return send(localFile.getName(), localFile);
-    }
-
-    @Override
     public boolean recv(String remoteFilename, File localFile) throws IOException {
         if (hasFile(remoteFilename)) {
             try (FileOutputStream fos = new FileOutputStream(localFile)) {
