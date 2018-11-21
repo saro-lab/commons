@@ -100,7 +100,7 @@ public class SFTP implements FTP {
     @Override
     public boolean hasFile(String filename) throws IOException {
         try {
-            return Optional.of(channel.lstat(path() + "/" + filename))
+            return Optional.ofNullable(channel.lstat(path() + "/" + filename))
                     .filter(e -> !e.isDir()).isPresent();
         } catch (SftpException e) {
             if (e.id == ChannelSftp.SSH_FX_NO_SUCH_FILE) {
@@ -113,7 +113,7 @@ public class SFTP implements FTP {
     @Override
     public boolean hasDirectory(String directoryname) throws IOException {
         try {
-            return Optional.of(channel.lstat(path() + "/" + directoryname))
+            return Optional.ofNullable(channel.lstat(path() + "/" + directoryname))
                     .filter(e -> e.isDir()).isPresent();
         } catch (SftpException e) {
             if (e.id == ChannelSftp.SSH_FX_NO_SUCH_FILE) {
