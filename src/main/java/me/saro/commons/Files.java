@@ -117,12 +117,6 @@ public class Files {
      * @return
      */
     public static Predicate<File> attributesFilter(ThrowablePredicate<BasicFileAttributes> filter) {
-        return f -> {
-            try {
-                return filter.test(toBasicFileAttributes(f));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        };
+        return ThrowablePredicate.runtime(e -> filter.test(toBasicFileAttributes(e)));
     }
 }
