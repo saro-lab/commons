@@ -11,14 +11,14 @@
 <dependency>
   <groupId>me.saro</groupId>
   <artifactId>commons</artifactId>
-  <version>1.0</version>
+  <version>1.1</version>
 </dependency>
 ```
 
 ## gradle
 
 ```
-compile 'me.saro:commons:1.0'
+compile 'me.saro:commons:1.1'
 ```
 
 ## repository
@@ -109,11 +109,14 @@ Utils.evl(String[]) : String
 Utils.executeAllThreads(ExecutorService, List<T>, ThrowableFunction<T, R>) : List<R>
 Utils.executeAllThreads(int, List<T>, ThrowableFunction<T, R>) : List<R>
 Utils.inputStreamReader(InputStream, StreamReadConsumer) 
+Utils.kill(Closeable) 
+Utils.kill(Thread) 
 Utils.nvl(T[]) : T
 Utils.openZipFromFile(File, ThrowableTriConsumer<String, ZipEntry, InputStream>) 
 Utils.openZipFromWeb(Web, ThrowableTriConsumer<String, ZipEntry, InputStream>) 
 Utils.openZipStreamNotClose(InputStream, ThrowableTriConsumer<String, ZipEntry, InputStream>) 
 Utils.random(long, long) : long
+Utils.timerTask(ThrowableConsumer<TimerTask>) : TimerTask
 ```
 
 
@@ -208,6 +211,7 @@ FTP.openFTP(String, int, String, String) : FTP
 FTP.openFTPS(InetAddress, int, String, String) : FTP
 FTP.openFTPS(String, int, String, String) : FTP
 FTP.openSFTP(String, int, String, String) : FTP
+cd(String) : boolean
 close() 
 delete(String) : boolean
 hasDirectory(String) : boolean
@@ -217,6 +221,8 @@ listFiles() : List<String>
 mkdir(String) : boolean
 path() : String
 path(String) : boolean
+pwd() : String
+recv(List<String>, File) 
 recv(String, File) : boolean
 send(File) : boolean
 send(String, File) : boolean
