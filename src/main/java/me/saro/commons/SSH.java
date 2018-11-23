@@ -68,6 +68,25 @@ public class SSH implements Closeable {
     }
     
     /**
+     * send just commend and return result
+     * @param host
+     * @param port
+     * @param user
+     * @param pass
+     * @param charset
+     * @param cmd
+     * @return
+     * @throws IOException
+     */
+    public static String just(String host, int port, String user, String pass, String charset, String cmd) throws IOException {
+        String rv;
+        try (SSH ssh = SSH.open(host, port, user, pass, charset)) {
+            rv = ssh.cmd(cmd);
+        }
+        return rv;
+    }
+    
+    /**
      * send commend
      * @param cmd
      * @return
@@ -75,17 +94,15 @@ public class SSH implements Closeable {
      */
     public String cmd(String cmd) throws IOException {
         ChannelExec channel = null;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        String rv = null;
         
         try {
             channel = (ChannelExec) session.openChannel("exec");
             channel.setCommand(cmd.getBytes(charset));
             InputStream is = channel.getInputStream();
             channel.connect();
-            int ch;
-            while ( (ch = is.read()) != 0xffffffff ) {
-                baos.write(ch);
-            }
+            rv  = read(is);
+            
         } catch (JSchException je) {
             throw new IOException(je);
         } finally {
@@ -97,6 +114,20 @@ public class SSH implements Closeable {
             }
         }
         
+        return rv;
+    }
+    
+    /**
+     * read cmd
+     * @return
+     * @throws IOException 
+     */
+    private String read(InputStream is) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(512);
+        int ch;
+        while ( (ch = is.read()) != 0xffffffff ) {
+            baos.write(ch);
+        }
         return baos.toString(charset);
     }
     
