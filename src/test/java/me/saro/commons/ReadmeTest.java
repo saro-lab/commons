@@ -27,20 +27,13 @@ public class ReadmeTest {
         outClassInfo(Valids.class);
         outClassInfo(Tests.class);
         
-//        outClassInfo(ThrowableBiConsumer.class);
-//        outClassInfo(ThrowableBiFunction.class);
-//        outClassInfo(ThrowableConsumer.class);
-//        outClassInfo(ThrowableFunction.class);
-//        outClassInfo(ThrowablePredicate.class);
-//        outClassInfo(ThrowableRunnable.class);
-//        outClassInfo(ThrowableSupplier.class);
-
         System.out.println("# INSTANCE");
         System.out.println();
 
         outClassInfo(FixedDataFormat.class);
         outClassInfo(Web.class);
         outClassInfo(FTP.class);
+        outClassInfo(SSH.class);
         outClassInfo(DateFormat.class);
         outClassInfo(JsonReader.class);
 
