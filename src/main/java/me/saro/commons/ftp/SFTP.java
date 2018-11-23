@@ -23,11 +23,10 @@ public class SFTP implements FTP {
 
     final ChannelSftp channel;
     final Session session;
-    final JSch ftp = new JSch();
     
     public SFTP(String host, int port, String user, String pass) throws IOException {
         try {
-            session = ftp.getSession(user, host, port);
+            session = new JSch().getSession(user, host, port);
             session.setPassword(pass);
             session.setConfig("StrictHostKeyChecking", "no");
             session.connect();
