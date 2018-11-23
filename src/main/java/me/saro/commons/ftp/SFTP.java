@@ -21,8 +21,8 @@ import com.jcraft.jsch.SftpException;
  */
 public class SFTP implements FTP {
 
-    ChannelSftp channel;
-    Session session;
+    final ChannelSftp channel;
+    final Session session;
     final JSch ftp = new JSch();
     
     public SFTP(String host, int port, String user, String pass) throws IOException {
