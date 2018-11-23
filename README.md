@@ -229,6 +229,18 @@ send(String, File) : boolean
 ```
 
 
+## SSH
+
+#### me.saro.commons.SSH
+
+```
+SSH.open(String, int, String, String) : SSH
+SSH.open(String, int, String, String, String) : SSH
+close() 
+cmd(String) : String
+```
+
+
 ## DateFormat
 
 #### me.saro.commons.DateFormat
