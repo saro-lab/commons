@@ -7,6 +7,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSch;
@@ -16,7 +19,7 @@ import com.jcraft.jsch.Session;
 import me.saro.commons.function.ThrowableConsumer;
 
 /**
- * SSH
+ * SSH Shell
  * @since 1.2
  */
 public class SSHShell implements Closeable {
@@ -101,8 +104,10 @@ public class SSHShell implements Closeable {
      * @return
      * @throws IOException
      */
-    public void cmd(String cmd) throws IOException {
-        outputStream.write((cmd + "\n").getBytes(charset));
+    public void cmd(String... cmds) throws IOException {
+        outputStream.write(Optional.ofNullable(cmds)
+                .filter(e -> e.length > 0).map(Stream::of).map(e -> e.collect(Collectors.joining("\n", "", "\n")))
+                .orElseThrow(() -> new IllegalArgumentException("there is no command")).getBytes(charset));
         outputStream.flush();
     }
     

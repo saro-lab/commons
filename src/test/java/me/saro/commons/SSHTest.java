@@ -5,31 +5,68 @@ import java.util.Scanner;
 
 import org.junit.jupiter.api.Test;
 
-import com.jcraft.jsch.JSchException;
+import me.saro.commons.ssh.SSHExecutor;
+import me.saro.commons.ssh.SSHShell;
 
 public class SSHTest {
+    
+    String host = "localhost";
+    int port = 22;
+    String user = "user";
+    String pass = "pass";
+    String charset = "utf-8";
+    
     @Test
     public void test() throws Exception {
-          // example();
+        // executor1();
+        // executor2();
+        // shell1();
+        // shell2();
     }
 
-    public void example() throws IOException, InterruptedException, JSchException {
-        try (SSH ssh = SSH.open("localhost", 22, "tempuser", "password", "utf-8")) {
-            
-            Scanner sc = new Scanner(System.in);
-            String line;
-            
+    public void executor1() throws IOException {
+        try (SSHExecutor ssh = SSHExecutor.open(host, port, user, pass, charset) ; Scanner sc = new Scanner(System.in)) {
+
             System.out.println("connected :");
-            
-            input : while ( (line = sc.nextLine()) != null ) {
+
+            input : while ( true ) {
+                String line = sc.nextLine();
+                
                 if (line.equals("exit")) {
-                    sc.close();
                     break input;
                 }
-                
+
                 System.out.println(ssh.cmd(line));
             }
-            
+
+        }
+    }
+    
+    public void executor2() throws IOException {
+        String result = SSHExecutor.just(host, port, user, pass, charset, "ls -al");
+        System.out.println(result);
+    }
+
+    public void shell1() throws IOException {
+        try (SSHShell ssh = SSHShell.open(host, port, user, pass, charset, System.out::println) ; Scanner sc = new Scanner(System.in)) {
+
+            input : while ( true ) {
+                String line = sc.nextLine();
+
+                ssh.cmd(line);
+
+                if ("exit".equals(line.trim())) {
+                    
+                    break input;
+                }
+            }
+        
+        }
+    }
+    
+    public void shell2() throws IOException {
+        try (SSHShell ssh = SSHShell.open(host, port, user, pass, charset, System.out::println)) {
+            ssh.cmd("ls", "ls -al", "ps -ef", "ll");
         }
     }
 }
