@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import me.saro.commons.bytes.Bytes;
 import me.saro.commons.bytes.FixedDataFormat;
 import me.saro.commons.ftp.FTP;
+import me.saro.commons.ssh.SSHExecutor;
+import me.saro.commons.ssh.SSHShell;
 import me.saro.commons.web.Web;
 public class ReadmeTest {
 
@@ -33,7 +35,8 @@ public class ReadmeTest {
         outClassInfo(FixedDataFormat.class);
         outClassInfo(Web.class);
         outClassInfo(FTP.class);
-        outClassInfo(SSH.class);
+        outClassInfo(SSHShell.class);
+        outClassInfo(SSHExecutor.class);
         outClassInfo(DateFormat.class);
         outClassInfo(JsonReader.class);
 

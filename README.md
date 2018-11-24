@@ -32,6 +32,8 @@ compile 'me.saro:commons:1.1'
 
 
 
+
+
 # STATIC
 
 
@@ -229,13 +231,27 @@ send(String, File) : boolean
 ```
 
 
-## SSH
+## SSHShell
 
-#### me.saro.commons.SSH
+#### me.saro.commons.ssh.SSHShell
 
 ```
-SSH.open(String, int, String, String) : SSH
-SSH.open(String, int, String, String, String) : SSH
+SSHShell.open(String, int, String, String, String, ThrowableConsumer<String>) : SSHShell
+close() 
+cmd(String) 
+cmdExitAndJoinEOF() 
+isConnected() : boolean
+joinEOF() 
+```
+
+
+## SSHExecutor
+
+#### me.saro.commons.ssh.SSHExecutor
+
+```
+SSHExecutor.just(String, int, String, String, String, String) : String
+SSHExecutor.open(String, int, String, String, String) : SSHExecutor
 close() 
 cmd(String) : String
 ```
