@@ -4,6 +4,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
@@ -67,10 +70,10 @@ public class SSHExecutor implements Closeable {
      * @return
      * @throws IOException
      */
-    public static String just(String host, int port, String user, String pass, String charset, String cmd) throws IOException {
+    public static String just(String host, int port, String user, String pass, String charset, String... cmds) throws IOException {
         String rv;
         try (SSHExecutor ssh = SSHExecutor.open(host, port, user, pass, charset)) {
-            rv = ssh.cmd(cmd);
+            rv = ssh.cmd(cmds);
         }
         return rv;
     }
@@ -81,13 +84,15 @@ public class SSHExecutor implements Closeable {
      * @return
      * @throws IOException
      */
-    public synchronized String cmd(String cmd) throws IOException {
+    public synchronized String cmd(String... cmds) throws IOException {
         ChannelExec channel = null;
         String rv = null;
         
         try {
             channel = (ChannelExec) session.openChannel("exec");
-            channel.setCommand(cmd.getBytes(charset));
+            channel.setCommand(Optional.ofNullable(cmds)
+                    .filter(e -> e.length > 0).map(Stream::of).map(e -> e.collect(Collectors.joining("\n", "", "\n")))
+                    .orElseThrow(() -> new IllegalArgumentException("there is no command")).getBytes(charset));
             InputStream is = channel.getInputStream();
             channel.connect();
             rv  = read(is);
