@@ -4,7 +4,7 @@
     <groupId>me.saro</groupId>
     <artifactId>commons</artifactId>
     <description>java commons</description>
-    <version>1.2</version>
+    <version>1.3-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>commons</name>
@@ -109,7 +109,7 @@
         <connection>scm:git:git://github.com/saro-lab/commons.git</connection>
         <developerConnection>scm:git:git@github.com:saro-lab/commons.git</developerConnection>
         <url>https://github.com/saro-lab/commons</url>
-        <tag>commons-1.2</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <profiles>
