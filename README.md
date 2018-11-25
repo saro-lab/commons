@@ -11,14 +11,14 @@
 <dependency>
   <groupId>me.saro</groupId>
   <artifactId>commons</artifactId>
-  <version>1.1</version>
+  <version>1.2</version>
 </dependency>
 ```
 
 ## gradle
 
 ```
-compile 'me.saro:commons:1.1'
+compile 'me.saro:commons:1.2'
 ```
 
 ## repository
@@ -238,7 +238,7 @@ send(String, File) : boolean
 ```
 SSHShell.open(String, int, String, String, String, ThrowableConsumer<String>) : SSHShell
 close() 
-cmd(String) 
+cmd(String[]) 
 cmdExitAndJoinEOF() 
 isConnected() : boolean
 joinEOF() 
@@ -250,10 +250,10 @@ joinEOF()
 #### me.saro.commons.ssh.SSHExecutor
 
 ```
-SSHExecutor.just(String, int, String, String, String, String) : String
+SSHExecutor.just(String, int, String, String, String, String[]) : String
 SSHExecutor.open(String, int, String, String, String) : SSHExecutor
 close() 
-cmd(String) : String
+cmd(String[]) : String
 ```
 
 
