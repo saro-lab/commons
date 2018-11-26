@@ -242,7 +242,7 @@ public interface FTP extends Closeable {
         }
         for (String file : remoteFilenameList) {
             if (!recv(file, new File(localDirectory, file))) {
-                throw new IOException("failrecv file ["+path() + "/" + file + "]");
+                throw new IOException("fail recv file ["+path() + "/" + file + "]");
             }
         }
     }
