@@ -8,8 +8,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.ChannelSftp.LsEntry;
 import com.jcraft.jsch.ChannelSftp.LsEntrySelector;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -56,44 +58,39 @@ public class SFTP implements FTP {
         }
     }
     
-    @Override
-    public List<String> listFiles() throws IOException {
+    private List<String> list(Predicate<LsEntry> filter) throws IOException {
         try {
             List<String> list = new ArrayList<String>();
-            
             channel.ls(path(), e -> {
-                if (!e.getAttrs().isDir()) {
+                if (filter.test(e)) {
                     list.add(e.getFilename());
                 }
                 return LsEntrySelector.CONTINUE;
             });
-            
             return list;
         } catch (SftpException e) {
             throw new IOException(e);
         }
     }
+    
+    @Override
+    public List<String> listFiles(Predicate<String> filter) throws IOException {
+        return list(e -> !e.getAttrs().isDir() && filter.test(e.getFilename()));
+    }
+    
+    @Override
+    public List<String> listFiles() throws IOException {
+        return list(e -> !e.getAttrs().isDir());
+    }
 
     @Override
+    public List<String> listDirectories(Predicate<String> filter) throws IOException {
+        return list(e -> e.getAttrs().isDir() && !e.getFilename().matches("[\\.]{1,2}") && filter.test(e.getFilename()));
+    }
+    
+    @Override
     public List<String> listDirectories() throws IOException {
-        try {
-            List<String> list = new ArrayList<String>();
-            
-            channel.ls(path(), e -> {
-                if (e.getAttrs().isDir()) {
-                    String name = e.getFilename();
-                    switch (name) {
-                        case "." : case ".." :  return LsEntrySelector.CONTINUE;
-                    }
-                    list.add(name);
-                }
-                return LsEntrySelector.CONTINUE;
-            });
-            
-            return list;
-        } catch (SftpException e) {
-            throw new IOException(e);
-        }
+        return list(e -> e.getAttrs().isDir() && !e.getFilename().matches("[\\.]{1,2}"));
     }
     
     @Override

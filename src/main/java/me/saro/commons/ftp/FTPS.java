@@ -8,6 +8,7 @@ import java.net.InetAddress;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -76,8 +77,18 @@ public class FTPS implements FTP {
     }
 
     @Override
+    public List<String> listFiles(Predicate<String> filter) throws IOException {
+        return Stream.of(ftp.listFiles()).filter(e -> e.isFile()).map(e -> e.getName()).filter(filter).collect(Collectors.toList());
+    }
+    
+    @Override
     public List<String> listFiles() throws IOException {
         return Stream.of(ftp.listFiles()).filter(e -> e.isFile()).map(e -> e.getName()).collect(Collectors.toList());
+    }
+    
+    @Override
+    public List<String> listDirectories(Predicate<String> filter) throws IOException {
+        return Stream.of(ftp.listFiles()).filter(e -> e.isDirectory()).map(e -> e.getName()).filter(filter).collect(Collectors.toList());
     }
     
     @Override
