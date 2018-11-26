@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * ftp
@@ -147,10 +148,28 @@ public interface FTP extends Closeable {
     
     /**
      * get file list in now path
+     * @param filter
+     * file name filter
+     * @return
+     * @throws IOException
+     */
+    public List<String> listFiles(Predicate<String> filter) throws IOException;
+    
+    /**
+     * get file list in now path
      * @return
      * @throws IOException
      */
     public List<String> listFiles() throws IOException;
+    
+    /**
+     * get directory list in now path
+     * @param filter
+     * file name filter
+     * @return
+     * @throws IOException
+     */
+    public List<String> listDirectories(Predicate<String> filter) throws IOException;
     
     /**
      * get directory list in now path
