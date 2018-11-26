@@ -5,15 +5,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -143,17 +138,4 @@ public class FTPS implements FTP {
             e.printStackTrace();
         }
     }
-
-    TrustManager[] IGNORED_TRUST_MANAGERS = new TrustManager[] { new X509TrustManager() {
-        @Override
-        public X509Certificate[] getAcceptedIssuers() {
-            return null;
-        }
-        @Override
-        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-        }
-        @Override
-        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-        }
-    } };
 }
