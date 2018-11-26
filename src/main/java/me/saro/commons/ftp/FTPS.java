@@ -44,6 +44,7 @@ public class FTPS implements FTP {
             // set based control keep alive reply timeout
             ftp.setControlKeepAliveReplyTimeout(60000);
             // use only BINARY
+            // you must not delete BINARY_FILE_TYPE
             ftp.setFileType(FTPClient.BINARY_FILE_TYPE);
         } catch (IOException e) {
            try {
@@ -116,6 +117,9 @@ public class FTPS implements FTP {
     @Override
     public boolean recv(String remoteFilename, File localFile) throws IOException {
         if (hasFile(remoteFilename)) {
+            if (localFile.exists()) {
+                localFile.delete();
+            }
             try (FileOutputStream fos = new FileOutputStream(localFile)) {
                 return ftp.retrieveFile(remoteFilename, fos);
             }   
