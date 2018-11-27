@@ -33,7 +33,6 @@ compile 'me.saro:commons:1.3'
 
 
 
-
 # STATIC
 
 
@@ -110,13 +109,11 @@ Utils.createRandomString(char[], int, int) : String
 Utils.evl(String[]) : String
 Utils.executeAllThreads(ExecutorService, List<T>, ThrowableFunction<T, R>) : List<R>
 Utils.executeAllThreads(int, List<T>, ThrowableFunction<T, R>) : List<R>
+Utils.inputStreamLineReader(InputStream, String, ThrowableFunction<Stream<String>, T>) : T
 Utils.inputStreamReader(InputStream, StreamReadConsumer) 
 Utils.kill(Closeable) 
 Utils.kill(Thread) 
 Utils.nvl(T[]) : T
-Utils.openZipFromFile(File, ThrowableTriConsumer<String, ZipEntry, InputStream>) 
-Utils.openZipFromWeb(Web, ThrowableTriConsumer<String, ZipEntry, InputStream>) 
-Utils.openZipStreamNotClose(InputStream, ThrowableTriConsumer<String, ZipEntry, InputStream>) 
 Utils.random(long, long) : long
 Utils.timerTask(ThrowableConsumer<TimerTask>) : TimerTask
 ```
@@ -129,9 +126,21 @@ Utils.timerTask(ThrowableConsumer<TimerTask>) : TimerTask
 ```
 Files.attributesFilter(ThrowablePredicate<BasicFileAttributes>) : Predicate<File>
 Files.createFile(File, boolean, InputStream) 
+Files.lineReader(File, String, ThrowableFunction<Stream<String>, T>) : T
 Files.streamFiles(File) : Stream<File>
 Files.streamFiles(String) : Stream<File>
 Files.toBasicFileAttributes(File) : BasicFileAttributes
+```
+
+
+## Zips
+
+#### me.saro.commons.Zips
+
+```
+Zips.openFromFile(File, ThrowableTriConsumer<String, ZipEntry, InputStream>) 
+Zips.openFromWeb(Web, ThrowableTriConsumer<String, ZipEntry, InputStream>) 
+Zips.openStreamNotClose(InputStream, ThrowableTriConsumer<String, ZipEntry, InputStream>) 
 ```
 
 
@@ -167,6 +176,9 @@ bindBytes(byte[], int, T)
 toBytes(T) : byte[]
 toClass(byte[]) : T
 toClass(byte[], int) : T
+toClassWithCheckSize(String) : T
+toClassWithCheckSize(String, String) : T
+toClassWithCheckSize(byte[]) : T
 ```
 
 
