@@ -11,14 +11,14 @@
 <dependency>
   <groupId>me.saro</groupId>
   <artifactId>commons</artifactId>
-  <version>1.2</version>
+  <version>1.3</version>
 </dependency>
 ```
 
 ## gradle
 
 ```
-compile 'me.saro:commons:1.2'
+compile 'me.saro:commons:1.3'
 ```
 
 ## repository
@@ -219,7 +219,9 @@ delete(String) : boolean
 hasDirectory(String) : boolean
 hasFile(String) : boolean
 listDirectories() : List<String>
+listDirectories(Predicate<String>) : List<String>
 listFiles() : List<String>
+listFiles(Predicate<String>) : List<String>
 mkdir(String) : boolean
 path() : String
 path(String) : boolean
