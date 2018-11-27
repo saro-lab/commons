@@ -177,8 +177,6 @@ public class FTPS implements FTP {
         try {
             ftp.disconnect();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
     }
 }
