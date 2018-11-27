@@ -39,10 +39,7 @@ public class FTPS implements FTP {
             ftp.enterLocalPassiveMode();
             ftp.setUseEPSVwithIPv4(false);
             ftp.login(user, pass);
-            // set based control keep alive reply timeout
             ftp.setControlKeepAliveReplyTimeout(60000);
-            // use only BINARY
-            // you must not delete BINARY_FILE_TYPE
             ftp.setFileType(FTPClient.BINARY_FILE_TYPE);
         } catch (IOException e) {
            try {
@@ -51,6 +48,49 @@ public class FTPS implements FTP {
            }
            throw e;
         }
+    }
+    
+    /**
+     * BINARY FILE MODE<br>
+     * default : BINARY FILE MODE
+     * @throws IOException
+     */
+    public void enterBinaryFileMode() throws IOException {
+        ftp.setFileType(FTPClient.BINARY_FILE_TYPE);
+    }
+
+    /**
+     * ASCII FILE MODE<br>
+     * default : BINARY FILE MODE
+     * @throws IOException
+     */
+    public void enterAsciiFileMode() throws IOException {
+        ftp.setFileType(FTPClient.ASCII_FILE_TYPE);
+    }
+    
+    /**
+     * on passive mode<br>
+     * default value : passive mode
+     */
+    public void enterLocalPassiveMode() {
+        ftp.enterLocalPassiveMode();
+    }
+    
+    /**
+     * on active mode<br>
+     * default value : passive mode
+     */
+    public void enterLocalActiveMode() {
+        ftp.enterLocalActiveMode();
+    }
+    
+    /**
+     * user Extended Passive Mode with IPv4<br>
+     * default false
+     * @param selected
+     */
+    public void setUseEPSVwithIPv4(boolean selected) {
+        ftp.setUseEPSVwithIPv4(selected);
     }
     
     @Override
