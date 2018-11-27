@@ -14,12 +14,14 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPSClient;
 
+import lombok.Getter;
+
 /**
  * FTP, FTPS
  */
 public class FTPS implements FTP {
 
-    final FTPClient ftp;
+    final @Getter FTPClient ftp;
     
     public FTPS(InetAddress host, int port, String user, String pass, boolean isFTPS) throws IOException {
         if (isFTPS) {
