@@ -25,7 +25,7 @@ import lombok.Getter;
  */
 public class SFTP implements FTP {
 
-    final @Getter ChannelSftp channel;
+    final @Getter ChannelSftp sftp;
     final Session session;
     
     public SFTP(String host, int port, String user, String pass) throws IOException {
@@ -34,8 +34,8 @@ public class SFTP implements FTP {
             session.setPassword(pass);
             session.setConfig("StrictHostKeyChecking", "no");
             session.connect();
-            channel = (ChannelSftp) session.openChannel("sftp");
-            channel.connect();
+            sftp = (ChannelSftp) session.openChannel("sftp");
+            sftp.connect();
         } catch (JSchException e) {
             throw new IOException(e);
         }
@@ -44,7 +44,7 @@ public class SFTP implements FTP {
     @Override
     public boolean path(String pathname) throws IOException {
         try {
-            channel.cd(pathname);
+            sftp.cd(pathname);
         } catch (SftpException e) {
             return false;
         }
@@ -54,7 +54,7 @@ public class SFTP implements FTP {
     @Override
     public String path() throws IOException {
         try {
-            return channel.pwd();
+            return sftp.pwd();
         } catch (SftpException e) {
             throw new RuntimeException(e);
         }
@@ -63,7 +63,7 @@ public class SFTP implements FTP {
     private List<String> list(Predicate<LsEntry> filter) throws IOException {
         try {
             List<String> list = new ArrayList<String>();
-            channel.ls(path(), e -> {
+            sftp.ls(path(), e -> {
                 if (filter.test(e)) {
                     list.add(e.getFilename());
                 }
@@ -98,7 +98,7 @@ public class SFTP implements FTP {
     @Override
     public boolean hasFile(String filename) throws IOException {
         try {
-            return Optional.ofNullable(channel.lstat(path() + "/" + filename))
+            return Optional.ofNullable(sftp.lstat(path() + "/" + filename))
                     .filter(e -> !e.isDir()).isPresent();
         } catch (SftpException e) {
             if (e.id == ChannelSftp.SSH_FX_NO_SUCH_FILE) {
@@ -111,7 +111,7 @@ public class SFTP implements FTP {
     @Override
     public boolean hasDirectory(String directoryname) throws IOException {
         try {
-            return Optional.ofNullable(channel.lstat(path() + "/" + directoryname))
+            return Optional.ofNullable(sftp.lstat(path() + "/" + directoryname))
                     .filter(e -> e.isDir()).isPresent();
         } catch (SftpException e) {
             if (e.id == ChannelSftp.SSH_FX_NO_SUCH_FILE) {
@@ -125,10 +125,10 @@ public class SFTP implements FTP {
     public boolean delete(String filename) throws IOException {
         try {
             if (hasFile(filename)) {
-                channel.rm(filename);
+                sftp.rm(filename);
                 return true;
             } else if (hasDirectory(filename)) {
-                channel.rmdir(filename);
+                sftp.rmdir(filename);
                 return true;
             }
            return false;
@@ -140,7 +140,7 @@ public class SFTP implements FTP {
     @Override
     public boolean send(String saveFilename, File localFile) throws IOException {
         try (InputStream input = new FileInputStream(localFile)) {
-            channel.put(input, saveFilename);
+            sftp.put(input, saveFilename);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -156,7 +156,7 @@ public class SFTP implements FTP {
             localFile.delete();
         }
         try (FileOutputStream fos = new FileOutputStream(localFile)) {
-            channel.get(remoteFilename, fos);
+            sftp.get(remoteFilename, fos);
             return true;
         } catch (Exception e) {
             throw new IOException(e);
@@ -166,7 +166,7 @@ public class SFTP implements FTP {
     @Override
     public boolean mkdir(String createDirectoryName) throws IOException {
         try {
-            channel.mkdir(createDirectoryName);
+            sftp.mkdir(createDirectoryName);
         } catch (SftpException e) {
             return false;
         }
@@ -176,7 +176,7 @@ public class SFTP implements FTP {
     @Override
     public void close() {
         try {
-            channel.disconnect();
+            sftp.disconnect();
         } catch (Exception e) {
         }
         try {
