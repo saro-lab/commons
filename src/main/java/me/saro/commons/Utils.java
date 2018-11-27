@@ -1,15 +1,19 @@
 package me.saro.commons;
 
+import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -143,8 +147,7 @@ public class Utils {
     }
 
     /**
-     * InputStream Reader
-     * <br>
+     * InputStream Reader<br>
      * <b>WARNING : </b> is not auto closed
      * @param inputStream
      * @param callback
@@ -157,6 +160,23 @@ public class Utils {
         int len;
         while ( (len = inputStream.read(buf, 0, size)) != -1 ) {
             callback.accept(buf, len);
+        }
+    }
+    
+    /**
+     * inputStream line reader<br>
+     * <b>WARNING : </b> is not auto closed
+     * @param charset
+     * @param inputStream
+     * @param lineReader
+     * @return
+     * @throws Exception
+     */
+    public static <T> T inputStreamLineReader(String charset, InputStream inputStream, ThrowableFunction<Stream<String>, T> lineReader) throws Exception {
+        try ( InputStreamReader isr = new InputStreamReader(inputStream, charset) ; BufferedReader br = new BufferedReader(isr) ) {
+            return lineReader.apply(br.lines());
+        } catch (IOException e) {
+            throw e;
         }
     }
 
