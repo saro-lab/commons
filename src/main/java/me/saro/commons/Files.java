@@ -1,6 +1,7 @@
 package me.saro.commons;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,6 +9,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import me.saro.commons.function.ThrowableFunction;
 import me.saro.commons.function.ThrowablePredicate;
 
 /**
@@ -87,6 +89,22 @@ public class Files {
      */
     public static Stream<File> streamFiles(String directory) {
         return Stream.of(new File(directory).listFiles());
+    }
+    
+    /**
+     * read line in the file
+     * @param file
+     * @param charset
+     * @param lineReader
+     * @return
+     * @throws Exception
+     */
+    public static <T> T lineReader(File file, String charset, ThrowableFunction<Stream<String>, T> lineReader) throws Exception {
+        T t = null;
+        try (FileInputStream fis = new FileInputStream(file)) {
+            t = Utils.inputStreamLineReader(fis, charset, lineReader);
+        }
+        return t;
     }
 
     /**

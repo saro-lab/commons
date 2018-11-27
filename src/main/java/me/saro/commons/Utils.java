@@ -172,7 +172,7 @@ public class Utils {
      * @return
      * @throws Exception
      */
-    public static <T> T inputStreamLineReader(String charset, InputStream inputStream, ThrowableFunction<Stream<String>, T> lineReader) throws Exception {
+    public static <T> T inputStreamLineReader(InputStream inputStream, String charset, ThrowableFunction<Stream<String>, T> lineReader) throws Exception {
         try ( InputStreamReader isr = new InputStreamReader(inputStream, charset) ; BufferedReader br = new BufferedReader(isr) ) {
             return lineReader.apply(br.lines());
         } catch (IOException e) {

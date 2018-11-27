@@ -3,6 +3,7 @@ package me.saro.commons.bytes;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,6 +68,41 @@ public class FixedDataFormat<T> {
     
     public T toClass(byte[] bytes) {
         return toClass(bytes, 0);
+    }
+    
+    /**
+     * 
+     * @param bytes
+     * @return
+     */
+    public T toClassWithCheckSize(byte[] bytes) {
+        if (bytes.length != fixedData.size()) {
+            throw new IllegalArgumentException("size not matched define["+fixedData.size()+"] data[]"+bytes.length+"");
+        }
+        return toClass(bytes, 0);
+    }
+    
+    /**
+     * 
+     * @param line
+     * @return
+     */
+    public T toClassWithCheckSize(String line) {
+        return toClassWithCheckSize(line, fixedData.charset());
+    }
+    
+    /**
+     * 
+     * @param line
+     * @param charset
+     * @return
+     */
+    public T toClassWithCheckSize(String line, String charset) {
+        try {
+            return toClassWithCheckSize(line.getBytes(charset));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
     
     public void bindBytes(byte[] outputBytes, int offset, T obj) {
