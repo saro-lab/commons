@@ -2,8 +2,6 @@ package me.saro.commons;
 
 import java.io.BufferedReader;
 import java.io.Closeable;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -14,16 +12,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import lombok.SneakyThrows;
 import me.saro.commons.function.StreamReadConsumer;
 import me.saro.commons.function.ThrowableConsumer;
 import me.saro.commons.function.ThrowableFunction;
-import me.saro.commons.function.ThrowableTriConsumer;
-import me.saro.commons.web.Web;
-import me.saro.commons.web.WebResult;
 
 /**
  * util class
@@ -177,55 +170,6 @@ public class Utils {
             return lineReader.apply(br.lines());
         } catch (IOException e) {
             throw e;
-        }
-    }
-
-    /**
-     * read zip file
-     * <br>
-     * <b>WARNING : </b> is not auto closed
-     * @param inputStream
-     * @param callbackFileInputstream
-     * (String fileName, ZipEntry zipEntry, InputStream inputStream)
-     * @throws Exception
-     */
-    public static void openZipStreamNotClose(InputStream inputStream, ThrowableTriConsumer<String, ZipEntry, InputStream> callbackFileInputstream) throws Exception {
-        ZipInputStream zipInputStream = new ZipInputStream(inputStream);
-        ZipEntry ze;
-        while ((ze = zipInputStream.getNextEntry()) != null) {
-            if (!ze.isDirectory()) {
-                callbackFileInputstream.accept(ze.getName(), ze, zipInputStream);
-            }
-            zipInputStream.closeEntry();
-        }
-    }
-
-    /**
-     * open zip from file
-     * @param zipfile
-     * @param callbackFileInputstream
-     * (String fileName, ZipEntry zipEntry, InputStream inputStream)
-     * @throws Exception
-     */
-    public static void openZipFromFile(File zipfile, ThrowableTriConsumer<String, ZipEntry, InputStream> callbackFileInputstream) throws Exception {
-        try (InputStream is = new FileInputStream(zipfile)) {
-            openZipStreamNotClose(is, callbackFileInputstream);
-        }
-    }
-
-    /**
-     * open zip from web
-     * @param web
-     * @param callbackFileInputstream
-     * (String fileName, ZipEntry zipEntry, InputStream inputStream)
-     * @throws Exception 
-     */
-    public static void openZipFromWeb(Web web, ThrowableTriConsumer<String, ZipEntry, InputStream> callbackFileInputstream) throws Exception {
-        WebResult<String> res; 
-        if ((res = web.readRawResultStream(is -> {
-            openZipStreamNotClose(is, callbackFileInputstream);
-        })).getException() != null) {
-            throw res.getException();
         }
     }
     

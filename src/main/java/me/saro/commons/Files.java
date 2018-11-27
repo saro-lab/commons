@@ -23,34 +23,6 @@ public class Files {
     }
 
     /**
-     * create parent directory for child file
-     * <br>
-     * ex1) createParentDirectoryForFile(new File('/aaa/bbb/ccc/aaa.txt'))
-     * <br>
-     * <br>
-     * create directory : /aaa/bbb/ccc
-     * <br>
-     * <br>
-     * ex2) createParentDirectoryForFile(new File('/aaa/bbb/ccc'))
-     * <br>
-     * create directory : /aaa/bbb
-     * @param file
-     * @return
-     * @throws IOException
-     */
-    private static boolean createParentDirectoryForFile(File directoryChildFile) throws IOException {
-        File parent = directoryChildFile.getParentFile();
-        if (parent == null) {
-            throw new IOException("create file error : invalid child file for create directory : " + directoryChildFile.getAbsolutePath());
-        }
-
-        if (parent.mkdirs()) {
-            return true;
-        }
-        throw new IOException("create directory error : " + parent.getAbsolutePath());
-    }
-
-    /**
      * create file useing the inputstream
      * @param file
      * @param overwrite
@@ -64,9 +36,13 @@ public class Files {
             } else {
                 throw new IOException("create file error : already exists file : " + file.getAbsolutePath());
             }
+        } else {
+            File parent = file.getParentFile();
+            if (parent == null) {
+                throw new IOException("create file error : invalid child file for create directory : " + file.getAbsolutePath());
+            }
+            parent.mkdirs();
         }
-
-        createParentDirectoryForFile(file);
 
         try (FileOutputStream fos = new FileOutputStream(file) ; InputStream is = inputStream) {
             Utils.inputStreamReader(is, (buf, len) -> fos.write(buf, 0, len));
