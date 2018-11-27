@@ -18,12 +18,14 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 
+import lombok.Getter;
+
 /**
  * SFTP
  */
 public class SFTP implements FTP {
 
-    final ChannelSftp channel;
+    final @Getter ChannelSftp channel;
     final Session session;
     
     public SFTP(String host, int port, String user, String pass) throws IOException {
