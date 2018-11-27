@@ -35,6 +35,7 @@ public class FTPS implements FTP {
                 fs.execPROT("P");
             }
             ftp.enterLocalPassiveMode();
+            ftp.setUseEPSVwithIPv4(false);
             ftp.login(user, pass);
             // set based control keep alive reply timeout
             ftp.setControlKeepAliveReplyTimeout(60000);
