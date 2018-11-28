@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import me.saro.commons.bytes.annotations.BinaryData;
+import me.saro.commons.bytes.annotations.FixedBinary;
 import me.saro.commons.bytes.annotations.FixedData;
-import me.saro.commons.bytes.annotations.TextData;
-import me.saro.commons.bytes.annotations.TextDataAlign;
+import me.saro.commons.bytes.annotations.FixedText;
+import me.saro.commons.bytes.annotations.FixedTextAlign;
 import me.saro.commons.function.ThrowableConsumer;
 import me.saro.commons.function.ThrowableSupplier;
 
@@ -141,8 +141,8 @@ public class FixedDataFormat<T> {
         
         Stream.of(clazz.getDeclaredFields()).parallel().forEach(ThrowableConsumer.runtime(field -> {
             field.setAccessible(true);
-            BinaryData binary = field.getDeclaredAnnotation(BinaryData.class);
-            TextData text = field.getDeclaredAnnotation(TextData.class);
+            FixedBinary binary = field.getDeclaredAnnotation(FixedBinary.class);
+            FixedText text = field.getDeclaredAnnotation(FixedText.class);
             if (binary != null) {
                 bindToClassOrder(field, binary);
                 bindToBytesOrder(field, binary);
@@ -159,7 +159,7 @@ public class FixedDataFormat<T> {
      * @param field
      * @param da
      */
-    private void bindToBytesOrder(Field field, BinaryData da) {
+    private void bindToBytesOrder(Field field, FixedBinary da) {
         int dfOffset = da.offset();
         int arrayLength = da.arrayLength();
         String type = field.getType().getName();
@@ -206,10 +206,10 @@ public class FixedDataFormat<T> {
      * @param field
      * @param da
      */
-    private void bindToBytesOrder(Field field, TextData da) {
+    private void bindToBytesOrder(Field field, FixedText da) {
         int dfOffset = da.offset();
         int dfLength = da.length();
-        boolean isLeft = da.align() == TextDataAlign.left;
+        boolean isLeft = da.align() == FixedTextAlign.left;
         String type = field.getType().getName();
         boolean unsigned = da.unsigned();
         String charset = "".equals(da.charset()) ? fixedData.charset() : da.charset();
@@ -278,7 +278,7 @@ public class FixedDataFormat<T> {
      * @param field
      * @param da
      */
-    private void bindToClassOrder(Field field, BinaryData da) {
+    private void bindToClassOrder(Field field, FixedBinary da) {
         int dfOffset = da.offset();
         int arrayLength = da.arrayLength();
         String type = field.getType().getName();
@@ -323,11 +323,11 @@ public class FixedDataFormat<T> {
      * @param field
      * @param da
      */
-    private void bindToClassOrder(Field field, TextData da) {
+    private void bindToClassOrder(Field field, FixedText da) {
         int dfOffset = da.offset();
         int dfLength = da.length();
         byte dfFill = da.fill();
-        boolean isLeft = da.align() == TextDataAlign.left;
+        boolean isLeft = da.align() == FixedTextAlign.left;
         String type = field.getType().getName();
         boolean unsigned = da.unsigned();
         String charset = "".equals(da.charset()) ? fixedData.charset() : da.charset();
