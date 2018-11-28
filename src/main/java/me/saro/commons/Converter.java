@@ -538,7 +538,7 @@ public class Converter {
         switch (toNamingConvention) {
         case dashes : return wordStream.collect(Collectors.joining("-"));
         case underscores : return wordStream.collect(Collectors.joining("_"));
-        case pascalCase : return wordStream.map(e -> e.substring(0, 1).toUpperCase() + e.substring(1)).collect(Collectors.joining(""));
+        case pascalCase : return wordStream.filter(e -> e.length() > 0).map(e -> e.substring(0, 1).toUpperCase() + e.substring(1)).collect(Collectors.joining(""));
         case camelCase : {
             switch (words.size()) {
             case 0 : return "";
