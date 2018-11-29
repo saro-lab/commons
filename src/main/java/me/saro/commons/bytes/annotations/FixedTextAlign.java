@@ -5,7 +5,7 @@ package me.saro.commons.bytes.annotations;
  * @author      PARK Yong Seo
  * @since       1.0
  */
-public enum TextDataAlign {
+public enum FixedTextAlign {
     /**
      * align left
      * [abc       ] is [abc]

@@ -1,6 +1,7 @@
 package me.saro.commons;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,6 +9,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import me.saro.commons.function.ThrowableFunction;
 import me.saro.commons.function.ThrowablePredicate;
 
 /**
@@ -18,34 +20,6 @@ import me.saro.commons.function.ThrowablePredicate;
 public class Files {
 
     private Files() {
-    }
-
-    /**
-     * create parent directory for child file
-     * <br>
-     * ex1) createParentDirectoryForFile(new File('/aaa/bbb/ccc/aaa.txt'))
-     * <br>
-     * <br>
-     * create directory : /aaa/bbb/ccc
-     * <br>
-     * <br>
-     * ex2) createParentDirectoryForFile(new File('/aaa/bbb/ccc'))
-     * <br>
-     * create directory : /aaa/bbb
-     * @param file
-     * @return
-     * @throws IOException
-     */
-    private static boolean createParentDirectoryForFile(File directoryChildFile) throws IOException {
-        File parent = directoryChildFile.getParentFile();
-        if (parent == null) {
-            throw new IOException("create file error : invalid child file for create directory : " + directoryChildFile.getAbsolutePath());
-        }
-
-        if (parent.mkdirs()) {
-            return true;
-        }
-        throw new IOException("create directory error : " + parent.getAbsolutePath());
     }
 
     /**
@@ -62,9 +36,13 @@ public class Files {
             } else {
                 throw new IOException("create file error : already exists file : " + file.getAbsolutePath());
             }
+        } else {
+            File parent = file.getParentFile();
+            if (parent == null) {
+                throw new IOException("create file error : invalid child file for create directory : " + file.getAbsolutePath());
+            }
+            parent.mkdirs();
         }
-
-        createParentDirectoryForFile(file);
 
         try (FileOutputStream fos = new FileOutputStream(file) ; InputStream is = inputStream) {
             Utils.inputStreamReader(is, (buf, len) -> fos.write(buf, 0, len));
@@ -87,6 +65,22 @@ public class Files {
      */
     public static Stream<File> streamFiles(String directory) {
         return Stream.of(new File(directory).listFiles());
+    }
+    
+    /**
+     * read line in the file
+     * @param file
+     * @param charset
+     * @param lineReader
+     * @return
+     * @throws Exception
+     */
+    public static <T> T lineReader(File file, String charset, ThrowableFunction<Stream<String>, T> lineReader) throws Exception {
+        T t = null;
+        try (FileInputStream fis = new FileInputStream(file)) {
+            t = Utils.inputStreamLineReader(fis, charset, lineReader);
+        }
+        return t;
     }
 
     /**
