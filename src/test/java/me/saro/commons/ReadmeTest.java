@@ -26,6 +26,7 @@ public class ReadmeTest {
         outClassInfo(Bytes.class);
         outClassInfo(Utils.class);
         outClassInfo(Files.class);
+        outClassInfo(Zips.class);
         outClassInfo(Valids.class);
         outClassInfo(Tests.class);
         

@@ -11,10 +11,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import me.saro.commons.bytes.Bytes;
 import me.saro.commons.bytes.FixedDataFormat;
-import me.saro.commons.bytes.annotations.BinaryData;
+import me.saro.commons.bytes.annotations.FixedBinary;
 import me.saro.commons.bytes.annotations.FixedData;
-import me.saro.commons.bytes.annotations.TextData;
-import me.saro.commons.bytes.annotations.TextDataAlign;
+import me.saro.commons.bytes.annotations.FixedText;
+import me.saro.commons.bytes.annotations.FixedTextAlign;
 
 public class FixedDataTest {
 
@@ -82,25 +82,25 @@ public class FixedDataTest {
     @AllArgsConstructor
     public static class BinaryStruct {
         
-        @BinaryData(offset=0)
+        @FixedBinary(offset=0)
         byte byteData;
         
-        @BinaryData(offset=1)
+        @FixedBinary(offset=1)
         short shortData;
         
-        @BinaryData(offset=3)
+        @FixedBinary(offset=3)
         int intData;
         
-        @BinaryData(offset=7)
+        @FixedBinary(offset=7)
         Long longData; // test long -> Long
         
-        @BinaryData(offset=15)
+        @FixedBinary(offset=15)
         float floatData;
         
-        @BinaryData(offset=19)
+        @FixedBinary(offset=19)
         double doubleData;
         
-        @BinaryData(offset=27, arrayLength=3)
+        @FixedBinary(offset=27, arrayLength=3)
         byte[] bytesData;
     }
     
@@ -110,28 +110,28 @@ public class FixedDataTest {
     @AllArgsConstructor
     public static class TextStruct {
         
-        @TextData(offset=0, length=3, unsigned=true)
+        @FixedText(offset=0, length=3, unsigned=true)
         byte byteData;
         
-        @TextData(offset=3, length=7)
+        @FixedText(offset=3, length=7)
         Short shortData;
         
-        @TextData(offset=10, length=10, radix=16, fill='0', align=TextDataAlign.right)
+        @FixedText(offset=10, length=10, radix=16, fill='0', align=FixedTextAlign.right)
         int intData;
         
-        @TextData(offset=20, length=20)
+        @FixedText(offset=20, length=20)
         long longData;
         
-        @TextData(offset=40, length=20)
+        @FixedText(offset=40, length=20)
         float floatData;
         
-        @TextData(offset=60, length=20)
+        @FixedText(offset=60, length=20)
         double doubleData;
         
-        @TextData(offset=80, length=10)
+        @FixedText(offset=80, length=10)
         String leftText;
         
-        @TextData(offset=90, length=10, align=TextDataAlign.right)
+        @FixedText(offset=90, length=10, align=FixedTextAlign.right)
         String rightText;
     }
     
@@ -141,13 +141,13 @@ public class FixedDataTest {
     @AllArgsConstructor
     public static class MixedStruct {
         
-        @TextData(offset=0, length=15)
+        @FixedText(offset=0, length=15)
         String firstName;
         
-        @TextData(offset=15, length=15)
+        @FixedText(offset=15, length=15)
         String lastName;
         
-        @BinaryData(offset=30)
+        @FixedBinary(offset=30)
         int memberId;
     }
 }
