@@ -4,12 +4,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import me.saro.commons.bytes.annotations.FixedBinary;
@@ -139,16 +140,16 @@ public class FixedDataFormat<T> {
             throw new IllegalArgumentException(clazz.getName() + " need to Declared size");
         }
         
-        Stream.of(clazz.getDeclaredFields()).parallel().forEach(ThrowableConsumer.runtime(field -> {
-            field.setAccessible(true);
-            FixedBinary binary = field.getDeclaredAnnotation(FixedBinary.class);
-            FixedText text = field.getDeclaredAnnotation(FixedText.class);
+        Stream.of(clazz.getDeclaredMethods()).parallel().forEach(ThrowableConsumer.runtime(method -> {
+            method.setAccessible(true);
+            FixedBinary binary = method.getDeclaredAnnotation(FixedBinary.class);
+            FixedText text = method.getDeclaredAnnotation(FixedText.class);
             if (binary != null) {
-                bindToClassOrder(field, binary);
-                bindToBytesOrder(field, binary);
+                bindToClassOrder(method, binary);
+                bindToBytesOrder(method, binary);
             } else if (text != null) {
-                bindToClassOrder(field, text);
-                bindToBytesOrder(field, text);
+                bindToClassOrder(method, text);
+                bindToBytesOrder(method, text);
             }
         }));
         return this;
@@ -159,15 +160,15 @@ public class FixedDataFormat<T> {
      * @param field
      * @param da
      */
-    private void bindToBytesOrder(Field field, FixedBinary da) {
+    private void bindToBytesOrder(Method method, FixedBinary da) {
         int dfOffset = da.offset();
         int arrayLength = da.arrayLength();
-        String type = field.getType().getName();
+        String type = method.getReturnType().getName();
         
         toBytesOrders.add((clazz, bytes, offset) -> {
             
             int s = offset + dfOffset;
-            Object val = field.get(clazz);
+            Object val = method.invoke(clazz);
             
             if (val == null) {
                 return;
@@ -206,11 +207,11 @@ public class FixedDataFormat<T> {
      * @param field
      * @param da
      */
-    private void bindToBytesOrder(Field field, FixedText da) {
+    private void bindToBytesOrder(Method method, FixedText da) {
         int dfOffset = da.offset();
         int dfLength = da.length();
         boolean isLeft = da.align() == FixedTextAlign.left;
-        String type = field.getType().getName();
+        String type = method.getReturnType().getName();
         boolean unsigned = da.unsigned();
         String charset = "".equals(da.charset()) ? fixedData.charset() : da.charset();
         int radix = da.radix();
@@ -218,7 +219,7 @@ public class FixedDataFormat<T> {
         toBytesOrders.add((clazz, bytes, offset) -> {
             int s = offset + dfOffset;
             byte fill = da.fill();
-            Object val = field.get(clazz);
+            Object val = method.invoke(clazz);
             byte[] vbytes;
             
             if (val == null) {
@@ -257,7 +258,7 @@ public class FixedDataFormat<T> {
             
             int vLen = vbytes.length;
             if (vLen > dfLength) {
-                throw new IllegalArgumentException("["+new String(vbytes, charset)+"] is out of range of "+field.getName());
+                throw new IllegalArgumentException("["+new String(vbytes, charset)+"] is out of range of "+method.getName()+"()");
             } else if (isLeft) {
                 System.arraycopy(vbytes, 0, bytes, s, vLen);
                 for (int e = s + dfLength, i = (s + vLen) ; i < e ; i++) {
@@ -278,10 +279,10 @@ public class FixedDataFormat<T> {
      * @param field
      * @param da
      */
-    private void bindToClassOrder(Field field, FixedBinary da) {
+    private void bindToClassOrder(Method method, FixedBinary da) {
         int dfOffset = da.offset();
         int arrayLength = da.arrayLength();
-        String type = field.getType().getName();
+        String type = method.getParameterTypes()[0].getName();
         
         if (type.startsWith("[") && arrayLength < 1) {
             throw new IllegalArgumentException("arrayLength must over then 1");
@@ -292,25 +293,25 @@ public class FixedDataFormat<T> {
             
             switch (type) {
                 case "[B" : case "[Ljava.lang.Byte;" :
-                    field.set(obj, Arrays.copyOfRange(bytes, s, s + arrayLength));
+                    method.invoke(obj, Arrays.copyOfRange(bytes, s, s + arrayLength));
                 return;
                 case "byte" : case "java.lang.Byte" :
-                    field.set(obj, bytes[s]);
+                    method.invoke(obj, bytes[s]);
                 return;
                 case "short" : case "java.lang.Short" :
-                    field.set(obj, Bytes.toShort(bytes, s));
+                    method.invoke(obj, Bytes.toShort(bytes, s));
                 return;
                 case "int" : case "java.lang.Integer" :
-                    field.set(obj, Bytes.toInt(bytes, s));
+                    method.invoke(obj, Bytes.toInt(bytes, s));
                 return;
                 case "long" : case "java.lang.Long" : 
-                    field.set(obj, Bytes.toLong(bytes, s));
+                    method.invoke(obj, Bytes.toLong(bytes, s));
                 return;
                 case "float" : case "java.lang.Float" : 
-                    field.set(obj, Bytes.toFloat(bytes, s));
+                    method.invoke(obj, Bytes.toFloat(bytes, s));
                 return;
                 case "double" : case "java.lang.Double" : 
-                    field.set(obj, Bytes.toDouble(bytes, s));
+                    method.invoke(obj, Bytes.toDouble(bytes, s));
                 return;
                 default : 
                     throw new IllegalArgumentException("type ["+type+"] does not support");
@@ -323,12 +324,18 @@ public class FixedDataFormat<T> {
      * @param field
      * @param da
      */
-    private void bindToClassOrder(Field field, FixedText da) {
+    private void bindToClassOrder(Method method, FixedText da) {
+        
+        // it is not setter method
+        if (method.getParameterCount() != 1) {
+            return;
+        }
+        
         int dfOffset = da.offset();
         int dfLength = da.length();
         byte dfFill = da.fill();
         boolean isLeft = da.align() == FixedTextAlign.left;
-        String type = field.getType().getName();
+        String type = method.getParameterTypes()[0].getName();
         boolean unsigned = da.unsigned();
         String charset = "".equals(da.charset()) ? fixedData.charset() : da.charset();
         int radix = da.radix();
@@ -362,36 +369,84 @@ public class FixedDataFormat<T> {
             }
             
             if ("java.lang.String".equals(type)) {
-                field.set(obj, val);
+                method.invoke(obj, val);
             } else {
                 try {
                     switch (type) {
                         case "byte" : case "java.lang.Byte" :
-                            field.set(obj, (byte)Integer.parseInt(val, radix));
+                            method.invoke(obj, (byte)Integer.parseInt(val, radix));
                         return;
                         case "short" : case "java.lang.Short" :
-                            field.set(obj, (short)Integer.parseInt(val, radix));
+                            method.invoke(obj, (short)Integer.parseInt(val, radix));
                         return;
                         case "int" : case "java.lang.Integer" :
-                            field.set(obj, unsigned ? (int)Long.parseLong(val, radix) : Integer.parseInt(val, radix));
+                            method.invoke(obj, unsigned ? (int)Long.parseLong(val, radix) : Integer.parseInt(val, radix));
                         return;
                         case "long" : case "java.lang.Long" : 
-                            field.set(obj, unsigned ? Long.parseUnsignedLong(val, radix) : Long.parseLong(val, radix));
+                            method.invoke(obj, unsigned ? Long.parseUnsignedLong(val, radix) : Long.parseLong(val, radix));
                         return;
                         case "float" : case "java.lang.Float" : 
-                            field.set(obj, Float.parseFloat(val));
+                            method.invoke(obj, Float.parseFloat(val));
                         return;
                         case "double" : case "java.lang.Double" : 
-                            field.set(obj, Double.parseDouble(val));
+                            method.invoke(obj, Double.parseDouble(val));
                         return;
                         default : 
                             throw new IllegalArgumentException("type ["+type+"] does not support");
                     }
                 } catch (Exception ex) {
-                    throw new IllegalArgumentException("["+val+"] is not ["+type+"] in "+clazz.getName()+"."+field.getName());
+                    throw new IllegalArgumentException("["+val+"] is not ["+type+"] in "+clazz.getName()+"."+method.getName()+"()");
                 }
             }
         });
+    }
+    
+    /**
+     * getter
+     * @param clazz
+     * @param fieldName
+     * @return
+     */
+    private Method getter(Class<?> clazz, String fieldName) {
+        String methodNameGet = "get" + (Character.toUpperCase(fieldName.charAt(0))) + fieldName.substring(1);
+        String methodNameIs = "is" + (Character.toUpperCase(fieldName.charAt(0))) + fieldName.substring(1);
+        List<Method> methods = Stream.of(clazz.getDeclaredMethods())
+            .filter(e -> e.getName().equals(methodNameGet) || e.getName().equals(methodNameIs))
+            .filter(e -> !e.getReturnType().equals(Void.TYPE))
+            .filter(e -> e.getParameterCount() == 0)
+            .collect(Collectors.toList());
+        
+        if (methods.size() == 0) {
+            throw new IllegalArgumentException("method not matched");
+        }
+        if (methods.size() > 1) {
+            throw new IllegalArgumentException(methodNameGet + "() or "+methodNameIs+"() is ambiguous");
+        }
+        
+        return methods.get(0);
+    }
+    
+    /**
+     * setter
+     * @param clazz
+     * @param fieldName
+     * @return
+     */
+    private Method setter(Class<?> clazz, String fieldName) {
+        String methodName = "set" + (Character.toUpperCase(fieldName.charAt(0))) + fieldName.substring(1);
+        List<Method> methods = Stream.of(clazz.getDeclaredMethods())
+            .filter(e -> e.getName().equals(methodName))
+            .filter(e -> e.getParameterCount() == 1)
+            .collect(Collectors.toList());
+        
+        if (methods.size() == 0) {
+            throw new IllegalArgumentException("method not matched");
+        }
+        if (methods.size() > 1) {
+            throw new IllegalArgumentException(methodName + "() is ambiguous");
+        }
+        
+        return methods.get(0);
     }
     
     /**
