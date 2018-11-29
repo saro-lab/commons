@@ -140,16 +140,15 @@ public class FixedDataFormat<T> {
             throw new IllegalArgumentException(clazz.getName() + " need to Declared size");
         }
         
-        Stream.of(clazz.getDeclaredMethods()).parallel().forEach(ThrowableConsumer.runtime(method -> {
-            method.setAccessible(true);
-            FixedBinary binary = method.getDeclaredAnnotation(FixedBinary.class);
-            FixedText text = method.getDeclaredAnnotation(FixedText.class);
+        Stream.of(clazz.getDeclaredFields()).parallel().forEach(ThrowableConsumer.runtime(field -> {
+            FixedBinary binary = field.getDeclaredAnnotation(FixedBinary.class);
+            FixedText text = field.getDeclaredAnnotation(FixedText.class);
             if (binary != null) {
-                bindToClassOrder(method, binary);
-                bindToBytesOrder(method, binary);
+                bindToClassOrder(setter(clazz, field.getName()), binary);
+                bindToBytesOrder(getter(clazz, field.getName()), binary);
             } else if (text != null) {
-                bindToClassOrder(method, text);
-                bindToBytesOrder(method, text);
+                bindToClassOrder(setter(clazz, field.getName()), text);
+                bindToBytesOrder(getter(clazz, field.getName()), text);
             }
         }));
         return this;
@@ -409,9 +408,10 @@ public class FixedDataFormat<T> {
      */
     private Method getter(Class<?> clazz, String fieldName) {
         String methodNameGet = "get" + (Character.toUpperCase(fieldName.charAt(0))) + fieldName.substring(1);
-        String methodNameIs = "is" + (Character.toUpperCase(fieldName.charAt(0))) + fieldName.substring(1);
+        //String methodNameIs = "is" + (Character.toUpperCase(fieldName.charAt(0))) + fieldName.substring(1); boolean has not support
         List<Method> methods = Stream.of(clazz.getDeclaredMethods())
-            .filter(e -> e.getName().equals(methodNameGet) || e.getName().equals(methodNameIs))
+            //.filter(e -> e.getName().equals(methodNameGet) || e.getName().equals(methodNameIs))
+            .filter(e -> e.getName().equals(methodNameGet))
             .filter(e -> !e.getReturnType().equals(Void.TYPE))
             .filter(e -> e.getParameterCount() == 0)
             .collect(Collectors.toList());
@@ -420,10 +420,12 @@ public class FixedDataFormat<T> {
             throw new IllegalArgumentException("method not matched");
         }
         if (methods.size() > 1) {
-            throw new IllegalArgumentException(methodNameGet + "() or "+methodNameIs+"() is ambiguous");
+            throw new IllegalArgumentException(methodNameGet + "() is ambiguous");
         }
         
-        return methods.get(0);
+        Method method = methods.get(0);
+        method.setAccessible(true);
+        return method;
     }
     
     /**
