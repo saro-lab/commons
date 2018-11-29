@@ -3,7 +3,7 @@ package me.saro.commons.bytes.annotations;
 /**
  *  Text Align
  * @author      PARK Yong Seo
- * @since       1.0
+ * @since       1.4
  */
 public enum FixedTextAlign {
     /**
