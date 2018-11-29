@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  *  text data in FixedDataFormat
  * @author      PARK Yong Seo
- * @since       1.0
+ * @since       1.4
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
