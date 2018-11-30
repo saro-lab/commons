@@ -17,7 +17,7 @@ public @interface SplitTokenData {
      * token
      * @return
      */
-    String toekn() default "";
+    String token() default "";
     
     /**
      * 
