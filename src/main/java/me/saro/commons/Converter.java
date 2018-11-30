@@ -77,6 +77,45 @@ public class Converter {
         }
         return rv;
     }
+    
+    /**
+     * split by token
+     * @param data
+     * @param token
+     * @return
+     */
+    public static List<String> splitByToken(String data, String token) {
+        if (data == null) {
+            return Collections.emptyList();
+        }
+        
+        List<String> list = new ArrayList<>();
+        
+        int tokenSize = token.length();
+        int offset = 0;
+        int pnt = data.indexOf(token);
+        
+        if (tokenSize < 1) {
+            throw new RuntimeException("token is empty");
+        }
+        
+        if (pnt == -1) {
+            list.add(data);
+            return list;
+        }
+        
+        for (int i = 0 ; i < 99999 ; i++) {
+            list.add(data.substring(offset, pnt));
+            offset = pnt + tokenSize;
+            pnt = data.indexOf(token, offset);
+            if (pnt == -1) {
+                list.add(data.substring(offset));
+                return list;
+            }
+        }
+        
+        throw new RuntimeException("splitByToken support less then 99999 tokens per data");
+    }
 
     /**
      * asList
