@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import me.saro.commons.bytes.Bytes;
-import me.saro.commons.bytes.DataFormat;
+import me.saro.commons.bytes.FixedDataFormat;
 import me.saro.commons.bytes.annotations.FixedBinary;
 import me.saro.commons.bytes.annotations.FixedData;
 import me.saro.commons.bytes.annotations.FixedText;
@@ -20,7 +20,7 @@ public class FixedDataTest {
 
     @Test
     public void binary() {
-        DataFormat<BinaryStruct> format = DataFormat.createFixedData(BinaryStruct.class, BinaryStruct::new);
+        FixedDataFormat<BinaryStruct> format = FixedDataFormat.create(BinaryStruct.class, BinaryStruct::new);
         
         BinaryStruct bs = new BinaryStruct((byte)-1, (short)321, 1234, 76543L, 2.1F, 3.6D, new byte[] {0x1f, 0x3b, 0x33});
         
@@ -45,7 +45,7 @@ public class FixedDataTest {
     
     @Test
     public void text() throws UnsupportedEncodingException {
-        DataFormat<TextStruct> format = DataFormat.createFixedData(TextStruct.class, TextStruct::new);
+        FixedDataFormat<TextStruct> format = FixedDataFormat.create(TextStruct.class, TextStruct::new);
         
         TextStruct ts = new TextStruct((byte)-1/* -1 == 255 */, (short)-321, 32123, -21L, 12.3F, -342.5D, "가나다", "abc");
         
@@ -63,7 +63,7 @@ public class FixedDataTest {
     
     @Test
     public void mixed() {
-        DataFormat<MixedStruct> format = DataFormat.createFixedData(MixedStruct.class, MixedStruct::new);
+        FixedDataFormat<MixedStruct> format = FixedDataFormat.create(MixedStruct.class, MixedStruct::new);
         MixedStruct ms = new MixedStruct("Yong Seo", "PARK", 1);
         
         byte[] bytes = format.toBytes(ms);
