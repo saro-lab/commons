@@ -14,6 +14,12 @@ import me.saro.commons.function.ThrowableSupplier;
  */
 public interface DataFormat<T> {
     
+    /**
+     * bytes to class
+     * @param bytes
+     * @param offset
+     * @return
+     */
     public T toClass(byte[] bytes, int offset);
     
     default public T toClass(byte[] bytes) {
