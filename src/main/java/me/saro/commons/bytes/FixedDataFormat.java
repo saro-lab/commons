@@ -113,7 +113,6 @@ public class FixedDataFormat<T> extends AbstractDataFormat implements DataFormat
      * @return
      */
     private void init() {
-        
         if (fixedData == null) {
             throw new IllegalArgumentException(clazz.getName() + " need to Declared @FixedData Annotation");
         }
