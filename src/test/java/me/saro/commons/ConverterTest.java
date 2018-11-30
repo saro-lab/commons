@@ -1,7 +1,5 @@
 package me.saro.commons;
 
-
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
@@ -16,19 +14,30 @@ import me.saro.commons.converter.NamingConvention;
 public class ConverterTest {
 
     @Test
-    public void test() throws Exception {
-
-        assertEquals("123", Converter.asList("1", "2", "3").stream().collect(Collectors.joining()));
-
-        assertEquals(5, Converter.splitCsvLine("aaa,bbb,ccc,\"ddd,eee\",fff").length);
-
-        assertEquals("00ff", Bytes.toHex(new byte[] {0, -1}));
-
+    public void toMap() throws Exception {
         assertEquals(
-                "a1b2c3",
-                Converter.<String, Integer>toMap("a", 1, "b", 2, "c", 3).entrySet().stream()
-                .map(e -> e.getKey() + e.getValue()).collect(Collectors.joining())
-                );
+            "a1b2c3",
+            Converter.<String, Integer>toMap("a", 1, "b", 2, "c", 3).entrySet().stream()
+            .map(e -> e.getKey() + e.getValue()).collect(Collectors.joining())
+        );
+    }
+    
+    @Test
+    public void asList() {
+        assertEquals("123", Converter.asList("1", "2", "3").stream().collect(Collectors.joining()));
+    }
+    
+    @Test
+    public void splitCsvLine() {
+        assertEquals(5, Converter.splitCsvLine("aaa,bbb,ccc,\"ddd,eee\",fff").length);
+    }
+    
+    @Test
+    public void splitByToken() {
+        assertEquals(Converter.splitByToken(null, ",").size(), 0);
+        assertEquals(Converter.splitByToken("", "|").stream().collect(Collectors.joining("|")), "");
+        assertEquals(Converter.splitByToken("hello", "|").stream().collect(Collectors.joining("|")), "hello");
+        assertEquals(Converter.splitByToken("the|saro|||commons||working||", "|").stream().collect(Collectors.joining("|")), "the|saro|||commons||working||");
     }
 
     @Test
