@@ -30,13 +30,13 @@ public @interface FixedData {
      * ignore not found getter
      * @return
      */
-    boolean ignoreNotfoundGetter() default false;
+    boolean ignoreNotFoundGetter() default false;
     
     /**
      * ignore not found setter
      * @return
      */
-    boolean ignoreNotfoundSetter() default false;
+    boolean ignoreNotFoundSetter() default false;
     
     /**
      * charset

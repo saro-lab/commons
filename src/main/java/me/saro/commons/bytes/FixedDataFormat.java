@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import me.saro.commons.bytes.annotations.FixedBinary;
@@ -25,7 +25,7 @@ import me.saro.commons.function.ThrowableSupplier;
  * @author      PARK Yong Seo
  * @since       1.0
  */
-public class FixedDataFormat<T> {
+public class FixedDataFormat<T> extends AbstractDataFormat {
     
     final Class<T> clazz;
     final FixedData fixedData;
@@ -140,15 +140,18 @@ public class FixedDataFormat<T> {
             throw new IllegalArgumentException(clazz.getName() + " need to Declared size");
         }
         
+        boolean infGetter = fixedData.ignoreNotFoundGetter();
+        boolean infSetter = fixedData.ignoreNotFoundSetter();
+        
         Stream.of(clazz.getDeclaredFields()).parallel().forEach(ThrowableConsumer.runtime(field -> {
             FixedBinary binary = field.getDeclaredAnnotation(FixedBinary.class);
             FixedText text = field.getDeclaredAnnotation(FixedText.class);
             if (binary != null) {
-                bindToClassOrder(setter(clazz, field.getName()), binary);
-                bindToBytesOrder(getter(clazz, field.getName()), binary);
+                setter(clazz, field.getName(), infSetter).ifPresent(e -> bindToClassOrder(e, binary));
+                getter(clazz, field.getName(), infGetter).ifPresent(e -> bindToBytesOrder(e, binary));
             } else if (text != null) {
-                bindToClassOrder(setter(clazz, field.getName()), text);
-                bindToBytesOrder(getter(clazz, field.getName()), text);
+                setter(clazz, field.getName(), infSetter).ifPresent(e -> bindToClassOrder(e, text));
+                getter(clazz, field.getName(), infGetter).ifPresent(e -> bindToBytesOrder(e, text));
             }
         }));
         return this;
@@ -398,57 +401,6 @@ public class FixedDataFormat<T> {
                 }
             }
         });
-    }
-    
-    /**
-     * getter
-     * @param clazz
-     * @param fieldName
-     * @return
-     */
-    private Method getter(Class<?> clazz, String fieldName) {
-        String methodNameGet = "get" + (Character.toUpperCase(fieldName.charAt(0))) + fieldName.substring(1);
-        //String methodNameIs = "is" + (Character.toUpperCase(fieldName.charAt(0))) + fieldName.substring(1); boolean has not support
-        List<Method> methods = Stream.of(clazz.getDeclaredMethods())
-            //.filter(e -> e.getName().equals(methodNameGet) || e.getName().equals(methodNameIs))
-            .filter(e -> e.getName().equals(methodNameGet))
-            .filter(e -> !e.getReturnType().equals(Void.TYPE))
-            .filter(e -> e.getParameterCount() == 0)
-            .collect(Collectors.toList());
-        
-        if (methods.size() == 0) {
-            throw new IllegalArgumentException("method not matched");
-        }
-        if (methods.size() > 1) {
-            throw new IllegalArgumentException(methodNameGet + "() is ambiguous");
-        }
-        
-        Method method = methods.get(0);
-        method.setAccessible(true);
-        return method;
-    }
-    
-    /**
-     * setter
-     * @param clazz
-     * @param fieldName
-     * @return
-     */
-    private Method setter(Class<?> clazz, String fieldName) {
-        String methodName = "set" + (Character.toUpperCase(fieldName.charAt(0))) + fieldName.substring(1);
-        List<Method> methods = Stream.of(clazz.getDeclaredMethods())
-            .filter(e -> e.getName().equals(methodName))
-            .filter(e -> e.getParameterCount() == 1)
-            .collect(Collectors.toList());
-        
-        if (methods.size() == 0) {
-            throw new IllegalArgumentException("method not matched");
-        }
-        if (methods.size() > 1) {
-            throw new IllegalArgumentException(methodName + "() is ambiguous");
-        }
-        
-        return methods.get(0);
     }
     
     /**
