@@ -27,6 +27,18 @@ public @interface FixedData {
     byte fill() default ' ';
     
     /**
+     * ignore not found getter
+     * @return
+     */
+    boolean ignoreNotfoundGetter() default false;
+    
+    /**
+     * ignore not found setter
+     * @return
+     */
+    boolean ignoreNotfoundSetter() default false;
+    
+    /**
      * charset
      * @return
      */
