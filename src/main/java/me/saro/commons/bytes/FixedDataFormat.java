@@ -3,7 +3,6 @@ package me.saro.commons.bytes;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,14 +16,13 @@ import me.saro.commons.bytes.annotations.FixedData;
 import me.saro.commons.bytes.annotations.FixedText;
 import me.saro.commons.bytes.annotations.FixedTextAlign;
 import me.saro.commons.function.ThrowableConsumer;
-import me.saro.commons.function.ThrowableSupplier;
 
 /**
  * DataFormat 
  * @author      PARK Yong Seo
  * @since       1.0
  */
-public class FixedDataFormat<T> extends AbstractDataFormat {
+public class FixedDataFormat<T> extends AbstractDataFormat implements DataFormat<T> {
     
     final Class<T> clazz;
     final FixedData fixedData;
@@ -32,42 +30,18 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
     final List<FixedDataBytesToClass> toClassOrders = Collections.synchronizedList(new ArrayList<>());
     final List<FixedDataClassToBytes> toBytesOrders = Collections.synchronizedList(new ArrayList<>());
     
-    // private
-    private FixedDataFormat(Class<T> clazz, Supplier<T> newInstance) {
+    FixedDataFormat(Class<T> clazz, Supplier<T> newInstance) {
         this.clazz = clazz;
         fixedData = clazz.getDeclaredAnnotation(FixedData.class);
         this.newInstance = newInstance;
+        init();
     }
     
-    /**
-     * create DataFormat
-     * @param clazz
-     * @param newInstance
-     * @return
-     */
-    public static <T> FixedDataFormat<T> create(Class<T> clazz, Supplier<T> newInstance) {
-        return new FixedDataFormat<>(clazz, newInstance).init();
-    }
-    
-    /**
-     * create DataFormat<br>
-     * user defualt constructor
-     * @param clazz
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    public static <T> FixedDataFormat<T> create(Class<T> clazz) {
-        return create(clazz, ThrowableSupplier.runtime(() -> (T)clazz.getDeclaredConstructors()[0].newInstance()));
-    }
-    
+    @Override
     public T toClass(byte[] bytes, int offset) {
         T t = newInstance.get();
         toClassOrders.parallelStream().forEach(ThrowableConsumer.runtime(e -> e.order(t, bytes, offset)));
         return t;
-    }
-    
-    public T toClass(byte[] bytes) {
-        return toClass(bytes, 0);
     }
     
     /**
@@ -75,6 +49,7 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
      * @param bytes
      * @return
      */
+    @Override
     public T toClassWithCheckSize(byte[] bytes) {
         if (bytes.length != fixedData.size()) {
             throw new IllegalArgumentException("size not matched define["+fixedData.size()+"] data[]"+bytes.length+"");
@@ -87,35 +62,42 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
      * @param line
      * @return
      */
+    @Override
     public T toClassWithCheckSize(String line) {
         return toClassWithCheckSize(line, fixedData.charset());
     }
     
     /**
-     * 
-     * @param line
-     * @param charset
-     * @return
+     * to bytes and bind byte[]
+     * @param outputBytes
+     * @param offset
+     * @param obj
      */
-    public T toClassWithCheckSize(String line, String charset) {
-        try {
-            return toClassWithCheckSize(line.getBytes(charset));
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    
+    @Override
     public void bindBytes(byte[] outputBytes, int offset, T obj) {
         Arrays.fill(outputBytes, offset, offset + fixedData.size(), fixedData.fill());
         toBytesOrders.parallelStream().forEach(ThrowableConsumer.runtime(e -> e.order(obj, outputBytes, offset)));
     }
     
+    /**
+     * to bytes and bind OutputStream
+     * @param out
+     * @param obj
+     * @throws IOException
+     */
+    @Override
     public void bindBytes(OutputStream out, T obj) throws IOException {
         byte[] buf = new byte[fixedData.size()];
         bindBytes(buf, 0, obj);
         out.write(buf);
     }
     
+    /**
+     * to bytes
+     * @param obj
+     * @return
+     */
+    @Override
     public byte[] toBytes(T obj) {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -130,7 +112,7 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
      * init fixed data format
      * @return
      */
-    private FixedDataFormat<T> init() {
+    private void init() {
         
         if (fixedData == null) {
             throw new IllegalArgumentException(clazz.getName() + " need to Declared @FixedData Annotation");
@@ -153,7 +135,6 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
                 getter(clazz, field.getName(), infGetter).ifPresent(e -> bindToBytesOrder(e, text));
             }
         }));
-        return this;
     }
     
     /**
