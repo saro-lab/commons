@@ -32,6 +32,18 @@ public @interface SplitTokenData {
     int fieldCount() default -1;
     
     /**
+     * ignore not found getter
+     * @return
+     */
+    boolean ignoreNotFoundGetter() default false;
+    
+    /**
+     * ignore not found setter
+     * @return
+     */
+    boolean ignoreNotFoundSetter() default false;
+    
+    /**
      * charset
      * @return
      */
