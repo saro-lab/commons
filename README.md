@@ -164,13 +164,13 @@ Tests.timestamp(ThrowableRunnable) : long
 # INSTANCE
 
 
-## FixedDataFormat
+## DataFormat
 
-#### me.saro.commons.bytes.FixedDataFormat
+#### me.saro.commons.bytes.DataFormat
 
 ```
-FixedDataFormat.create(Class<T>) : FixedDataFormat<T>
-FixedDataFormat.create(Class<T>, Supplier<T>) : FixedDataFormat<T>
+DataFormat.createFixedData(Class<T>) : DataFormat<T>
+DataFormat.createFixedData(Class<T>, Supplier<T>) : DataFormat<T>
 bindBytes(OutputStream, T) 
 bindBytes(byte[], int, T) 
 toBytes(T) : byte[]
