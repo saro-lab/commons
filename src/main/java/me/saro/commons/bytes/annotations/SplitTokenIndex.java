@@ -12,13 +12,12 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface SplitTokenOrder {
-    
+public @interface SplitTokenIndex {
     /**
      * zero-based index
      * @return
      */
-    int index() default -1;
+    int value() default -1;
     
     /**
      * read nullable <br>
@@ -26,5 +25,5 @@ public @interface SplitTokenOrder {
      * false : length == 0 : "" (default)
      * @return
      */
-    boolean nullable() default false;
+    boolean emptyIsNull() default false;
 }
