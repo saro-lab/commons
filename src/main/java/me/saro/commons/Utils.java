@@ -163,6 +163,7 @@ public class Utils {
      * @param inputStream
      * @param lineReader
      * @return
+     * return of the lineReader
      * @throws Exception
      */
     public static <T> T inputStreamLineReader(InputStream inputStream, String charset, ThrowableFunction<Stream<String>, T> lineReader) throws Exception {
@@ -180,6 +181,7 @@ public class Utils {
      * @param list
      * @param map
      * @return
+     * map result list
      * @since 0.3
      */
     public static <T, R> List<R> executeAllThreads(ExecutorService executorService, List<T> list, ThrowableFunction<T, R> map) {
@@ -200,6 +202,7 @@ public class Utils {
      * @param list
      * @param map
      * @return
+     * map result list
      * @since 0.3
      */
     public static <T, R> List<R> executeAllThreads(int nThreads, List<T> list, ThrowableFunction<T, R> map) {
