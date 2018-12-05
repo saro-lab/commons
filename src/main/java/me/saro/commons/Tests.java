@@ -16,6 +16,7 @@ public class Tests {
      * check time of the runnable
      * @param runnable
      * @return
+     * timeMillis
      */
     public static long timestamp(ThrowableRunnable runnable) {
         long ts = System.currentTimeMillis();
