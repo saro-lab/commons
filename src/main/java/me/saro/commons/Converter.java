@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -500,6 +501,17 @@ public class Converter {
             throw e;
         }
         return sb.toString();
+    }
+    
+    /**
+     * url to String
+     * @param url
+     * @param charset
+     * @return
+     * @throws IOException
+     */
+    public static String toString(URL url, String charset) throws IOException {
+        return toString(url.openStream(), charset);
     }
 
     /**
