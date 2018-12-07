@@ -8,7 +8,6 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 
 import me.saro.commons.bytes.Bytes;
-import me.saro.commons.bytes.DataFormat;
 import me.saro.commons.ftp.FTP;
 import me.saro.commons.ssh.SSHExecutor;
 import me.saro.commons.ssh.SSHShell;
@@ -33,7 +32,7 @@ public class ReadmeTest {
         System.out.println("# INSTANCE");
         System.out.println();
 
-        outClassInfo(DataFormat.class);
+        outClassInfo(FixedDataTest.class);
         outClassInfo(Web.class);
         outClassInfo(FTP.class);
         outClassInfo(SSHShell.class);
