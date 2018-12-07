@@ -51,4 +51,35 @@ public class Valids {
     public static boolean isMail(String mail, int maxLength) {
         return mail != null && mail.length() <= maxLength && mail.matches(IS_MAIL);
     }
+    
+    /**
+     * all parameters not null
+     * @param objs
+     * @return
+     */
+    public static boolean allNotNull(Object... objs) {
+        if (objs != null) {
+            for (Object obj : objs) {
+                if (obj == null) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * check date validation
+     * @param date
+     * @param format
+     * @return
+     */
+    public static boolean isDate(String date, String format) {
+        try {
+            return date.equals(DateFormat.parse(date, format).toString(format));
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }
