@@ -45,6 +45,7 @@ Converter.asList(T[]) : List<T>
 Converter.namingConvention(NamingConvention, List<String>) : String
 Converter.namingConvention(NamingConvention, NamingConvention, String) : String
 Converter.namingConvention(NamingConvention, String) : List<String>
+Converter.splitByToken(String, String) : List<String>
 Converter.splitCsvLine(String) : String[]
 Converter.toByteArrayOutputStream(InputStream, int) : ByteArrayOutputStream
 Converter.toBytes(InputStream, int) : byte[]
@@ -70,6 +71,7 @@ Converter.toStreamLineNotCloseByTextInputStream(InputStream, String) : Stream<St
 Converter.toString(Exception) : String
 Converter.toString(File, String) : String
 Converter.toString(InputStream, String) : String
+Converter.toString(URL, String) : String
 Converter.toStringNotClose(InputStream, String) : String
 ```
 
@@ -149,6 +151,8 @@ Zips.openStreamNotClose(InputStream, ThrowableTriConsumer<String, ZipEntry, Inpu
 #### me.saro.commons.Valids
 
 ```
+Valids.allNotNull(Object[]) : boolean
+Valids.isDate(String, String) : boolean
 Valids.isMail(String, int) : boolean
 ```
 
@@ -164,21 +168,14 @@ Tests.timestamp(ThrowableRunnable) : long
 # INSTANCE
 
 
-## DataFormat
+## FixedDataTest
 
-#### me.saro.commons.bytes.DataFormat
+#### me.saro.commons.FixedDataTest
 
 ```
-DataFormat.createFixedData(Class<T>) : DataFormat<T>
-DataFormat.createFixedData(Class<T>, Supplier<T>) : DataFormat<T>
-bindBytes(OutputStream, T) 
-bindBytes(byte[], int, T) 
-toBytes(T) : byte[]
-toClass(byte[]) : T
-toClass(byte[], int) : T
-toClassWithCheckSize(String) : T
-toClassWithCheckSize(String, String) : T
-toClassWithCheckSize(byte[]) : T
+binary() 
+mixed() 
+text() 
 ```
 
 
