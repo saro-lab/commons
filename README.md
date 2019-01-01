@@ -18,7 +18,7 @@
 ## gradle
 
 ```
-compile 'me.saro:commons:1.4'
+compile 'me.saro:commons:1.5'
 ```
 
 ## repository
