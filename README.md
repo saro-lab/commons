@@ -11,7 +11,7 @@
 <dependency>
   <groupId>me.saro</groupId>
   <artifactId>commons</artifactId>
-  <version>1.4</version>
+  <version>1.5</version>
 </dependency>
 ```
 
