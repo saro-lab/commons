@@ -50,6 +50,12 @@ public class Web {
 
     // ignore certificate
     boolean ignoreCertificate = false;
+    
+    // connectTimeout
+    int connectTimeout;
+    
+    // readTimeout
+    int readTimeout;
 
     /**
      * private constructor
@@ -68,6 +74,26 @@ public class Web {
         }
         this.url = url;
         this.method = method;
+    }
+    
+    /**
+     * Connect Timeout
+     * @param connectTimeout
+     * @return
+     */
+    public Web setConnectTimeout(int connectTimeout) {
+        this.connectTimeout = connectTimeout;
+        return this;
+    }
+    
+    /**
+     * Read Timeout
+     * @param readTimeout
+     * @return
+     */
+    public Web setReadTimeout(int readTimeout) {
+        this.readTimeout = readTimeout;
+        return this;
     }
 
     /**
@@ -287,6 +313,13 @@ public class Web {
 
             if (ignoreCertificate) {
                 WebIgnoreCertificate.ignoreCertificate(connection);
+            }
+            
+            if (connectTimeout > 0) {
+                connection.setConnectTimeout(connectTimeout);
+            }
+            if (readTimeout > 0) {
+                connection.setReadTimeout(readTimeout);
             }
 
             header.forEach(connection::setRequestProperty);
