@@ -11,14 +11,14 @@
 <dependency>
   <groupId>me.saro</groupId>
   <artifactId>commons</artifactId>
-  <version>1.9</version>
+  <version>1.10</version>
 </dependency>
 ```
 
 ## gradle
 
 ```
-compile 'me.saro:commons:1.9'
+compile 'me.saro:commons:1.10'
 ```
 
 ## repository
@@ -200,9 +200,11 @@ Web.put(String) : Web
 addUrlParameter(String, String) : Web
 readRawResultStream(ThrowableConsumer<InputStream>) : WebResult<String>
 saveFile(File, boolean) : WebResult<File>
+setConnectTimeout(int) : Web
 setContentType(String) : Web
 setHeader(String, String) : Web
 setIgnoreCertificate(boolean) : Web
+setReadTimeout(int) : Web
 setRequestCharset(String) : Web
 setResponseCharset(String) : Web
 toCustom(ThrowableFunction<InputStream, R>) : WebResult<R>
