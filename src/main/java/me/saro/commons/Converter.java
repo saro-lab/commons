@@ -472,7 +472,7 @@ public class Converter {
         StringBuilder sb = new StringBuilder(512);
         sb.append(e.getMessage());
         for (StackTraceElement stackTraceElement : e.getStackTrace()) {
-            sb.append('\n').append(stackTraceElement.toString());
+            sb.append("\r\n").append(stackTraceElement.toString());
         }
         return sb.toString();
     }
