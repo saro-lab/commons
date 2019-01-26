@@ -2,9 +2,11 @@ package me.saro.commons;
 
 import java.io.BufferedReader;
 import java.io.Closeable;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
@@ -68,6 +70,23 @@ public class Utils {
             }
         }
         return null;
+    }
+    
+    /**
+     * link input to output stream<br>
+     * <b>WARNING : </b> is not auto closed
+     * @param is
+     * @param os
+     * @throws IOException 
+     */
+    public static void linkStream(InputStream is, OutputStream os) throws IOException {
+        int bufsize = 8192;
+        byte[] buf = new byte[bufsize];
+        int len;
+        while ((len = is.read(buf, 0, bufsize)) != -1) {
+            os.write(buf, 0, len);
+        }
+        os.flush();
     }
 
     /**
