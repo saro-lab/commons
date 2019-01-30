@@ -9,6 +9,12 @@ import me.saro.commons.bytes.Bytes;
 public class BytesTest {
     
     @Test
+    public void toBytesByHex() {
+        String sample = "fff0fa32713281af";
+        assertEquals(Bytes.toHex(Bytes.toBytesByHex(sample)), sample);
+    }
+    
+    @Test
     public void shortTest() {
         assertEquals(Bytes.toHex(Bytes.toBytes((short)32)), "0020");
         assertEquals(Bytes.toHex(Bytes.toBytes((short)Short.parseShort("-1"))), "ffff");
