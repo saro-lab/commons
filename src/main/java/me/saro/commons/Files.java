@@ -1,5 +1,6 @@
 package me.saro.commons;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -23,11 +24,11 @@ public class Files {
     }
 
     /**
-     * create file useing the inputstream
+     * create file use the inputstream
      * @param file
      * @param overwrite
      * @param inputStream
-     * @throws Exception
+     * @throws Exception 
      */
     public static void createFile(File file, boolean overwrite, InputStream inputStream) throws Exception {
         if (file.exists()) {
@@ -38,32 +39,45 @@ public class Files {
             }
         } else {
             File parent = file.getParentFile();
-            if (parent == null) {
-                throw new IOException("create file error : invalid child file for create directory : " + file.getAbsolutePath());
+            if (!parent.exists()) {
+                parent.mkdirs();
+            } else if (parent.isFile()) {
+                throw new IOException("create file error : file exists instend of the directory : " + parent.getAbsolutePath());
             }
-            parent.mkdirs();
         }
 
         try (FileOutputStream fos = new FileOutputStream(file) ; InputStream is = inputStream) {
             Utils.inputStreamReader(is, (buf, len) -> fos.write(buf, 0, len));
         }
     }
+    
+    /**
+     * create file use the string
+     * @param file
+     * @param overwrite
+     * @param value
+     * @param charset
+     * @throws Exception
+     */
+    public static void createFile(File file, boolean overwrite, String value, String charset) throws Exception {
+        createFile(file, overwrite, new ByteArrayInputStream(value.getBytes(charset)));
+    }
 
     /**
-     * get files stream by path
+     * get files stream by directory
      * @param directory
      * @return
      */
-    public static Stream<File> streamFiles(File directory) {
+    public static Stream<File> listFilesStream(File directory) {
         return Stream.of(directory.listFiles());
     }
 
     /**
-     * get files stream by path
+     * get files stream by directory
      * @param directory
      * @return
      */
-    public static Stream<File> streamFiles(String directory) {
+    public static Stream<File> listFilesStream(String directory) {
         return Stream.of(new File(directory).listFiles());
     }
     
