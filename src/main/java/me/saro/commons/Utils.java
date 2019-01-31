@@ -2,7 +2,6 @@ package me.saro.commons;
 
 import java.io.BufferedReader;
 import java.io.Closeable;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
