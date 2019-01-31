@@ -6,10 +6,13 @@ import org.junit.jupiter.api.Test;
 
 public class FilesTest {
     @Test
-    public void test() {
+    public void test() throws Exception {
         
     }
     
+    public void createTest() throws Exception {
+        Files.createFile(new File("C:/abc/def/hi.txt"), true, "안녕", "UTF-8");
+    }
     
     public void remove() {
         
@@ -18,7 +21,7 @@ public class FilesTest {
         
         Files
             // get files in /testpath
-            .streamFiles("/testpath")
+            .listFilesStream("/testpath")
             // filter : older then 24 hours
             .filter(Files.attributesFilter(attr -> attr.creationTime().toMillis() < before24hour))
             // delete
