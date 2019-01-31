@@ -31,6 +31,20 @@ public class Bytes {
     }
     
     /**
+     * to bytes by hex string
+     * @param hex
+     * @return
+     */
+    public static byte[] toBytesByHex(String hex) {
+        byte[] rv = new byte[hex.length() / 2];
+        int rvp = 0;
+        for (int i = 0 ; i < hex.length() ; i+=2) {
+            rv[rvp++] = (byte) Integer.parseInt(hex.substring(i, i+2), 16);
+        }
+        return rv;
+    }
+    
+    /**
      * short to bytes
      * @param val
      * @return
