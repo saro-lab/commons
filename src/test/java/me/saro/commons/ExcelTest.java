@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Cell;
 import org.junit.jupiter.api.Test;
 
 import lombok.AllArgsConstructor;
@@ -49,6 +50,29 @@ public class ExcelTest {
     }
     
     @Test
+    public void readTable() throws IOException {
+        try (Excel excel = Excel.create()) {
+            
+            List<Map<String, Object>> list = new ArrayList<>();
+            list.add(Converter.toMap("a", 1, "b", "AA"));
+            list.add(Converter.toMap("a", 2, "b", "BB"));
+            
+            excel.writeTableByListMap("B2", List.of("a", "b"), list);
+            
+            List<List<String>> rv = excel.readTable("B2", 2, e -> List.of(
+                Integer.toString((int)e.get(0).getNumericCellValue()),
+                e.get(1).getStringCellValue().toString()
+            )); 
+            
+            assertEquals(rv.get(0).get(0), "1");
+            assertEquals(rv.get(0).get(1), "AA");
+            
+            assertEquals(rv.get(1).get(0), "2");
+            assertEquals(rv.get(1).get(1), "BB");
+        }
+    }
+    
+    @Test
     public void writeTableByListMap() throws IOException {
         try (Excel excel = Excel.create()) {
             
@@ -81,6 +105,28 @@ public class ExcelTest {
             
             assertEquals(excel.move("B3").getStringCellValue(), "AA");
             assertEquals(excel.move("C3").getStringCellValue(), "BB");
+        }
+    }
+    
+    @Test
+    public void writeHorizontalList() throws IOException {
+        try (Excel excel = Excel.create()) {
+            excel.writeHorizontalList("A1", List.of("1", "2", "3"));
+            
+            assertEquals(excel.move("A1").getStringCellValue(), "1");
+            assertEquals(excel.move("B1").getStringCellValue(), "2");
+            assertEquals(excel.move("C1").getStringCellValue(), "3");
+        }
+    }
+    
+    @Test
+    public void writeVerticalList() throws IOException {
+        try (Excel excel = Excel.create()) {
+            excel.writeVerticalList("A1", List.of("1", "2", "3"));
+            
+            assertEquals(excel.move("A1").getStringCellValue(), "1");
+            assertEquals(excel.move("A2").getStringCellValue(), "2");
+            assertEquals(excel.move("A3").getStringCellValue(), "3");
         }
     }
     
