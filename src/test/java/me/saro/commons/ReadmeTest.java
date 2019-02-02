@@ -27,6 +27,7 @@ public class ReadmeTest {
         outClassInfo(Utils.class);
         outClassInfo(Files.class);
         outClassInfo(Zips.class);
+        outClassInfo(Excel.class);
         outClassInfo(Valids.class);
         outClassInfo(Tests.class);
         
@@ -40,6 +41,7 @@ public class ReadmeTest {
         outClassInfo(SSHExecutor.class);
         outClassInfo(DateFormat.class);
         outClassInfo(JsonReader.class);
+        outClassInfo(NullOutputStream.class);
 
         System.out.println("# FUNCTION INTERFACE");
         System.out.println("#### me.saro.commons.function.*");
