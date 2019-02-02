@@ -60,8 +60,31 @@ public class ExcelTest {
             
             List<List<String>> rv = excel.readTable("B2", 2, e -> List.of(
                 Excel.toIntegerString(e.get(0), -1),
-                Excel.toIntegerString(e.get(1), -1)
+                Excel.toString(e.get(1), null)
             )); 
+            
+            assertEquals(rv.get(0).get(0), "1");
+            assertEquals(rv.get(0).get(1), "AA");
+            
+            assertEquals(rv.get(1).get(0), "2");
+            assertEquals(rv.get(1).get(1), "BB");
+        }
+    }
+    
+    @Test
+    public void readPivotTable() throws IOException {
+        try (Excel excel = Excel.create()) {
+            
+            List<Map<String, Object>> list = new ArrayList<>();
+            list.add(Converter.toMap("a", 1, "b", "AA"));
+            list.add(Converter.toMap("a", 2, "b", "BB"));
+            
+            excel.writePivotTableByListMap("B2", List.of("a", "b"), list);
+            
+            List<List<String>> rv = excel.readPivotTable("B2", 2, e -> List.of(
+                Excel.toIntegerString(e.get(0), -1),
+                Excel.toString(e.get(1), null)
+            ));
             
             assertEquals(rv.get(0).get(0), "1");
             assertEquals(rv.get(0).get(1), "AA");
