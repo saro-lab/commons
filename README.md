@@ -11,7 +11,7 @@
 <dependency>
   <groupId>me.saro</groupId>
   <artifactId>commons</artifactId>
-  <version>1.10</version>
+  <version>2.0</version>
 </dependency>
 ```
 
@@ -59,7 +59,9 @@ Converter.toJson(Object) : String
 Converter.toList(Enumeration<T>) : List<T>
 Converter.toList(Iterable<T>) : List<T>
 Converter.toMap(Object[]) : Map<K, V>
+Converter.toMapByClass(Object) : Map<String, T>
 Converter.toMapByJsonObject(String) : Map<String, Object>
+Converter.toMapListByClassList(Object) : List<Map<String, T>>
 Converter.toMapListByJsonArray(String) : List<Map<String, Object>>
 Converter.toStream(Enumeration<T>) : Stream<T>
 Converter.toStream(Enumeration<T>, boolean) : Stream<T>
@@ -86,6 +88,7 @@ Bytes.toBytes(float) : byte[]
 Bytes.toBytes(int) : byte[]
 Bytes.toBytes(long) : byte[]
 Bytes.toBytes(short) : byte[]
+Bytes.toBytesByHex(String) : byte[]
 Bytes.toDouble(byte[]) : double
 Bytes.toDouble(byte[], int) : double
 Bytes.toFloat(byte[]) : float
@@ -115,6 +118,7 @@ Utils.inputStreamLineReader(InputStream, String, ThrowableFunction<Stream<String
 Utils.inputStreamReader(InputStream, StreamReadConsumer) 
 Utils.kill(Closeable) 
 Utils.kill(Thread) 
+Utils.linkStream(InputStream, OutputStream) 
 Utils.nvl(T[]) : T
 Utils.random(long, long) : long
 Utils.timerTask(ThrowableConsumer<TimerTask>) : TimerTask
@@ -128,9 +132,10 @@ Utils.timerTask(ThrowableConsumer<TimerTask>) : TimerTask
 ```
 Files.attributesFilter(ThrowablePredicate<BasicFileAttributes>) : Predicate<File>
 Files.createFile(File, boolean, InputStream) 
+Files.createFile(File, boolean, String, String) 
 Files.lineReader(File, String, ThrowableFunction<Stream<String>, T>) : T
-Files.streamFiles(File) : Stream<File>
-Files.streamFiles(String) : Stream<File>
+Files.listFilesStream(File) : Stream<File>
+Files.listFilesStream(String) : Stream<File>
 Files.toBasicFileAttributes(File) : BasicFileAttributes
 ```
 
@@ -143,6 +148,78 @@ Files.toBasicFileAttributes(File) : BasicFileAttributes
 Zips.openFromFile(File, ThrowableTriConsumer<String, ZipEntry, InputStream>) 
 Zips.openFromWeb(Web, ThrowableTriConsumer<String, ZipEntry, InputStream>) 
 Zips.openStreamNotClose(InputStream, ThrowableTriConsumer<String, ZipEntry, InputStream>) 
+```
+
+
+## Excel
+
+#### me.saro.commons.Excel
+
+```
+Excel.create() : Excel
+Excel.create(File, boolean) : Excel
+Excel.createClone(File, File, boolean) : Excel
+Excel.createCloneXls(File, File, boolean) : Excel
+Excel.createXls() : Excel
+Excel.createXls(File, boolean) : Excel
+Excel.open(File) : Excel
+Excel.openXls(File) : Excel
+Excel.setCellValueAuto(Cell, Object) : Cell
+Excel.toCellIndex(String) : int
+Excel.toColumnName(int, int) : String
+Excel.toColumnNameByCellIndex(int) : String
+Excel.toColumnNameByRowIndex(int) : String
+Excel.toDate(Cell, Date) : Date
+Excel.toDouble(Cell, double) : double
+Excel.toFloat(Cell, float) : float
+Excel.toInt(Cell, int) : int
+Excel.toIntegerString(Cell, long) : String
+Excel.toLong(Cell, long) : long
+Excel.toRowCellIndex(String) : int[]
+Excel.toRowIndex(String) : int
+Excel.toString(Cell, String) : String
+close() 
+getCellIndex() : int
+getColumnName() : String
+getColumnNameX() : String
+getColumnNameY() : String
+getDate(Date) : Date
+getDouble(double) : double
+getFloat(float) : float
+getInt(int) : int
+getLong(long) : long
+getRowIndex() : int
+getString() : String
+getString(String) : String
+move(String) : Excel
+move(String, boolean) : Excel
+move(int, int) : Excel
+move(int, int, boolean) : Excel
+moveCell(int, boolean) : Excel
+moveNextCell(boolean) : Excel
+moveNextRow(boolean) : Excel
+moveRow(int, boolean) : Excel
+moveSheet(int) : Excel
+output(OutputStream) 
+readCell(String) : Cell
+readCell(int, int) : Cell
+readPivotTable(String, int, ThrowableFunction<List<Cell>, R>) : List<R>
+readPivotTable(String, int, int, ThrowableFunction<List<Cell>, R>) : List<R>
+readRow(int) : Row
+readTable(String, int, ThrowableFunction<List<Cell>, R>) : List<R>
+readTable(String, int, int, ThrowableFunction<List<Cell>, R>) : List<R>
+rowsLength() : int
+save(File, boolean) 
+setSheetName(String) : Excel
+setValue(Object) : Excel
+sheetsLength() : int
+toIntegerString(long) : String
+writeHorizontalList(String, Collection<T>) : Excel
+writePivotTableByListClass(String, Collection<String>, List<T>) : Excel
+writePivotTableByListMap(String, Collection<String>, List<Map<String, V>>) : Excel
+writeTableByListClass(String, Collection<String>, List<T>) : Excel
+writeTableByListMap(String, Collection<String>, List<Map<String, V>>) : Excel
+writeVerticalList(String, Collection<T>) : Excel
 ```
 
 
@@ -343,6 +420,15 @@ isObject() : boolean
 length() : int
 toList() : List<JsonReader>
 toString() : String
+```
+
+
+## NullOutputStream
+
+#### me.saro.commons.NullOutputStream
+
+```
+write(int) 
 ```
 
 # FUNCTION INTERFACE
