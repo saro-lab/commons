@@ -299,6 +299,24 @@ public class Converter {
             throw new RuntimeException(e);
         }
     }
+    
+    /**
+     * object to Map
+     * @param clazz
+     * @return
+     */
+    public static <T> Map<String, T> toMapByClass(Object clazz) {
+        return JSON_MAPPER.convertValue(clazz, new TypeReference<Map<String, T>>() {});
+    }
+    
+    /**
+     * object to Map list
+     * @param clazz
+     * @return
+     */
+    public static <T> List<Map<String, T>> toMapListByClassList(Object clazz) {
+        return JSON_MAPPER.convertValue(clazz, new TypeReference<List<Map<String, T>>>() {});
+    }
 
     /**
      * Iterable to stream
