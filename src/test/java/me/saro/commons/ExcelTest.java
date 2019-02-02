@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.ss.usermodel.Cell;
 import org.junit.jupiter.api.Test;
 
 import lombok.AllArgsConstructor;
@@ -60,8 +59,8 @@ public class ExcelTest {
             excel.writeTableByListMap("B2", List.of("a", "b"), list);
             
             List<List<String>> rv = excel.readTable("B2", 2, e -> List.of(
-                Integer.toString((int)e.get(0).getNumericCellValue()),
-                e.get(1).getStringCellValue().toString()
+                Excel.toIntegerString(e.get(0), -1),
+                Excel.toIntegerString(e.get(1), -1)
             )); 
             
             assertEquals(rv.get(0).get(0), "1");
@@ -82,11 +81,11 @@ public class ExcelTest {
             
             excel.writeTableByListMap("B2", List.of("a", "b"), list);
             
-            assertEquals((int)excel.move("B2").getNumericCellValue(), 1);
-            assertEquals((int)excel.move("B3").getNumericCellValue(), 2);
+            assertEquals(excel.move("B2").getInt(-1), 1);
+            assertEquals(excel.move("B3").getInt(-1), 2);
             
-            assertEquals(excel.move("C2").getStringCellValue(), "AA");
-            assertEquals(excel.move("C3").getStringCellValue(), "BB");
+            assertEquals(excel.move("C2").getString(), "AA");
+            assertEquals(excel.move("C3").getString(), "BB");
         }
     }
     
@@ -100,11 +99,11 @@ public class ExcelTest {
             
             excel.writePivotTableByListMap("B2", List.of("a", "b"), list);
             
-            assertEquals((int)excel.move("B2").getNumericCellValue(), 1);
-            assertEquals((int)excel.move("C2").getNumericCellValue(), 2);
+            assertEquals(excel.move("B2").getInt(-1), 1);
+            assertEquals(excel.move("C2").getInt(-1), 2);
             
-            assertEquals(excel.move("B3").getStringCellValue(), "AA");
-            assertEquals(excel.move("C3").getStringCellValue(), "BB");
+            assertEquals(excel.move("B3").getString(), "AA");
+            assertEquals(excel.move("C3").getString(), "BB");
         }
     }
     
@@ -113,9 +112,9 @@ public class ExcelTest {
         try (Excel excel = Excel.create()) {
             excel.writeHorizontalList("A1", List.of("1", "2", "3"));
             
-            assertEquals(excel.move("A1").getStringCellValue(), "1");
-            assertEquals(excel.move("B1").getStringCellValue(), "2");
-            assertEquals(excel.move("C1").getStringCellValue(), "3");
+            assertEquals(excel.move("A1").getString(), "1");
+            assertEquals(excel.move("B1").getString(), "2");
+            assertEquals(excel.move("C1").getString(), "3");
         }
     }
     
@@ -124,9 +123,9 @@ public class ExcelTest {
         try (Excel excel = Excel.create()) {
             excel.writeVerticalList("A1", List.of("1", "2", "3"));
             
-            assertEquals(excel.move("A1").getStringCellValue(), "1");
-            assertEquals(excel.move("A2").getStringCellValue(), "2");
-            assertEquals(excel.move("A3").getStringCellValue(), "3");
+            assertEquals(excel.move("A1").getString(), "1");
+            assertEquals(excel.move("A2").getString(), "2");
+            assertEquals(excel.move("A3").getString(), "3");
         }
     }
     
@@ -146,11 +145,11 @@ public class ExcelTest {
             
             excel.writeTableByListClass("B2", List.of("a", "b"), list);
             
-            assertEquals((int)excel.move("B2").getNumericCellValue(), 11);
-            assertEquals((int)excel.move("B3").getNumericCellValue(), 22);
+            assertEquals(excel.move("B2").getInt(-1), 11);
+            assertEquals(excel.move("B3").getInt(-1), 22);
             
-            assertEquals(excel.move("C2").getStringCellValue(), "AAA");
-            assertEquals(excel.move("C3").getStringCellValue(), "BBB");
+            assertEquals(excel.move("C2").getString(), "AAA");
+            assertEquals(excel.move("C3").getString(), "BBB");
         }
     }
     
@@ -170,11 +169,11 @@ public class ExcelTest {
             
             excel.writePivotTableByListClass("B2", List.of("a", "b"), list);
             
-            assertEquals((int)excel.move("B2").getNumericCellValue(), 11);
-            assertEquals((int)excel.move("C2").getNumericCellValue(), 22);
+            assertEquals(excel.move("B2").getInt(-1), 11);
+            assertEquals(excel.move("C2").getInt(-1), 22);
             
-            assertEquals(excel.move("B3").getStringCellValue(), "AAA");
-            assertEquals(excel.move("C3").getStringCellValue(), "BBB");
+            assertEquals(excel.move("B3").getString(), "AAA");
+            assertEquals(excel.move("C3").getString(), "BBB");
         }
     }
 }
