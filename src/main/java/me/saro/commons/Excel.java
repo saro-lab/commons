@@ -167,7 +167,13 @@ public class Excel implements Closeable {
         return open(saveFile);
     }
     
-    public Excel writeListVertical(String startColumnName, Collection<String> values) {
+    /**
+     * write horizontal list
+     * @param startColumnName
+     * @param values
+     * @return
+     */
+    public Excel writeHorizontalList(String startColumnName, Collection<String> values) {
         if (values != null) {
             move(startColumnName);
             int ci = this.cellIndex;
@@ -178,7 +184,13 @@ public class Excel implements Closeable {
         return this;
     }
     
-    public Excel writeListHorizontal(String startColumnName, Collection<String> values) {
+    /**
+     * write vertical list
+     * @param startColumnName
+     * @param values
+     * @return
+     */
+    public Excel writeVerticalList(String startColumnName, Collection<String> values) {
         if (values != null) {
             int[] rc = toRowCellIndex(startColumnName);
             int ri = rc[0];
@@ -190,30 +202,64 @@ public class Excel implements Closeable {
         return this;
     }
     
-//    public <T> Excel writeTableVertical(String startColumnName, T listClass, TypeReference<T> tr) {
-//        if (values != null) {
-//            move(startColumnName);
-//            int ci = this.cellIndex;
-//            for (String value : values) {
-//                moveCell(ci++).setCellValue(value);
-//            }
-//        }
-//        return this;
-//    }
-//    
-//    public <T> Excel writeTableHorizontal(String startColumnName, T listClass, TypeReference<T> tr) {
-//        if (values != null) {
-//            int[] rc = toRowCellIndex(startColumnName);
-//            int ri = rc[0];
-//            int ci = rc[1];
-//            for (String value : values) {
-//                move(ri++, ci).setCellValue(value);
-//            }
-//        }
-//        return this;
-//    }
+    /**
+     * write table by list class
+     * @param startColumnName
+     * @param columnNames
+     * @param list
+     * @return
+     */
+    public <T> Excel writeTableByListClass(String startColumnName, Collection<String> columnNames, List<T> list) {
+        if (list != null && !list.isEmpty()) {
+            int[] rc = toRowCellIndex(startColumnName);
+            int ri = rc[0];
+            int sci = rc[1];
+            int ci = sci;
+            for (T t : list) {
+                Map<String, Object> map = Converter.toMapByClass(t);
+                moveRow(ri++);
+                ci = sci;
+                for (String name : columnNames) {
+                    setCellValueAuto(moveCell(ci++), map.get(name));
+                }
+            }
+        }
+        return this;
+    }
     
-    public <V> Excel writeListMapTable(String startColumnName, Collection<String> columnNames, List<Map<String, V>> listMap) {
+    /**
+     * write pivot table by list class
+     * @param startColumnName
+     * @param columnNames
+     * @param list
+     * @return
+     */
+    public <T> Excel writePivotTableByListClass(String startColumnName, Collection<String> columnNames, List<T> list) {
+        if (list != null && !list.isEmpty()) {
+            int[] rc = toRowCellIndex(startColumnName);
+            int sri = rc[0];
+            int ri = sri;
+            int ci = rc[1];
+            for (T t : list) {
+                Map<String, Object> map = Converter.toMapByClass(t);
+                ri = sri;
+                for (String name : columnNames) {
+                    setCellValueAuto(move(ri++, ci), map.get(name));
+                }
+                ci++;
+            }
+        }
+        return this;
+    }
+    
+    /**
+     * write table by list map
+     * @param startColumnName
+     * @param columnNames
+     * @param listMap
+     * @return
+     */
+    public <V> Excel writeTableByListMap(String startColumnName, Collection<String> columnNames, List<Map<String, V>> listMap) {
         if (listMap != null && !listMap.isEmpty()) {
             int[] rc = toRowCellIndex(startColumnName);
             int ri = rc[0];
@@ -230,7 +276,14 @@ public class Excel implements Closeable {
         return this;
     }
     
-    public <V> Excel writeListMapPivotTable(String startColumnName, Collection<String> columnNames, List<Map<String, V>> listMap) {
+    /**
+     * write pivot table by list map
+     * @param startColumnName
+     * @param columnNames
+     * @param listMap
+     * @return
+     */
+    public <V> Excel writePivotTableByListMap(String startColumnName, Collection<String> columnNames, List<Map<String, V>> listMap) {
         if (listMap != null && !listMap.isEmpty()) {
             int[] rc = toRowCellIndex(startColumnName);
             int sri = rc[0];
