@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +21,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import me.saro.commons.function.ThrowableFunction;
 
 
 /**
@@ -46,7 +49,7 @@ public class Excel implements Closeable {
     private Excel(Workbook book, File file) {
         this.book = book;
         this.file = file;
-        moveSheet(0).move(0, 0);
+        moveSheet(0).move(0, 0, false);
     }
     
     /**
@@ -173,12 +176,12 @@ public class Excel implements Closeable {
      * @param values
      * @return
      */
-    public Excel writeHorizontalList(String startColumnName, Collection<String> values) {
+    public <T> Excel writeHorizontalList(String startColumnName, Collection<T> values) {
         if (values != null) {
-            move(startColumnName);
+            move(startColumnName, true);
             int ci = this.cellIndex;
-            for (String value : values) {
-                moveCell(ci++).setCellValue(value);
+            for (T value : values) {
+                setCellValueAuto(moveCell(ci++, true), value);
             }
         }
         return this;
@@ -190,13 +193,13 @@ public class Excel implements Closeable {
      * @param values
      * @return
      */
-    public Excel writeVerticalList(String startColumnName, Collection<String> values) {
+    public <T> Excel writeVerticalList(String startColumnName, Collection<T> values) {
         if (values != null) {
             int[] rc = toRowCellIndex(startColumnName);
             int ri = rc[0];
             int ci = rc[1];
-            for (String value : values) {
-                move(ri++, ci).setCellValue(value);
+            for (T value : values) {
+                setCellValueAuto(move(ri++, ci, true), value);
             }
         }
         return this;
@@ -217,10 +220,10 @@ public class Excel implements Closeable {
             int ci = sci;
             for (T t : list) {
                 Map<String, Object> map = Converter.toMapByClass(t);
-                moveRow(ri++);
+                moveRow(ri++, true);
                 ci = sci;
                 for (String name : columnNames) {
-                    setCellValueAuto(moveCell(ci++), map.get(name));
+                    setCellValueAuto(moveCell(ci++, true), map.get(name));
                 }
             }
         }
@@ -244,7 +247,7 @@ public class Excel implements Closeable {
                 Map<String, Object> map = Converter.toMapByClass(t);
                 ri = sri;
                 for (String name : columnNames) {
-                    setCellValueAuto(move(ri++, ci), map.get(name));
+                    setCellValueAuto(move(ri++, ci, true), map.get(name));
                 }
                 ci++;
             }
@@ -266,10 +269,10 @@ public class Excel implements Closeable {
             int sci = rc[1];
             int ci = sci;
             for (Map<String, V> map : listMap) {
-                moveRow(ri++);
+                moveRow(ri++, true);
                 ci = sci;
                 for (String name : columnNames) {
-                    setCellValueAuto(moveCell(ci++), map.get(name));
+                    setCellValueAuto(moveCell(ci++, true), map.get(name));
                 }
             }
         }
@@ -292,12 +295,87 @@ public class Excel implements Closeable {
             for (Map<String, V> map : listMap) {
                 ri = sri;
                 for (String name : columnNames) {
-                    setCellValueAuto(move(ri++, ci), map.get(name));
+                    setCellValueAuto(move(ri++, ci, true), map.get(name));
                 }
                 ci++;
             }
         }
         return this;
+    }
+    
+    /**
+     * read row
+     * @param index
+     * @return Row or null
+     */
+    public Row readRow(int index) {
+        return sheet.getRow(index);
+    }
+    
+    /**
+     * read cell
+     * @param rowIndex
+     * @param cellIndex
+     * @return Cell or null
+     */
+    public Cell read(int rowIndex, int cellIndex) {
+        Row row = sheet.getRow(rowIndex);
+        return row != null ? row.getCell(cellIndex) : null;
+    }
+    
+    /**
+     * read cell
+     * @param startColumnName
+     * @return Cell or null
+     */
+    public Cell read(String startColumnName) {
+        int[] rc = toRowCellIndex(startColumnName);
+        return read(rc[0], rc[1]);
+    }
+    
+    /**
+     * read table
+     * @param startColumnName
+     * @param columnCount
+     * @param map (List<Cell or null>) : List[T]
+     * @return
+     */
+    public <R> List<R> readTable(String startColumnName, int columnCount, ThrowableFunction<List<Cell>, R> map) {
+        return readTable(startColumnName, columnCount, 2000000, map);
+    }
+    
+    /**
+     * read table
+     * @param startColumnName
+     * @param columnCount
+     * @param limitRowCount
+     * @param map (List<Cell or null>) : List[T]
+     * @return
+     */
+    public <R> List<R> readTable(String startColumnName, int columnCount, int limitRowCount, ThrowableFunction<List<Cell>, R> map) {
+        int[] rc = toRowCellIndex(startColumnName);
+        int ri = rc[0];
+        int eri = Math.min(ri + limitRowCount, sheet.getLastRowNum() + 1);
+        int ci = rc[1];
+        int eci = ci + columnCount;
+        List<R> rv = new ArrayList<>();
+        
+        while (ri < eri) {
+            Row row = readRow(ri++);
+            if (row == null) {
+                continue;
+            }
+            List<Cell> list = new ArrayList<>(columnCount);
+            for (int i = ci ; i < eci ; i++) {
+                list.add(row.getCell(i));
+            }
+            try {
+                rv.add(map.apply(list));
+            } catch (Exception e) {
+                throw new RuntimeException("rowIndex["+ri+"] : " + e.getMessage(), e);
+            }
+        }
+        return rv;
     }
     
     /**
@@ -383,8 +461,14 @@ public class Excel implements Closeable {
      * @param index
      * @return
      */
-    public Excel moveRow(int index) {
-        move(index, 0);
+    public Excel moveRow(int index, boolean forceCreate) {
+        if (index != this.rowIndex || (this.row == null && forceCreate)) {
+            this.row = sheet.getRow(index);
+            this.rowIndex = index;
+            if (forceCreate && this.row == null) {
+                this.row = sheet.createRow(index);
+            }
+        }
         return this;
     }
     
@@ -393,9 +477,17 @@ public class Excel implements Closeable {
      * @param index
      * @return
      */
-    public Cell moveCell(int index) {
-        Cell cell = this.row.getCell(index);
-        if (cell == null) {
+    public Cell moveCell(int index, boolean forceCreate) {
+        Cell cell;
+        if (this.row != null) {
+            cell = row.getCell(index);
+        } else if (forceCreate) {
+            moveRow(this.rowIndex, forceCreate);
+            cell = row.getCell(index);
+        } else {
+            cell = null;
+        }
+        if (cell == null && forceCreate) {
             cell = row.createCell(index);
         }
         this.cellIndex = index;
@@ -408,22 +500,35 @@ public class Excel implements Closeable {
      * @param cellIndex
      * @return
      */
+    public Cell move(int rowIndex, int cellIndex, boolean forceCreate) {
+        return moveRow(rowIndex, forceCreate).moveCell(cellIndex, forceCreate);
+    }
+    
+    /**
+     * move
+     * @param rowIndex
+     * @param cellIndex
+     * @return cell or null
+     */
     public Cell move(int rowIndex, int cellIndex) {
-        if (rowIndex != this.rowIndex) {
-            Row row = sheet.getRow(rowIndex);
-            if (row == null) {
-                row = sheet.createRow(rowIndex);
-            }
-            this.row = row;
-            this.rowIndex = rowIndex;
-        }
-        return moveCell(cellIndex);
+        return move(rowIndex, cellIndex, false);
     }
     
     /**
      * move row and cell by excel column name
      * @param columnName
+     * @param forceCreate
      * @return
+     */
+    public Cell move(String columnName, boolean forceCreate) {
+        int[] rc = toRowCellIndex(columnName);
+        return move(rc[0], rc[1], forceCreate);
+    }
+    
+    /**
+     * move row and cell by excel column name
+     * @param columnName
+     * @return cell or null
      */
     public Cell move(String columnName) {
         int[] rc = toRowCellIndex(columnName);
@@ -432,18 +537,20 @@ public class Excel implements Closeable {
     
     /**
      * move next row
+     * @param forceCreate
      * @return
      */
-    public Excel nextRow() {
-        return moveRow(rowIndex + 1);
+    public Excel nextRow(boolean forceCreate) {
+        return moveRow(rowIndex + 1, forceCreate);
     }
     
     /**
      * move next cell
+     * @param forceCreate
      * @return
      */
-    public Cell nextCell() {
-        return moveCell(cellIndex + 1);
+    public Cell nextCell(boolean forceCreate) {
+        return moveCell(cellIndex + 1, forceCreate);
     }
     
     /**
