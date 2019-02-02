@@ -366,23 +366,90 @@ public class Excel implements Closeable {
         int eri = Math.min(ri + limitRowCount, sheet.getLastRowNum() + 1);
         int ci = rc[1];
         int eci = ci + columnCount;
+        
         List<R> rv = new ArrayList<>();
         
         while (ri < eri) {
-            Row row = readRow(ri++);
-            if (row == null) {
-                continue;
-            }
-            List<Cell> list = new ArrayList<>(columnCount);
-            for (int i = ci ; i < eci ; i++) {
-                list.add(row.getCell(i));
-            }
             try {
-                rv.add(map.apply(list));
+                Row row = readRow(ri++);
+                if (row == null) {
+                    continue;
+                }
+                List<Cell> list = new ArrayList<>(columnCount);
+                for (int i = ci ; i < eci ; i++) {
+                    list.add(row.getCell(i));
+                }
+                R r = map.apply(list);
+                if (r != null) {
+                    rv.add(r);
+                }
             } catch (Exception e) {
-                throw new RuntimeException("rowIndex["+ri+"] : " + e.getMessage(), e);
+                throw new RuntimeException("row["+toColumnNameByRowIndex(ri)+"] : " + e.getMessage(), e);
             }
         }
+        
+        return rv;
+    }
+    
+    /**
+     * read pivot table
+     * @param startColumnName
+     * @param columnCount
+     * @param map (List<Cell or null>) : List[T]
+     * @return
+     */
+    public <R> List<R> readPivotTable(String startColumnName, int columnCount, ThrowableFunction<List<Cell>, R> map) {
+        return readPivotTable(startColumnName, columnCount, 10000, map);
+    }
+    
+    /**
+     * read pivot table
+     * @param startColumnName
+     * @param columnCount
+     * @param limitRowCount
+     * @param map (List<Cell or null>) : List[T]
+     * @return
+     */
+    public <R> List<R> readPivotTable(String startColumnName, int columnCount, int limitRowCount, ThrowableFunction<List<Cell>, R> map) {
+        
+        int[] rc = toRowCellIndex(startColumnName);
+        int ri = rc[0];
+        int ci = rc[1];
+        int eci = ci + limitRowCount;
+        
+        Row[] rows = new Row[columnCount];
+        for (int i = 0 ; i < columnCount ; i++) {
+            if ((rows[i] = readRow(ri + i)) == null) {
+                throw new IllegalArgumentException(toColumnName(ri + i, ci) + " is does not exist");
+            }
+        }
+        
+        List<R> rv = new ArrayList<>();
+        
+        stop : while (ci < eci) {
+            try {
+                int nullCnt = 0;
+                List<Cell> list = new ArrayList<>(columnCount);
+                for (int i = 0 ; i < columnCount ; i++) {
+                    Cell cell = rows[i].getCell(ci);
+                    if (cell == null) {
+                        nullCnt++;
+                    }
+                    list.add(cell);
+                }
+                if (columnCount == nullCnt) {
+                    break stop;
+                }
+                ci++;
+                R r = map.apply(list);
+                if (r != null) {
+                    rv.add(r);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("column["+toColumnNameByCellIndex(ci)+"] : " + e.getMessage(), e);
+            }
+        }
+        
         return rv;
     }
     
@@ -462,6 +529,14 @@ public class Excel implements Closeable {
      */
     public int sheetsLength() {
         return book.getNumberOfSheets();
+    }
+    
+    /**
+     * size of length
+     * @return
+     */
+    public int rowsLength() {
+        return sheet.getLastRowNum() + 1;
     }
     
     /**
@@ -852,7 +927,14 @@ public class Excel implements Closeable {
         if (cell.getCellType() == CellType.NUMERIC) {
             return Long.toString((long)cell.getNumericCellValue());
         }
-        return toString(cell, Long.toString(defaultValue));
+        String val = toString(cell, null);
+        if (val == null) {
+            return Long.toString(defaultValue);
+        }
+        if ((val = val.trim()).matches("[\\d]+\\.[\\d]+")) {
+            val = val.substring(0, val.indexOf('.'));
+        }
+        return val.matches("[\\d]+") ? val : Long.toString(defaultValue);
     }
     
     /**
