@@ -16,6 +16,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -40,8 +41,9 @@ public class Excel implements Closeable {
     
     private Sheet sheet;
     private Row row;
+    private Cell cell;
     
-    final static int CHAR_A = (int)'A';
+    final private static int CHAR_A = (int)'A';
     
     File file;
     
@@ -181,7 +183,8 @@ public class Excel implements Closeable {
             move(startColumnName, true);
             int ci = this.cellIndex;
             for (T value : values) {
-                setCellValueAuto(moveCell(ci++, true), value);
+                moveCell(ci++, true);
+                setCellValueAuto(this.cell, value);
             }
         }
         return this;
@@ -199,7 +202,8 @@ public class Excel implements Closeable {
             int ri = rc[0];
             int ci = rc[1];
             for (T value : values) {
-                setCellValueAuto(move(ri++, ci, true), value);
+                move(ri++, ci, true);
+                setCellValueAuto(this.cell, value);
             }
         }
         return this;
@@ -223,7 +227,8 @@ public class Excel implements Closeable {
                 moveRow(ri++, true);
                 ci = sci;
                 for (String name : columnNames) {
-                    setCellValueAuto(moveCell(ci++, true), map.get(name));
+                    moveCell(ci++, true);
+                    setCellValueAuto(this.cell, map.get(name));
                 }
             }
         }
@@ -247,7 +252,8 @@ public class Excel implements Closeable {
                 Map<String, Object> map = Converter.toMapByClass(t);
                 ri = sri;
                 for (String name : columnNames) {
-                    setCellValueAuto(move(ri++, ci, true), map.get(name));
+                    move(ri++, ci, true);
+                    setCellValueAuto(this.cell, map.get(name));
                 }
                 ci++;
             }
@@ -272,7 +278,8 @@ public class Excel implements Closeable {
                 moveRow(ri++, true);
                 ci = sci;
                 for (String name : columnNames) {
-                    setCellValueAuto(moveCell(ci++, true), map.get(name));
+                    moveCell(ci++, true);
+                    setCellValueAuto(this.cell, map.get(name));
                 }
             }
         }
@@ -295,7 +302,8 @@ public class Excel implements Closeable {
             for (Map<String, V> map : listMap) {
                 ri = sri;
                 for (String name : columnNames) {
-                    setCellValueAuto(move(ri++, ci, true), map.get(name));
+                    move(ri++, ci, true);
+                    setCellValueAuto(this.cell, map.get(name));
                 }
                 ci++;
             }
@@ -318,7 +326,7 @@ public class Excel implements Closeable {
      * @param cellIndex
      * @return Cell or null
      */
-    public Cell read(int rowIndex, int cellIndex) {
+    public Cell readCell(int rowIndex, int cellIndex) {
         Row row = sheet.getRow(rowIndex);
         return row != null ? row.getCell(cellIndex) : null;
     }
@@ -328,9 +336,9 @@ public class Excel implements Closeable {
      * @param startColumnName
      * @return Cell or null
      */
-    public Cell read(String startColumnName) {
+    public Cell readCell(String startColumnName) {
         int[] rc = toRowCellIndex(startColumnName);
-        return read(rc[0], rc[1]);
+        return readCell(rc[0], rc[1]);
     }
     
     /**
@@ -477,8 +485,7 @@ public class Excel implements Closeable {
      * @param index
      * @return
      */
-    public Cell moveCell(int index, boolean forceCreate) {
-        Cell cell;
+    public Excel moveCell(int index, boolean forceCreate) {
         if (this.row != null) {
             cell = row.getCell(index);
         } else if (forceCreate) {
@@ -491,7 +498,7 @@ public class Excel implements Closeable {
             cell = row.createCell(index);
         }
         this.cellIndex = index;
-        return cell;
+        return this;
     }
     
     /**
@@ -500,7 +507,7 @@ public class Excel implements Closeable {
      * @param cellIndex
      * @return
      */
-    public Cell move(int rowIndex, int cellIndex, boolean forceCreate) {
+    public Excel move(int rowIndex, int cellIndex, boolean forceCreate) {
         return moveRow(rowIndex, forceCreate).moveCell(cellIndex, forceCreate);
     }
     
@@ -510,7 +517,7 @@ public class Excel implements Closeable {
      * @param cellIndex
      * @return cell or null
      */
-    public Cell move(int rowIndex, int cellIndex) {
+    public Excel move(int rowIndex, int cellIndex) {
         return move(rowIndex, cellIndex, false);
     }
     
@@ -520,7 +527,7 @@ public class Excel implements Closeable {
      * @param forceCreate
      * @return
      */
-    public Cell move(String columnName, boolean forceCreate) {
+    public Excel move(String columnName, boolean forceCreate) {
         int[] rc = toRowCellIndex(columnName);
         return move(rc[0], rc[1], forceCreate);
     }
@@ -530,7 +537,7 @@ public class Excel implements Closeable {
      * @param columnName
      * @return cell or null
      */
-    public Cell move(String columnName) {
+    public Excel move(String columnName) {
         int[] rc = toRowCellIndex(columnName);
         return move(rc[0], rc[1]);
     }
@@ -540,7 +547,7 @@ public class Excel implements Closeable {
      * @param forceCreate
      * @return
      */
-    public Excel nextRow(boolean forceCreate) {
+    public Excel moveNextRow(boolean forceCreate) {
         return moveRow(rowIndex + 1, forceCreate);
     }
     
@@ -549,8 +556,95 @@ public class Excel implements Closeable {
      * @param forceCreate
      * @return
      */
-    public Cell nextCell(boolean forceCreate) {
+    public Excel moveNextCell(boolean forceCreate) {
         return moveCell(cellIndex + 1, forceCreate);
+    }
+    
+    /**
+     * get cell value in the moved pos
+     * @param defaultValue
+     * @return
+     */
+    public int getInt(int defaultValue) {
+        return toInt(cell, defaultValue);
+    }
+    
+    /**
+     * get cell value in the moved pos
+     * @param defaultValue
+     * @return
+     */
+    public long getLong(long defaultValue) {
+        return toLong(cell, defaultValue);
+    }
+    
+    /**
+     * get cell value in the moved pos
+     * @param defaultValue
+     * @return
+     */
+    public float getFloat(float defaultValue) {
+        return toFloat(cell, defaultValue);
+    }
+    
+    /**
+     * get cell value in the moved pos
+     * @param defaultValue
+     * @return
+     */
+    public double getDouble(double defaultValue) {
+        return toDouble(cell, defaultValue);
+    }
+    
+    /**
+     * get cell value in the moved pos
+     * @param defaultValue
+     * @return
+     */
+    public Date getDate(Date defaultValue) {
+        return toDate(cell, defaultValue);
+    }
+    
+    /**
+     * get cell value in the moved pos
+     * @param defaultValue
+     * @return
+     */
+    public String toIntegerString(long defaultValue) {
+        return toIntegerString(cell, defaultValue);
+    }
+    
+    /**
+     * get cell value in the moved pos
+     * @param defaultValue
+     * @return
+     */
+    public String getString(String defaultValue) {
+        return toString(cell, defaultValue);
+    }
+    
+    /**
+     * get cell value in the moved pos
+     * @return
+     */
+    public String getString() {
+        return toString(cell, null);
+    }
+    
+    /**
+     * set value
+     * @param obj
+     * @return
+     */
+    public Excel setValue(Object obj) {
+        if (cell == null) {
+            if (row == null) {
+                row = sheet.createRow(rowIndex);
+            }
+            cell = row.createCell(cellIndex);
+        }
+        setCellValueAuto(cell, obj);
+        return this;
     }
     
     /**
@@ -675,12 +769,131 @@ public class Excel implements Closeable {
     }
     
     /**
+     * toInt by cell
+     * @param cell
+     * @param defaultValue
+     * @return
+     */
+    public static int toInt(Cell cell, int defaultValue) {
+        return (int)toDouble(cell, defaultValue);
+    }
+    
+    /**
+     * toLong by cell
+     * @param cell
+     * @param defaultValue
+     * @return
+     */
+    public static long toLong(Cell cell, long defaultValue) {
+        return (long)toDouble(cell, defaultValue);
+    }
+    
+    /**
+     * toFloat by cell
+     * @param cell
+     * @param defaultValue
+     * @return
+     */
+    public static float toFloat(Cell cell, float defaultValue) {
+        return (float)toDouble(cell, defaultValue);
+    }
+    
+    /**
+     * toDouble by cell
+     * @param cell
+     * @param defaultValue
+     * @return
+     */
+    public static double toDouble(Cell cell, double defaultValue) {
+        if (cell != null) {
+            String tmp;
+            switch (cell.getCellType()) {
+                case BOOLEAN:
+                    return cell.getBooleanCellValue() ? 1 : 0;
+                case NUMERIC:
+                    return cell.getNumericCellValue();
+                case FORMULA:
+                    if ((tmp = cell.getCellFormula()) != null && !tmp.isEmpty()) {
+                        return Double.parseDouble(tmp);
+                    }
+                case STRING:
+                    if ((tmp = cell.getStringCellValue()) != null && !tmp.isEmpty()) {
+                        return Double.parseDouble(tmp);
+                    }
+                case _NONE: case ERROR: case BLANK: default:
+            }
+        }
+        return defaultValue;
+    }
+    
+    /**
+     * toDate by cell
+     * @param cell
+     * @param defaultValue
+     * @return
+     */
+    public static Date toDate(Cell cell, Date defaultValue) {
+        if (cell.getCellType() == CellType.STRING) {
+            try {
+                return cell.getDateCellValue();
+            } catch (Exception e) {}
+        }
+        return defaultValue;
+    }
+    
+    /**
+     * toIntegerString by cell<br>
+     * Integer String = Long.toString((long)doubleValue)
+     * @param cell
+     * @param defaultValue
+     * @return
+     */
+    public static String toIntegerString(Cell cell, long defaultValue) {
+        if (cell.getCellType() == CellType.NUMERIC) {
+            return Long.toString((long)cell.getNumericCellValue());
+        }
+        return toString(cell, Long.toString(defaultValue));
+    }
+    
+    /**
+     * toString by cell
+     * @param cell
+     * @param defaultValue
+     * @return
+     * BOOLEAN [1, 0]<br>
+     * FORMULA -> String<br>
+     * NUMERIC -> Double.toString<br>
+     * STRING -> String<br>
+     * ETC -> defaultValue
+     */
+    public static String toString(Cell cell, String defaultValue) {
+        if (cell != null) {
+            switch (cell.getCellType()) {
+                case BOOLEAN:
+                    return cell.getBooleanCellValue() ? "1" : "0";
+                case FORMULA:
+                    return cell.getCellFormula();
+                case NUMERIC:
+                    return Double.toString(cell.getNumericCellValue());
+                case STRING:
+                    return cell.getStringCellValue();
+                case _NONE: case ERROR: case BLANK: default:
+            }
+        }
+        return defaultValue;
+    }
+    
+    /**
      * set value
      * @param cell
      * @param obj
      * @return
      */
     public static Cell setCellValueAuto(Cell cell, Object obj) {
+        if (obj == null) {
+            cell.setCellValue((String)null);
+            return cell;
+        }
         set : switch (obj.getClass().getName()) {
             case "int" : case "java.lang.Integer" :
                 cell.setCellValue((double)(int)obj);
