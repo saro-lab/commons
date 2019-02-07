@@ -57,7 +57,7 @@ public class ExcelTest {
             list.add(Converter.toMap("a", 1, "b", "AA"));
             list.add(Converter.toMap("a", 2, "b", "BB"));
             
-            excel.writeTableByListMap("B2", Arrays.asList("a", "b"), list);
+            excel.writeTable("B2", Arrays.asList("a", "b"), list);
             
             List<List<String>> rv = excel.readTable("B2", 2, e -> Arrays.asList(
                 Excel.toIntegerString(e.get(0), -1),
@@ -80,7 +80,7 @@ public class ExcelTest {
             list.add(Converter.toMap("a", 1, "b", "AA"));
             list.add(Converter.toMap("a", 2, "b", "BB"));
             
-            excel.writePivotTableByListMap("B2", Arrays.asList("a", "b"), list);
+            excel.writeTable("B2", Arrays.asList("a", "b"), list);
             
             List<List<String>> rv = excel.readPivotTable("B2", 2, e -> Arrays.asList(
                 Excel.toIntegerString(e.get(0), -1),
@@ -103,7 +103,7 @@ public class ExcelTest {
             list.add(Converter.toMap("a", 1, "b", "AA"));
             list.add(Converter.toMap("a", 2, "b", "BB"));
             
-            excel.writeTableByListMap("B2", Arrays.asList("a", "b"), list);
+            excel.writeTable("B2", Arrays.asList("a", "b"), list);
             
             assertEquals(excel.move("B2").getInt(-1), 1);
             assertEquals(excel.move("B3").getInt(-1), 2);
@@ -121,7 +121,7 @@ public class ExcelTest {
             list.add(Converter.toMap("a", 1, "b", "AA"));
             list.add(Converter.toMap("a", 2, "b", "BB"));
             
-            excel.writePivotTableByListMap("B2", Arrays.asList("a", "b"), list);
+            excel.writePivotTable("B2", Arrays.asList("a", "b"), list);
             
             assertEquals(excel.move("B2").getInt(-1), 1);
             assertEquals(excel.move("C2").getInt(-1), 2);
@@ -154,7 +154,7 @@ public class ExcelTest {
     }
     
     @Test
-    public void writeTableByListClass() throws IOException {
+    public void writeTable() throws IOException {
         try (Excel excel = Excel.create()) {
             
             @Data @AllArgsConstructor
@@ -167,7 +167,7 @@ public class ExcelTest {
             list.add(new TestObject(11, "AAA"));
             list.add(new TestObject(22, "BBB"));
             
-            excel.writeTableByListClass("B2", Arrays.asList("a", "b"), list);
+            excel.writeTable("B2", Arrays.asList("a", "b"), list);
             
             assertEquals(excel.move("B2").getInt(-1), 11);
             assertEquals(excel.move("B3").getInt(-1), 22);
@@ -178,7 +178,7 @@ public class ExcelTest {
     }
     
     @Test
-    public void writePivotTableByListClass() throws IOException {
+    public void writePivotTable() throws IOException {
         try (Excel excel = Excel.create()) {
             
             @Data @AllArgsConstructor
@@ -191,7 +191,7 @@ public class ExcelTest {
             list.add(new TestObject(11, "AAA"));
             list.add(new TestObject(22, "BBB"));
             
-            excel.writePivotTableByListClass("B2", Arrays.asList("a", "b"), list);
+            excel.writePivotTable("B2", Arrays.asList("a", "b"), list);
             
             assertEquals(excel.move("B2").getInt(-1), 11);
             assertEquals(excel.move("C2").getInt(-1), 22);
