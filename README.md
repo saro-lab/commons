@@ -139,6 +139,10 @@ Files.lineReader(File, String, ThrowableFunction<Stream<String>, T>) : T
 Files.listFilesStream(File) : Stream<File>
 Files.listFilesStream(String) : Stream<File>
 Files.toBasicFileAttributes(File) : BasicFileAttributes
+Files.toFileExt(File) : String
+Files.toFileExt(String) : String
+Files.validFileExt(File, String[]) : boolean
+Files.validFileExt(String, String[]) : boolean
 ```
 
 
