@@ -524,7 +524,20 @@ public class ByteData {
                 return this;
             }
         }
-        throw new IOException("해당 문자열을 찾을 수 없습니다.");
+        throw new IOException("not found char["+match+"]");
+    }
+    
+    /**
+     * move read pointer to next line
+     * @return
+     * @throws IOException 
+     */
+    public ByteData readIgnoreCurrentLine() throws IOException {
+        try {
+            return readIgnoreMatch((byte)'\n');
+        } catch (IOException e) {
+            throw new IOException("not found new line (\\r\\n or \\n)");
+        }
     }
     
     /**
