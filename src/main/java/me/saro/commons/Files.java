@@ -98,6 +98,18 @@ public class Files {
     }
     
     /**
+     * read line in the file
+     * @param file
+     * @param charset
+     * @param lineReader
+     * @return
+     * @throws Exception
+     */
+    public static <T> T lineReader(String file, String charset, ThrowableFunction<Stream<String>, T> lineReader) throws Exception {
+        return lineReader(new File(file), charset, lineReader);
+    }
+    
+    /**
      * to File ext (only lowercase)
      * @param filename
      * @return ex) "gif", "png", "jpg", "zip", "exe", ""
