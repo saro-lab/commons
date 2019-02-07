@@ -11,14 +11,14 @@
 <dependency>
   <groupId>me.saro</groupId>
   <artifactId>commons</artifactId>
-  <version>2.0</version>
+  <version>2.1</version>
 </dependency>
 ```
 
 ## gradle
 
 ```
-compile 'me.saro:commons:2.0'
+compile 'me.saro:commons:2.1'
 ```
 
 ## repository
@@ -28,6 +28,8 @@ compile 'me.saro:commons:2.0'
 
 ## see
 - [가리사니 개발자공간](https://gs.saro.me)
+
+
 
 
 
@@ -215,10 +217,8 @@ setValue(Object) : Excel
 sheetsLength() : int
 toIntegerString(long) : String
 writeHorizontalList(String, Collection<T>) : Excel
-writePivotTableByListClass(String, Collection<String>, List<T>) : Excel
-writePivotTableByListMap(String, Collection<String>, List<Map<String, V>>) : Excel
-writeTableByListClass(String, Collection<String>, List<T>) : Excel
-writeTableByListMap(String, Collection<String>, List<Map<String, V>>) : Excel
+writePivotTable(String, Collection<String>, List<T>) : Excel
+writeTable(String, Collection<String>, List<T>) : Excel
 writeVerticalList(String, Collection<T>) : Excel
 ```
 
