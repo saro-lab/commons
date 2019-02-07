@@ -31,6 +31,14 @@ public class FilesTest {
         assertEquals(Files.toFileExt(new File("cccd.PNG")), "png");
     }
     
+    @Test
+    public void validFileExt() {
+        assertEquals(Files.validFileExt(new File("C:\\aaa.bbb/abc.exe"), "png", "gif", "exe"), true);
+        assertEquals(Files.validFileExt(new File("C:\\aaa.bbb/abc.exe"), "png", "gif"), false);
+        assertEquals(Files.validFileExt(new File("cccd.PNG"), "gif", "png"), true);
+        assertEquals(Files.validFileExt(new File("cccd.PNG"), "gif", "PNG"), false);
+    }
+    
     public void remove() {
         
         // before 24 hour
