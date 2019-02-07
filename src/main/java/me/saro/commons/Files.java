@@ -96,7 +96,70 @@ public class Files {
         }
         return t;
     }
-
+    
+    /**
+     * to File ext (only lowercase)
+     * @param filename
+     * @return ex) "gif", "png", "jpg", "zip", "exe", ""
+     */
+    public static String toFileExt(File filename) {
+        String name = filename.getName().toLowerCase();
+        int pos;
+        return (pos = name.lastIndexOf('.')) != -1 ? name.substring(pos + 1) : "";
+    }
+    
+    /**
+     * to File ext (only lowercase)
+     * @param filename
+     * @return ex) "gif", "png", "jpg", "zip", "exe", ""
+     */
+    public static String toFileExt(String filename) {
+        String name = filename.toLowerCase().replace('\\', '/');
+        int pos;
+        if ( (pos = name.lastIndexOf('/')) != -1 ) {
+            name = name.substring(pos + 1);
+        }
+        return (pos = name.lastIndexOf('.')) != -1 ? name.substring(pos + 1) : "";
+    }
+    
+    /**
+     * valid check for the file ext
+     * @param filename
+     * @param fileExts only lowercase ex) "gif", "png", "jpg", "zip", "exe", ""
+     * @return
+     */
+    public static boolean validFileExt(File filename, String... fileExts) {
+        if (fileExts == null || fileExts.length == 0) {
+            throw new IllegalArgumentException("At least one fileExts argument is required.");
+        }
+        String ext = toFileExt(filename);
+        for (String fileExt : fileExts) {
+            if (fileExt.equals(ext)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * valid check for the file ext
+     * @param filename
+     * @param fileExts only lowercase ex) "gif", "png", "jpg", "zip", "exe", ""
+     * @return
+     */
+    public static boolean validFileExt(String filename, String... fileExts) {
+        if (fileExts == null || fileExts.length == 0) {
+            throw new IllegalArgumentException("At least one fileExts argument is required.");
+        }
+        String ext = toFileExt(filename);
+        for (String fileExt : fileExts) {
+            if (fileExt.equals(ext)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     /**
      * get file infomation
      * @param file
