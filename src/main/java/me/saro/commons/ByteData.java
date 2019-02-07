@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.Arrays;
 
 import lombok.SneakyThrows;
@@ -496,6 +497,119 @@ public class ByteData {
      */
     public ByteData writeLine2() {
         return write(BYTES_NEW_LINE, 0, 2);
+    }
+    
+    /**
+     * bind all data to output stream
+     * @param os
+     * @return
+     * @throws IOException
+     */
+    public ByteData bind(OutputStream os) throws IOException {
+        os.write(buf, 0, writePointer);
+        os.flush();
+        return this;
+    }
+    
+    /**
+     * bind all data to output stream
+     * @param os
+     * @param limit
+     * @return
+     * @throws IOException
+     */
+    public ByteData bind(OutputStream os, int limit) throws IOException {
+        os.write(buf, 0, Math.min(writePointer, limit));
+        os.flush();
+        return this;
+    }
+    
+    /**
+     * read
+     * @param size
+     * @return
+     * @throws IOException
+     */
+    public byte[] read(int size) throws IOException {
+        if ((readPointer + size) > writePointer) {
+            throw new IndexOutOfBoundsException("out of index : readPointer["+(readPointer + size)+"], writePointer["+writePointer+"]");
+        }
+        byte[] rv = Arrays.copyOfRange(buf, readPointer, readPointer + size);
+        readPointer += size;
+        return rv;
+    }
+    
+    /**
+     * read String
+     * @param size
+     * @param ALIGN
+     * @param isEmptyToNull
+     * @return
+     * @throws IOException
+     */
+    public String readString(int size, int ALIGN, boolean isEmptyToNull) throws IOException {
+        String text = new String(read(size), charset);
+        
+        read : switch (ALIGN) {
+            case ALIGN_LEFT :
+                text = text.replaceFirst("\\s+$","");
+                break read;
+            case ALIGN_RIGHT : 
+                text = text.replaceFirst("^\\s+","");
+                break read;
+            default : 
+                throw new IllegalArgumentException("ALIGN is ALIGN_LEFT or ALIGN_RIGHT");
+        }
+        
+        return (!isEmptyToNull || text.length() > 0) ? text : null;
+    }
+    
+    /**
+     * read left align string
+     * @param size
+     * @param isEmptyToNull
+     * @return
+     * @throws IOException
+     */
+    public String readStringLeft(int size, boolean isEmptyToNull) throws IOException {
+        return readString(size, ALIGN_LEFT, isEmptyToNull);
+    }
+    
+    /**
+     * read right align string
+     * @param size
+     * @param isEmptyToNull
+     * @return
+     * @throws IOException
+     */
+    public String readStringRight(int size, boolean isEmptyToNull) throws IOException {
+        return readString(size, ALIGN_RIGHT, isEmptyToNull);
+    }
+    
+    /**
+     * read text int
+     * @param size
+     * @param ALIGN
+     * @param defaultValue
+     * @return
+     * @throws IOException
+     */
+    public int readInt(int size, int ALIGN, int defaultValue) throws IOException {
+        String val = readString(size, ALIGN, true);
+        return val != null ? Integer.parseInt(val) : defaultValue;
+    }
+    
+    /**
+     * read text long
+     * @param size
+     * @param ALIGN
+     * @param defaultValue
+     * @return
+     * @throws IOException
+     */
+    public long readLong(int size, int ALIGN, long defaultValue) throws IOException {
+        String val = readString(size, ALIGN, true);
+        return val != null ? Long.parseLong(val) : defaultValue;
     }
     
     /**
