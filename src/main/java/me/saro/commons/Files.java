@@ -125,7 +125,7 @@ public class Files {
     /**
      * valid check for the file ext
      * @param filename
-     * @param fileExts
+     * @param fileExts only lowercase ex) "gif", "png", "jpg", "zip", "exe", ""
      * @return
      */
     public static boolean validFileExt(File filename, String... fileExts) {
@@ -144,7 +144,7 @@ public class Files {
     /**
      * valid check for the file ext
      * @param filename
-     * @param fileExts
+     * @param fileExts only lowercase ex) "gif", "png", "jpg", "zip", "exe", ""
      * @return
      */
     public static boolean validFileExt(String filename, String... fileExts) {
