@@ -3,6 +3,8 @@ package me.saro.commons;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
@@ -51,5 +53,10 @@ public class FilesTest {
             .filter(Files.attributesFilter(attr -> attr.creationTime().toMillis() < before24hour))
             // delete
             .forEach(File::delete);
+    }
+    
+    public void lines() throws Exception {
+        List<String> list = Files.lineReader("C:\\Users\\SARO\\Desktop\\abc.txt", "UTF-8", lines -> lines.collect(Collectors.toList()));
+        System.out.println(list);
     }
 }
