@@ -34,7 +34,6 @@ compile 'me.saro:commons:2.1'
 
 
 
-
 # STATIC
 
 
@@ -124,6 +123,9 @@ Utils.linkStream(InputStream, OutputStream)
 Utils.nvl(T[]) : T
 Utils.random(long, long) : long
 Utils.timerTask(ThrowableConsumer<TimerTask>) : TimerTask
+Utils.zerofill(String, int) : String
+Utils.zerofill(int, int) : String
+Utils.zerofill(long, int) : String
 ```
 
 
@@ -136,6 +138,7 @@ Files.attributesFilter(ThrowablePredicate<BasicFileAttributes>) : Predicate<File
 Files.createFile(File, boolean, InputStream) 
 Files.createFile(File, boolean, String, String) 
 Files.lineReader(File, String, ThrowableFunction<Stream<String>, T>) : T
+Files.lineReader(String, String, ThrowableFunction<Stream<String>, T>) : T
 Files.listFilesStream(File) : Stream<File>
 Files.listFilesStream(String) : Stream<File>
 Files.toBasicFileAttributes(File) : BasicFileAttributes
@@ -224,6 +227,57 @@ writeHorizontalList(String, Collection<T>) : Excel
 writePivotTable(String, Collection<String>, List<T>) : Excel
 writeTable(String, Collection<String>, List<T>) : Excel
 writeVerticalList(String, Collection<T>) : Excel
+```
+
+
+## ByteData
+
+#### me.saro.commons.ByteData
+
+```
+ByteData.create() : ByteData
+ByteData.create(String) : ByteData
+ByteData.create(int, String) : ByteData
+bind(OutputStream) : ByteData
+bind(OutputStream, int) : ByteData
+fillSpace() : ByteData
+insert(String, int) : ByteData
+insert(byte[], int) : ByteData
+insert(byte[], int, int, int) : ByteData
+insertFill(byte, int, int) : ByteData
+insertFillSpace(int, int) : ByteData
+insertFixed(String, int, byte, int) : ByteData
+insertFixedAlignRight(String, int, byte, int) : ByteData
+moveWritePointer(int) : ByteData
+newByteData(int, int) : ByteData
+read(int) : byte[]
+readIgnore(int) : ByteData
+readIgnoreCurrentLine() : ByteData
+readIgnoreMatch(byte) : ByteData
+readText(int, boolean) : String
+readTextAlignRight(int, boolean) : String
+readTextInt(int, int) : int
+readTextLong(int, long) : long
+rectifyWritePointer() : ByteData
+size() : int
+toBytes() : byte[]
+toBytes(int, int) : byte[]
+toString() : String
+write(File) : ByteData
+write(File, String) : ByteData
+write(InputStream) : ByteData
+write(InputStream, int) : ByteData
+write(String) : ByteData
+write(byte[]) : ByteData
+write(byte[], int, int) : ByteData
+writeFill(byte, int) : ByteData
+writeFillSpace(int) : ByteData
+writeFixed(String, int, byte) : ByteData
+writeFixed(int, int, byte) : ByteData
+writeFixedAlignRight(String, int, byte) : ByteData
+writeFixedAlignRight(int, int, byte) : ByteData
+writeLine1() : ByteData
+writeLine2() : ByteData
 ```
 
 
