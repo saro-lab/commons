@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.List;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
@@ -69,6 +70,52 @@ public class Utils {
             }
         }
         return null;
+    }
+    
+    /**
+     * zerofill
+     * @param number
+     * @param length
+     * @return
+     */
+    public static String zerofill(String number, int length) {
+        if (length < 1) {
+            throw new IllegalArgumentException("length must more then 1");
+        }
+        if (!number.matches("[\\d]+")) {
+            throw new IllegalArgumentException("number must unsigned integer([0-9]+)");
+        }
+        int needFillSize = length - number.length();
+        
+        if (needFillSize == 0) {
+            return number;
+        } else if (needFillSize > 0) {
+            char[] fills = new char[needFillSize];
+            Arrays.fill(fills, '0');
+            return new String(fills) + number;
+        } else {
+            throw new IllegalArgumentException("["+number+"] is over length then "+length);
+        }
+    }
+    
+    /**
+     * zerofill
+     * @param val
+     * @param length
+     * @return
+     */
+    public static String zerofill(long val, int length) {
+        return zerofill(Long.toString(val), length);
+    }
+    
+    /**
+     * zerofill
+     * @param val
+     * @param length
+     * @return
+     */
+    public static String zerofill(int val, int length) {
+        return zerofill(Integer.toString(val), length);
     }
     
     /**
