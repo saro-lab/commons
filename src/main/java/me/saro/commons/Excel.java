@@ -216,7 +216,7 @@ public class Excel implements Closeable {
      * @param list
      * @return
      */
-    public <T> Excel writeTableByListClass(String startColumnName, Collection<String> columnNames, List<T> list) {
+    public <T> Excel writeTable(String startColumnName, Collection<String> columnNames, List<T> list) {
         if (list != null && !list.isEmpty()) {
             int[] rc = toRowCellIndex(startColumnName);
             int ri = rc[0];
@@ -242,7 +242,7 @@ public class Excel implements Closeable {
      * @param list
      * @return
      */
-    public <T> Excel writePivotTableByListClass(String startColumnName, Collection<String> columnNames, List<T> list) {
+    public <T> Excel writePivotTable(String startColumnName, Collection<String> columnNames, List<T> list) {
         if (list != null && !list.isEmpty()) {
             int[] rc = toRowCellIndex(startColumnName);
             int sri = rc[0];
@@ -250,56 +250,6 @@ public class Excel implements Closeable {
             int ci = rc[1];
             for (T t : list) {
                 Map<String, Object> map = Converter.toMapByClass(t);
-                ri = sri;
-                for (String name : columnNames) {
-                    move(ri++, ci, true);
-                    setCellValueAuto(this.cell, map.get(name));
-                }
-                ci++;
-            }
-        }
-        return this;
-    }
-    
-    /**
-     * write table by list map
-     * @param startColumnName
-     * @param columnNames
-     * @param listMap
-     * @return
-     */
-    public <V> Excel writeTableByListMap(String startColumnName, Collection<String> columnNames, List<Map<String, V>> listMap) {
-        if (listMap != null && !listMap.isEmpty()) {
-            int[] rc = toRowCellIndex(startColumnName);
-            int ri = rc[0];
-            int sci = rc[1];
-            int ci = sci;
-            for (Map<String, V> map : listMap) {
-                moveRow(ri++, true);
-                ci = sci;
-                for (String name : columnNames) {
-                    moveCell(ci++, true);
-                    setCellValueAuto(this.cell, map.get(name));
-                }
-            }
-        }
-        return this;
-    }
-    
-    /**
-     * write pivot table by list map
-     * @param startColumnName
-     * @param columnNames
-     * @param listMap
-     * @return
-     */
-    public <V> Excel writePivotTableByListMap(String startColumnName, Collection<String> columnNames, List<Map<String, V>> listMap) {
-        if (listMap != null && !listMap.isEmpty()) {
-            int[] rc = toRowCellIndex(startColumnName);
-            int sri = rc[0];
-            int ri = sri;
-            int ci = rc[1];
-            for (Map<String, V> map : listMap) {
                 ri = sri;
                 for (String name : columnNames) {
                     move(ri++, ci, true);
