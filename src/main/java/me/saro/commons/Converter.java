@@ -9,6 +9,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.Key;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
@@ -28,6 +31,12 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -631,4 +640,72 @@ public class Converter {
     public static String namingConvention(NamingConvention fromNamingConvention, NamingConvention toNamingConvention, String naming) {
         return namingConvention(toNamingConvention, namingConvention(fromNamingConvention, naming));
     }
+    
+    /**
+     * simple crypt
+     * @param cryptMode
+     * @param transformation
+     * @param key
+     * @param iv
+     * @param in
+     * @return
+     * @throws InvalidKeyException
+     * @throws InvalidAlgorithmParameterException
+     * @throws NoSuchAlgorithmException
+     * @throws NoSuchPaddingException
+     * @throws IllegalBlockSizeException
+     * @throws BadPaddingException
+     */
+    private static byte[] crypt(int cryptMode, String transformation, Key key, byte[] iv, byte[] in)
+            throws InvalidKeyException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
+            NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
+        Cipher cipher = Cipher.getInstance(transformation);
+        if (iv != null) {
+            cipher.init(cryptMode, key, new IvParameterSpec(iv));
+        } else {
+            cipher.init(cryptMode, key);
+        }
+        return cipher.doFinal(in);
+    }
+
+    /**
+     * simple encrypt
+     * @param transformation
+     * @param key
+     * @param iv
+     * @param in
+     * @return
+     * @throws InvalidKeyException
+     * @throws InvalidAlgorithmParameterException
+     * @throws NoSuchAlgorithmException
+     * @throws NoSuchPaddingException
+     * @throws IllegalBlockSizeException
+     * @throws BadPaddingException
+     */
+    public static byte[] encrypt(String transformation, Key key, byte[] iv, byte[] in)
+            throws InvalidKeyException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
+            NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
+        return crypt(Cipher.ENCRYPT_MODE, transformation, key, iv, in);
+    }
+
+    /**
+     * simple decrypt
+     * @param transformation
+     * @param key
+     * @param iv
+     * @param in
+     * @return
+     * @throws InvalidKeyException
+     * @throws InvalidAlgorithmParameterException
+     * @throws NoSuchAlgorithmException
+     * @throws NoSuchPaddingException
+     * @throws IllegalBlockSizeException
+     * @throws BadPaddingException
+     */
+    public static byte[] decrypt(String transformation, Key key, byte[] iv, byte[] in)
+            throws InvalidKeyException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
+            NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
+        return crypt(Cipher.DECRYPT_MODE, transformation, key, iv, in);
+    }
+
 }
