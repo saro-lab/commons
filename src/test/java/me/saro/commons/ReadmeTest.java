@@ -28,6 +28,7 @@ public class ReadmeTest {
         outClassInfo(Files.class);
         outClassInfo(Maps.class);
         outClassInfo(Zips.class);
+        outClassInfo(Crypt.class);
         outClassInfo(Excel.class);
         outClassInfo(ByteData.class);
         outClassInfo(Valids.class);
