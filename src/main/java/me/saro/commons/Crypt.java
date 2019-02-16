@@ -1,5 +1,8 @@
 package me.saro.commons;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -47,9 +50,26 @@ public class Crypt {
         return crypt(transformation, Cipher.DECRYPT_MODE, key, iv);
     }
     
-    public void link(InputStream is, OutputStream os) throws IOException {
+    public void to(InputStream is, OutputStream os) throws IOException {
         try (CipherOutputStream cos = new CipherOutputStream(os, cipher)) {
             Utils.linkStream(is, cos);
+        }
+    }
+    
+    public void to(File in, File out, boolean overwrite) throws IOException {
+        if (!in.exists()) {
+            throw new IOException(in.getAbsolutePath() + " does not exist");
+        }
+        if (out.exists()) {
+            if (overwrite) {
+                out.delete();
+            } else {
+                throw new IOException(in.getAbsolutePath() + " is already exist");
+            }
+        }
+        out.getParentFile().mkdirs();
+        try (FileInputStream fis = new FileInputStream(in) ; FileOutputStream fos = new FileOutputStream(out)) {
+            to(fis, fos);
         }
     }
     
