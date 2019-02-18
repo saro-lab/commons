@@ -77,20 +77,20 @@ public class ExcelTest {
         try (Excel excel = Excel.create()) {
             
             List<Map<String, Object>> list = new ArrayList<>();
-            list.add(Converter.toMap("a", 1, "b", "AA"));
-            list.add(Converter.toMap("a", 2, "b", "BB"));
+            list.add(Converter.toMap("a", "1", "b", "AA"));
+            list.add(Converter.toMap("a", "2", "b", "BB"));
             
             excel.writeTable("B2", Arrays.asList("a", "b"), list);
             
             List<List<String>> rv = excel.readPivotTable("B2", 2, e -> Arrays.asList(
-                Excel.toIntegerString(e.get(0), -1),
+                Excel.toString(e.get(0), null),
                 Excel.toString(e.get(1), null)
             ));
             
             assertEquals(rv.get(0).get(0), "1");
-            assertEquals(rv.get(0).get(1), "AA");
+            assertEquals(rv.get(0).get(1), "2");
             
-            assertEquals(rv.get(1).get(0), "2");
+            assertEquals(rv.get(1).get(0), "AA");
             assertEquals(rv.get(1).get(1), "BB");
         }
     }
