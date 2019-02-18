@@ -1,5 +1,7 @@
 package me.saro.commons;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -12,20 +14,40 @@ import javax.crypto.NoSuchPaddingException;
 import org.junit.jupiter.api.Test;
 
 public class CryptTest {
+    
+    final static String CHARSET = "UTF-8";
+    final static byte[] key = "d92liw93%1!9df0z".getBytes();
+    final static byte[] iv = "12345qwert^%@!@f".getBytes();
+    
     @Test
-    public void crypt() throws InvalidKeyException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
+    public void cryptText() throws InvalidKeyException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
         
-//        String charset = "UTF-8";
-//        
-//        String trens = "AES/CBC/PKCS5Padding";
-//        Key key = new SecretKeySpec("abcdefg123456789".getBytes(), "AES");
-//        byte[] iv = ")3ksu38s6Ad8D2^&".getBytes();
-//        
-//        String test = "abcdefg 가나다라 @#$!ㅇㄴ8732!$%";
-//        
-//        String en = Bytes.toHex(Converter.encrypt(trens, key, iv, test.getBytes(charset)));
-//        String de = new String(Converter.decrypt(trens, key, iv, Bytes.toBytesByHex(en)), charset);
-//        
-//        assertEquals(test, de);
+        Crypt en = Crypt.encrypt("AES/CBC/PKCS5Padding", key, iv);
+        Crypt de = Crypt.decrypt("AES/CBC/PKCS5Padding", key, iv);
+        
+        String text = "data";
+        String encrypt = en.toHex(text.getBytes(CHARSET));
+        String decrypt = new String(de.toBytesByHex(encrypt), CHARSET);
+        
+        assertEquals(text, decrypt);
+        
+        text = "data";
+        encrypt = en.toBase64(text.getBytes(CHARSET));
+        decrypt = new String(de.toBytesByBase64(encrypt), CHARSET);
+        
+        assertEquals(text, decrypt);
     }
+    
+//    @Test
+//    public void cryptFile() throws InvalidKeyException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException {
+//        Crypt en = Crypt.encrypt("AES/CBC/PKCS5Padding", key, iv);
+//        Crypt de = Crypt.decrypt("AES/CBC/PKCS5Padding", key, iv);
+//        
+//        File data = new File("C:/Users/SARO/Desktop/abc.jpg");
+//        File encf = new File("C:/Users/SARO/Desktop/abc_en.jpg");
+//        File decf = new File("C:/Users/SARO/Desktop/abc_de.jpg");
+//        
+//        en.to(data, encf, true);
+//        de.to(encf, decf, true);
+//    }
 }
