@@ -12,6 +12,8 @@ public class BytesTest {
     public void toBytesByHex() {
         String sample = "fff0fa32713281af";
         assertEquals(Bytes.toHex(Bytes.toBytesByHex(sample)), sample);
+        assertEquals(Bytes.toHex(Bytes.toBytesByHex("FFff")), "ffff");
+        assertEquals(Bytes.toHex(Bytes.toBytesByHex("ffFF")), "ffff");
     }
     
     @Test
