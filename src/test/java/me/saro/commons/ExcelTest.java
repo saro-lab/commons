@@ -2,16 +2,21 @@ package me.saro.commons;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.junit.jupiter.api.Test;
+import org.w3c.dom.css.RGBColor;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import me.saro.commons.bytes.Bytes;
 
 
 public class ExcelTest {
@@ -76,21 +81,18 @@ public class ExcelTest {
     public void readPivotTable() throws IOException {
         try (Excel excel = Excel.create()) {
             
-            List<Map<String, Object>> list = new ArrayList<>();
-            list.add(Converter.toMap("a", 1, "b", "AA"));
-            list.add(Converter.toMap("a", 2, "b", "BB"));
+            List<Map<String, String>> list = new ArrayList<>();
+            list.add(Converter.toMap("a", "1", "b", "AA"));
+            list.add(Converter.toMap("a", "2", "b", "BB"));
             
             excel.writeTable("B2", Arrays.asList("a", "b"), list);
             
-            List<List<String>> rv = excel.readPivotTable("B2", 2, e -> Arrays.asList(
-                Excel.toIntegerString(e.get(0), -1),
-                Excel.toString(e.get(1), null)
-            ));
+            List<List<String>> rv = excel.readPivotTable("B2", 2, e -> Arrays.asList( e.get(0).toString(), e.get(1).toString() ));
             
             assertEquals(rv.get(0).get(0), "1");
-            assertEquals(rv.get(0).get(1), "AA");
+            assertEquals(rv.get(0).get(1), "2");
             
-            assertEquals(rv.get(1).get(0), "2");
+            assertEquals(rv.get(1).get(0), "AA");
             assertEquals(rv.get(1).get(1), "BB");
         }
     }
@@ -198,6 +200,32 @@ public class ExcelTest {
             
             assertEquals(excel.move("B3").getString(), "AAA");
             assertEquals(excel.move("C3").getString(), "BBB");
+        }
+    }
+    
+    @Test
+    public void style() throws IOException, InvalidFormatException {
+        try (Excel excel = Excel.createClone(new File("C:/Users/SARO/Desktop/bbb.xlsx"), new File("C:/Users/SARO/Desktop/abc.xlsx"), true)) {
+            
+            @Data @AllArgsConstructor
+            class TestObject {
+                int a;
+                String b;
+            }
+            
+            List<TestObject> list = new ArrayList<>();
+            list.add(new TestObject(11, "Aasdfasdfsadfjklsadfj;lasdfjasd;lkfjasd;lfkjsadfA"));
+            list.add(new TestObject(22, "2394992394BBB"));
+            
+            excel.writePivotTable("B1", Arrays.asList("a", "b"), list);
+            
+            
+            excel.autoSizeColumn("A2", "E2");
+            
+            
+            //excel.save(, true);
+            
+            
         }
     }
 }

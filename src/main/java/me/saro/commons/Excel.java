@@ -16,6 +16,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -283,12 +284,45 @@ public class Excel implements Closeable {
     
     /**
      * read cell
+     * @param rowIndex
+     * @param cellIndex
+     * @param forceCreate if cell is not exist then create cell
+     * @return
+     */
+    public Cell readCell(int rowIndex, int cellIndex, boolean forceCreate) {
+        if (!forceCreate) {
+            return readCell(rowIndex, cellIndex);
+        }
+        Row row = sheet.getRow(rowIndex);
+        if (row == null) {
+            row = sheet.createRow(rowIndex);
+        }
+        Cell cell = row.getCell(cellIndex);
+        if (cell == null) {
+            cell = row.createCell(cellIndex);
+        }
+        return cell;
+    }
+    
+    /**
+     * read cell
      * @param startColumnName
      * @return Cell or null
      */
     public Cell readCell(String startColumnName) {
         int[] rc = toRowCellIndex(startColumnName);
         return readCell(rc[0], rc[1]);
+    }
+    
+    /**
+     * read cell
+     * @param columnName
+     * @param forceCreate if cell is not exist then create cell
+     * @return
+     */
+    public Cell readCell(String columnName, boolean forceCreate) {
+        int[] rc = toRowCellIndex(columnName);
+        return readCell(rc[0], rc[1], forceCreate);
     }
     
     /**
@@ -401,6 +435,46 @@ public class Excel implements Closeable {
         }
         
         return rv;
+    }
+    
+    /**
+     * get cell style
+     * @param startColumnName
+     * @param forceCell if cell is not exist then create cell
+     * @return
+     */
+    public CellStyle getCellStyle(String columnName, boolean forceCell) {
+        Cell cell = readCell(columnName, forceCell);
+        return cell != null ? cell.getCellStyle() : null;
+    }
+    
+    /**
+     * autoSizeColumn
+     * @param startColumnName
+     * @param endColumnName
+     * @return
+     */
+    public Excel autoSizeColumn(String startColumnName, String endColumnName) {
+        int[] src = toRowCellIndex(startColumnName);
+        int[] erc = toRowCellIndex(endColumnName);
+        int sc = src[1];
+        int ec = erc[1];
+        System.out.println(sc+"/"+ec);
+        if (sc > ec) {
+            throw new IllegalArgumentException(startColumnName + " is bigger than " + endColumnName);
+        }
+        
+        for ( ; sc <= ec ; sc++) {
+            System.out.println(sc);
+            try {
+                sheet.autoSizeColumn(sc, true);
+                System.out.println("통과");
+            } catch (IllegalStateException ise) {
+                System.out.println("에러");
+            }
+            
+        }
+        return this;
     }
     
     /**
