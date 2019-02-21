@@ -55,17 +55,6 @@ public class Excel extends ExcelStaticTools implements Closeable {
     }
     
     /**
-     * create excel .xls<br>
-     * does not recommend .xls file
-     * @see createXlsx
-     * @return
-     */
-    @Deprecated
-    public static Excel createXls() {
-        return new Excel(new HSSFWorkbook(), null);
-    }
-    
-    /**
      * create excel .xlsx<br>
      * keep just 100 row in memory : new SXSSFWorkbook(rowAccessWindowSize:100)
      * @see org.apache.poi.xssf.streaming.SXSSFWorkbook.SXSSFWorkbook
