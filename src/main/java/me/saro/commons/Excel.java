@@ -5,14 +5,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -21,10 +19,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import lombok.Getter;
 import me.saro.commons.excel.ExcelStaticTools;
 import me.saro.commons.function.ThrowableFunction;
-
 
 /**
  * excel
@@ -39,74 +35,28 @@ public class Excel extends ExcelStaticTools implements Closeable {
     private int rowIndex = - 1;
     private int cellIndex = -1;
     
-    @Getter private Sheet sheet;
+    private Sheet sheet;
     private Row row;
     private Cell cell;
     
-    
-    
     File file;
     
-    // private
     private Excel(Workbook book, File file) {
         this.book = book;
         this.file = file;
         moveSheet(0).move(0, 0, false);
     }
     
-    /**
-     * create excel .xlsx<br>
-     * keep just 100 row in memory : new SXSSFWorkbook(rowAccessWindowSize:100)
-     * @see org.apache.poi.xssf.streaming.SXSSFWorkbook.SXSSFWorkbook
-     * @return
-     */
-    public static Excel create() {
+    public static Excel createBulkExcel() {
         return new Excel(new SXSSFWorkbook(100), null);
     }
     
-    /**
-     * create excel file .xlsx
-     * @param file
-     * @param overwrite
-     * @return
-     * @throws IOException
-     * @throws InvalidFormatException 
-     */
-    public static Excel create(File file, boolean overwrite) throws IOException, InvalidFormatException {
-        try (Excel excel = create()){
-            excel.save(file, overwrite);
-        }
-        return open(file);
+    public static Excel create() {
+        return new Excel(new XSSFWorkbook(), null);
     }
     
-    /**
-     * open excel file
-     * @param file
-     * @return
-     * @throws IOException
-     * @throws InvalidFormatException 
-     */
-    public static Excel open(File file) throws IOException, InvalidFormatException {
+    public static Excel open(File file, boolean overwrite) throws IOException, InvalidFormatException {
         return new Excel(new XSSFWorkbook(file), file);
-    }
-    
-    /**
-     * clone excel file to file
-     * @param openFile
-     * @param saveFile
-     * @return
-     * @throws IOException
-     * @throws InvalidFormatException 
-     */
-    public static Excel createClone(File openFile, File saveFile, boolean overwrite) throws IOException, InvalidFormatException {
-        if (saveFile.exists()) {
-            if (!overwrite) {
-                throw new IOException("file exists : " + saveFile.getAbsolutePath());
-            }
-            saveFile.delete();
-        }
-        Files.copy(openFile.toPath(), saveFile.toPath());
-        return open(saveFile);
     }
     
     /**
