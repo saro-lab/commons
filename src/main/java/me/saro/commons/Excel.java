@@ -14,7 +14,6 @@ import java.util.Map;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -22,6 +21,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import lombok.Getter;
 import me.saro.commons.excel.ExcelStaticTools;
 import me.saro.commons.function.ThrowableFunction;
 
@@ -39,7 +39,7 @@ public class Excel extends ExcelStaticTools implements Closeable {
     private int rowIndex = - 1;
     private int cellIndex = -1;
     
-    private Sheet sheet;
+    @Getter private Sheet sheet;
     private Row row;
     private Cell cell;
     
@@ -63,58 +63,6 @@ public class Excel extends ExcelStaticTools implements Closeable {
     @Deprecated
     public static Excel createXls() {
         return new Excel(new HSSFWorkbook(), null);
-    }
-    
-    /**
-     * create excel file .xls<br>
-     * does not recommend .xls file
-     * @param file
-     * @param overwrite
-     * @return
-     * @throws IOException
-     * @throws InvalidFormatException
-     */
-    @Deprecated
-    public static Excel createXls(File file, boolean overwrite) throws IOException, InvalidFormatException {
-        try (Excel excel = createXls()){
-            excel.save(file, overwrite);
-        }
-        return open(file);
-    }
-    
-    /**
-     * open excel file<br>
-     * does not recommend .xls file
-     * @param file
-     * @return
-     * @throws IOException
-     * @throws InvalidFormatException 
-     */
-    @Deprecated
-    public static Excel openXls(File file) throws IOException, InvalidFormatException {
-        return new Excel(new HSSFWorkbook(POIFSFileSystem.create(file)), file);
-    }
-    
-    /**
-     * clone excel file to file<br>
-     * does not recommend .xls file
-     * @param openFile
-     * @param saveFile
-     * @return
-     * @throws IOException
-     * @throws InvalidF
-     * ormatException 
-     */
-    @Deprecated
-    public static Excel createCloneXls(File openFile, File saveFile, boolean overwrite) throws IOException, InvalidFormatException {
-        if (saveFile.exists()) {
-            if (!overwrite) {
-                throw new IOException("file exists : " + saveFile.getAbsolutePath());
-            }
-            saveFile.delete();
-        }
-        Files.copy(openFile.toPath(), saveFile.toPath());
-        return openXls(saveFile);
     }
     
     /**
