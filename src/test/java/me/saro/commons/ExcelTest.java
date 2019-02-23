@@ -2,12 +2,15 @@ package me.saro.commons;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.Color;
 import org.junit.jupiter.api.Test;
 
 import lombok.AllArgsConstructor;
@@ -200,4 +203,33 @@ public class ExcelTest {
             assertEquals(excel.move("C3").getString(), "BBB");
         }
     }
+    
+//    @Test
+//    public void test() throws IOException {
+//        try (Excel excel = Excel.create()) {
+//            
+//            @Data @AllArgsConstructor
+//            class TestObject {
+//                int a;
+//                String b;
+//            }
+//            
+//            List<TestObject> list = new ArrayList<>();
+//            list.add(new TestObject(11, "AA가나다란망ㄹ먼이라ㅓㅁㄴ이라ㅓㅁㄴㅇㄻㄴㅇㄻㄴㅇㄹA"));
+//            list.add(new TestObject(22, "BBBㅁㄴㅇ럼ㄴ이라ㅓㅁㄴ이라ㅓㅁㄴ이람넝리ㅏㅁㄴ어림나ㅓㅇㄹ"));
+//            
+//            excel.writePivotTable("B2", Arrays.asList("a", "b"), list);
+//            
+//            //excel.readCell("B2").getCellStyle().setFillBackgroundColor(10);
+//            try {
+//                excel.getSheet().autoSizeColumn(2);
+//            } catch (Exception e) {
+//                System.out.println(e);
+//            }
+//            
+//            
+//            
+//            excel.save(new File("C:\\Users\\SARO\\Desktop\\abc.xlsx"), true);
+//        }
+//    }
 }
