@@ -27,7 +27,7 @@ import me.saro.commons.function.ThrowableFunction;
  * @author      PARK Yong Seo
  * @since       2.3
  */
-public class WebBuilder {
+public class WebImpl implements Web {
 
     // url
     final String url;
@@ -62,7 +62,7 @@ public class WebBuilder {
      * @param url
      * @param method
      */
-    protected WebBuilder(String url, String method) {
+    protected WebImpl(String url, String method) {
         int point;
         if ((point = url.indexOf('?')) > -1) {
             if ((point) < url.length()) {
@@ -81,7 +81,7 @@ public class WebBuilder {
      * @param connectTimeout
      * @return
      */
-    public WebBuilder setConnectTimeout(int connectTimeout) {
+    public Web setConnectTimeout(int connectTimeout) {
         this.connectTimeout = connectTimeout;
         return this;
     }
@@ -91,7 +91,7 @@ public class WebBuilder {
      * @param readTimeout
      * @return
      */
-    public WebBuilder setReadTimeout(int readTimeout) {
+    public Web setReadTimeout(int readTimeout) {
         this.readTimeout = readTimeout;
         return this;
     }
@@ -101,7 +101,7 @@ public class WebBuilder {
      * @param charset
      * @return
      */
-    public WebBuilder setRequestCharset(String charset) {
+    public Web setRequestCharset(String charset) {
         this.requestCharset = charset;
         return this;
     }
@@ -111,7 +111,7 @@ public class WebBuilder {
      * @param charset
      * @return
      */
-    public WebBuilder setResponseCharset(String charset) {
+    public Web setResponseCharset(String charset) {
         this.responseCharset = charset;
         return this;
     }
@@ -125,7 +125,7 @@ public class WebBuilder {
      * @param ignoreCertificate
      * @return
      */
-    public WebBuilder setIgnoreCertificate(boolean ignoreCertificate) {
+    public Web setIgnoreCertificate(boolean ignoreCertificate) {
         this.ignoreCertificate = ignoreCertificate;
         return this;
     }
@@ -140,7 +140,7 @@ public class WebBuilder {
      * @param value
      * @return
      */
-    public WebBuilder addUrlParameter(String name, String value) {
+    public Web addUrlParameter(String name, String value) {
         try {
             if (urlParameter.length() > 1) {
                 urlParameter.append('&');
@@ -158,7 +158,7 @@ public class WebBuilder {
      * @param value
      * @return
      */
-    public WebBuilder setHeader(String name, String value) {
+    public Web setHeader(String name, String value) {
         header.put(name, value);
         return this;
     }
@@ -168,7 +168,7 @@ public class WebBuilder {
      * @param value
      * @return
      */
-    public WebBuilder setContentType(String value) {
+    public Web setContentType(String value) {
         return setHeader("Content-Type", value);
     }
 
@@ -177,7 +177,7 @@ public class WebBuilder {
      * @param bytes
      * @return
      */
-    public WebBuilder writeBody(byte[] bytes) {
+    public Web writeBody(byte[] bytes) {
         try {
             body.write(bytes);
         } catch (IOException e) {
@@ -191,7 +191,7 @@ public class WebBuilder {
      * @param text
      * @return
      */
-    public WebBuilder writeBody(String text) {
+    public Web writeBody(String text) {
         try {
             return writeBody(text.getBytes(requestCharset));
         } catch (UnsupportedEncodingException e) {
@@ -208,7 +208,7 @@ public class WebBuilder {
      * @see
      * com.fasterxml.jackson.databind.ObjectMapper
      */
-    public WebBuilder writeJsonByClass(Object toJsonObject) {
+    public Web writeJsonByClass(Object toJsonObject) {
         return writeBody(Converter.toJson(toJsonObject));
     }
 
@@ -231,7 +231,7 @@ public class WebBuilder {
      * @param value
      * @return
      */
-    public WebBuilder writeBodyParameter(String name, String value) {
+    public Web writeBodyParameter(String name, String value) {
         if (body.size() > 0) {
             body.write('&');
         }
