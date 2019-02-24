@@ -1,39 +1,40 @@
-package me.saro.commons;
+package me.saro.commons.excel;
 
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import me.saro.commons.Converter;
+import me.saro.commons.NullOutputStream;
 import me.saro.commons.function.ThrowableFunction;
-
 
 /**
  * excel
  * @author      PARK Yong Seo
  * @since       2.0
  */
-public class Excel implements Closeable {
+public class ExcelImpl extends ExcelStatic implements Closeable {
     
     final private Workbook book;
+    final private boolean bulk;
     
     private int sheetIndex = -1;
     private int rowIndex = - 1;
@@ -43,133 +44,25 @@ public class Excel implements Closeable {
     private Row row;
     private Cell cell;
     
-    final private static int CHAR_A = (int)'A';
-    
     File file;
     
-    // private
-    private Excel(Workbook book, File file) {
+    private ExcelImpl(Workbook book, File file) {
         this.book = book;
         this.file = file;
+        this.bulk = book.getClass().getName().equals(SXSSFWorkbook.class.getName());
         moveSheet(0).move(0, 0, false);
     }
     
-    /**
-     * create excel .xls<br>
-     * does not recommend .xls file
-     * @see createXlsx
-     * @return
-     */
-    @Deprecated
-    public static Excel createXls() {
-        return new Excel(new HSSFWorkbook(), null);
+    public static ExcelImpl createBulkExcel() {
+        return new ExcelImpl(new SXSSFWorkbook(100), null);
     }
     
-    /**
-     * create excel file .xls<br>
-     * does not recommend .xls file
-     * @param file
-     * @param overwrite
-     * @return
-     * @throws IOException
-     * @throws InvalidFormatException
-     */
-    @Deprecated
-    public static Excel createXls(File file, boolean overwrite) throws IOException, InvalidFormatException {
-        try (Excel excel = createXls()){
-            excel.save(file, overwrite);
-        }
-        return open(file);
+    public static ExcelImpl create() {
+        return new ExcelImpl(new XSSFWorkbook(), null);
     }
     
-    /**
-     * open excel file<br>
-     * does not recommend .xls file
-     * @param file
-     * @return
-     * @throws IOException
-     * @throws InvalidFormatException 
-     */
-    @Deprecated
-    public static Excel openXls(File file) throws IOException, InvalidFormatException {
-        return new Excel(new HSSFWorkbook(POIFSFileSystem.create(file)), file);
-    }
-    
-    /**
-     * clone excel file to file<br>
-     * does not recommend .xls file
-     * @param openFile
-     * @param saveFile
-     * @return
-     * @throws IOException
-     * @throws InvalidF
-     * ormatException 
-     */
-    @Deprecated
-    public static Excel createCloneXls(File openFile, File saveFile, boolean overwrite) throws IOException, InvalidFormatException {
-        if (saveFile.exists()) {
-            if (!overwrite) {
-                throw new IOException("file exists : " + saveFile.getAbsolutePath());
-            }
-            saveFile.delete();
-        }
-        Files.copy(openFile.toPath(), saveFile.toPath());
-        return openXls(saveFile);
-    }
-    
-    /**
-     * create excel .xlsx<br>
-     * keep just 100 row in memory : new SXSSFWorkbook(rowAccessWindowSize:100)
-     * @see org.apache.poi.xssf.streaming.SXSSFWorkbook.SXSSFWorkbook
-     * @return
-     */
-    public static Excel create() {
-        return new Excel(new SXSSFWorkbook(100), null);
-    }
-    
-    /**
-     * create excel file .xlsx
-     * @param file
-     * @param overwrite
-     * @return
-     * @throws IOException
-     * @throws InvalidFormatException 
-     */
-    public static Excel create(File file, boolean overwrite) throws IOException, InvalidFormatException {
-        try (Excel excel = create()){
-            excel.save(file, overwrite);
-        }
-        return open(file);
-    }
-    
-    /**
-     * open excel file
-     * @param file
-     * @return
-     * @throws IOException
-     * @throws InvalidFormatException 
-     */
-    public static Excel open(File file) throws IOException, InvalidFormatException {
-        return new Excel(new XSSFWorkbook(file), file);
-    }
-    
-    /**
-     * clone excel file to file
-     * @param openFile
-     * @param saveFile
-     * @return
-     * @throws IOException
-     * @throws InvalidFormatException 
-     */
-    public static Excel createClone(File openFile, File saveFile, boolean overwrite) throws IOException, InvalidFormatException {
-        if (saveFile.exists()) {
-            if (!overwrite) {
-                throw new IOException("file exists : " + saveFile.getAbsolutePath());
-            }
-            saveFile.delete();
-        }
-        Files.copy(openFile.toPath(), saveFile.toPath());
-        return open(saveFile);
+    public static ExcelImpl open(File file, boolean overwrite) throws IOException, InvalidFormatException {
+        return new ExcelImpl(new XSSFWorkbook(file), file);
     }
     
     /**
@@ -178,7 +71,7 @@ public class Excel implements Closeable {
      * @param values
      * @return
      */
-    public <T> Excel writeHorizontalList(String startColumnName, Collection<T> values) {
+    public <T> ExcelImpl writeHorizontalList(String startColumnName, Collection<T> values) {
         if (values != null) {
             move(startColumnName, true);
             int ci = this.cellIndex;
@@ -196,7 +89,7 @@ public class Excel implements Closeable {
      * @param values
      * @return
      */
-    public <T> Excel writeVerticalList(String startColumnName, Collection<T> values) {
+    public <T> ExcelImpl writeVerticalList(String startColumnName, Collection<T> values) {
         if (values != null) {
             int[] rc = toRowCellIndex(startColumnName);
             int ri = rc[0];
@@ -216,7 +109,7 @@ public class Excel implements Closeable {
      * @param list
      * @return
      */
-    public <T> Excel writeTable(String startColumnName, Collection<String> columnNames, List<T> list) {
+    public <T> ExcelImpl writeTable(String startColumnName, Collection<String> columnNames, List<T> list) {
         if (list != null && !list.isEmpty()) {
             int[] rc = toRowCellIndex(startColumnName);
             int ri = rc[0];
@@ -242,7 +135,7 @@ public class Excel implements Closeable {
      * @param list
      * @return
      */
-    public <T> Excel writePivotTable(String startColumnName, Collection<String> columnNames, List<T> list) {
+    public <T> ExcelImpl writePivotTable(String startColumnName, Collection<String> columnNames, List<T> list) {
         if (list != null && !list.isEmpty()) {
             int[] rc = toRowCellIndex(startColumnName);
             int sri = rc[0];
@@ -452,7 +345,7 @@ public class Excel implements Closeable {
      * @param index
      * @return
      */
-    public Excel moveSheet(int index) {
+    public ExcelImpl moveSheet(int index) {
         if (book.getNumberOfSheets() <= index) {
             int need = (index + 1) - book.getNumberOfSheets();
             for (int i = 0 ; i < need ; i++) {
@@ -468,7 +361,7 @@ public class Excel implements Closeable {
      * @param name
      * @return
      */
-    public Excel setSheetName(String name) {
+    public ExcelImpl setSheetName(String name) {
         book.setSheetName(sheetIndex, name);
         return this;
     }
@@ -494,7 +387,7 @@ public class Excel implements Closeable {
      * @param index
      * @return
      */
-    public Excel moveRow(int index, boolean forceCreate) {
+    public ExcelImpl moveRow(int index, boolean forceCreate) {
         if (index != this.rowIndex || (this.row == null && forceCreate)) {
             this.row = sheet.getRow(index);
             this.rowIndex = index;
@@ -510,7 +403,7 @@ public class Excel implements Closeable {
      * @param index
      * @return
      */
-    public Excel moveCell(int index, boolean forceCreate) {
+    public ExcelImpl moveCell(int index, boolean forceCreate) {
         if (this.row != null) {
             cell = row.getCell(index);
         } else if (forceCreate) {
@@ -532,7 +425,7 @@ public class Excel implements Closeable {
      * @param cellIndex
      * @return
      */
-    public Excel move(int rowIndex, int cellIndex, boolean forceCreate) {
+    public ExcelImpl move(int rowIndex, int cellIndex, boolean forceCreate) {
         return moveRow(rowIndex, forceCreate).moveCell(cellIndex, forceCreate);
     }
     
@@ -542,7 +435,7 @@ public class Excel implements Closeable {
      * @param cellIndex
      * @return cell or null
      */
-    public Excel move(int rowIndex, int cellIndex) {
+    public ExcelImpl move(int rowIndex, int cellIndex) {
         return move(rowIndex, cellIndex, false);
     }
     
@@ -552,7 +445,7 @@ public class Excel implements Closeable {
      * @param forceCreate
      * @return
      */
-    public Excel move(String columnName, boolean forceCreate) {
+    public ExcelImpl move(String columnName, boolean forceCreate) {
         int[] rc = toRowCellIndex(columnName);
         return move(rc[0], rc[1], forceCreate);
     }
@@ -562,7 +455,7 @@ public class Excel implements Closeable {
      * @param columnName
      * @return cell or null
      */
-    public Excel move(String columnName) {
+    public ExcelImpl move(String columnName) {
         int[] rc = toRowCellIndex(columnName);
         return move(rc[0], rc[1]);
     }
@@ -572,7 +465,7 @@ public class Excel implements Closeable {
      * @param forceCreate
      * @return
      */
-    public Excel moveNextRow(boolean forceCreate) {
+    public ExcelImpl moveNextRow(boolean forceCreate) {
         return moveRow(rowIndex + 1, forceCreate);
     }
     
@@ -581,7 +474,7 @@ public class Excel implements Closeable {
      * @param forceCreate
      * @return
      */
-    public Excel moveNextCell(boolean forceCreate) {
+    public ExcelImpl moveNextCell(boolean forceCreate) {
         return moveCell(cellIndex + 1, forceCreate);
     }
     
@@ -661,7 +554,7 @@ public class Excel implements Closeable {
      * @param obj
      * @return
      */
-    public Excel setValue(Object obj) {
+    public ExcelImpl setValue(Object obj) {
         if (cell == null) {
             if (row == null) {
                 row = sheet.createRow(rowIndex);
@@ -716,235 +609,58 @@ public class Excel implements Closeable {
     }
     
     /**
-     * to column name by row index
-     * @param rowIndex
-     * @return
+     * autoSizeColumn
      */
-    public static String toColumnNameByRowIndex(int rowIndex) {
-        return Integer.toString(rowIndex + 1);
-    }
-    
-    /**
-     * to column name by cell index
-     * @param cellIndex
-     * @return
-     */
-    public static String toColumnNameByCellIndex(int cellIndex) {
-        int offset = 4;
-        int max = 4;
-        int idx = cellIndex;
-        char[] rv = new char[max];
-        
-        do {
-            rv[--offset] = (char)(CHAR_A + ((idx) % 26));
-        } while ((idx = ((idx / 26) - 1)) >= 0);
-        
-        return new String(rv, offset, max - offset);
-    }
-    
-    /**
-     * to column name
-     * @param rowIndex
-     * @param cellIndex
-     * @return
-     */
-    public static String toColumnName(int rowIndex, int cellIndex) {
-        return toColumnNameByCellIndex(cellIndex) + toColumnNameByRowIndex(rowIndex); 
-    }
-    
-    /**
-     * to row index
-     * @param rowColumnName
-     * @return
-     */
-    public static int toRowIndex(String rowColumnName) {
-        return Integer.parseInt(rowColumnName) - 1;
-    }
-
-    /**
-     * to cell index
-     * @param cellColumnName
-     * @return
-     */
-    public static int toCellIndex(String cellColumnName) {
-        if (!cellColumnName.matches("[A-Z]{1,3}")) {
-            throw new IllegalArgumentException(cellColumnName + " is not cellColumnName : ex) AF");
+    public void autoSizeColumn() {
+        if (bulk) {
+            throw new RuntimeException("bulk mode does not support autoSizeColumn");
         }
-        char[] ca = cellColumnName.toCharArray();
-        int rv = 0;
-        int pos = 0;
-        switch (ca.length) {
-            case 3 : rv += ((ca[pos++] - CHAR_A) + 1) * 26 * 26;
-            case 2 : rv += ((ca[pos++] - CHAR_A) + 1) * 26;
-            case 1 : rv += (ca[pos++] - CHAR_A);
+        Set<Integer> set = new HashSet<>();
+        for (Row row : sheet) {
+            for (Cell cell : row) {
+                set.add(cell.getColumnIndex());
+            }
         }
-        return rv;
+        for (Integer i : set) {
+            sheet.autoSizeColumn(i);
+        }
     }
     
     /**
-     * to row cell index
+     * autoSizeColumn
+     * @param cellIndex
+     */
+    public void autoSizeColumn(int cellIndex) {
+        if (bulk) {
+            throw new RuntimeException("bulk mode does not support autoSizeColumn");
+        }
+        sheet.autoSizeColumn(cellIndex);
+    }
+    
+    /**
+     * style
      * @param columnName
-     * @return int[]{rowIndex, cellIndex}
+     * @return
      */
-    public static int[] toRowCellIndex(String columnName) {
-        if (!columnName.matches("[A-Z]+[\\d]+")) {
-            throw new IllegalArgumentException(columnName + " is not columnName : ex) E3");
+    public ExcelStyle style(String columnName) {
+        if (bulk) {
+            throw new RuntimeException("bulk mode does not support style");
         }
-        return new int[] { toRowIndex(columnName.replaceFirst("[A-Z]+", "")), toCellIndex(columnName.replaceFirst("[\\d]+", "")) };
+        int[] rc = toRowCellIndex(columnName);
+        return new ExcelStyle((XSSFSheet) sheet, rc[0], rc[1], rc[0], rc[1]);
     }
     
     /**
-     * toInt by cell
-     * @param cell
-     * @param defaultValue
+     * style
+     * @param columnName
      * @return
      */
-    public static int toInt(Cell cell, int defaultValue) {
-        return (int)toDouble(cell, defaultValue);
-    }
-    
-    /**
-     * toLong by cell
-     * @param cell
-     * @param defaultValue
-     * @return
-     */
-    public static long toLong(Cell cell, long defaultValue) {
-        return (long)toDouble(cell, defaultValue);
-    }
-    
-    /**
-     * toFloat by cell
-     * @param cell
-     * @param defaultValue
-     * @return
-     */
-    public static float toFloat(Cell cell, float defaultValue) {
-        return (float)toDouble(cell, defaultValue);
-    }
-    
-    /**
-     * toDouble by cell
-     * @param cell
-     * @param defaultValue
-     * @return
-     */
-    public static double toDouble(Cell cell, double defaultValue) {
-        if (cell != null) {
-            String tmp;
-            switch (cell.getCellType()) {
-                case BOOLEAN:
-                    return cell.getBooleanCellValue() ? 1 : 0;
-                case NUMERIC:
-                    return cell.getNumericCellValue();
-                case FORMULA:
-                    if ((tmp = cell.getCellFormula()) != null && !tmp.isEmpty()) {
-                        return Double.parseDouble(tmp);
-                    }
-                case STRING:
-                    if ((tmp = cell.getStringCellValue()) != null && !tmp.isEmpty()) {
-                        return Double.parseDouble(tmp);
-                    }
-                case _NONE: case ERROR: case BLANK: default:
-            }
+    public ExcelStyle style(String startColumnName, String endColumnName) {
+        if (bulk) {
+            throw new RuntimeException("bulk mode does not support style");
         }
-        return defaultValue;
-    }
-    
-    /**
-     * toDate by cell
-     * @param cell
-     * @param defaultValue
-     * @return
-     */
-    public static Date toDate(Cell cell, Date defaultValue) {
-        if (cell.getCellType() == CellType.STRING) {
-            try {
-                return cell.getDateCellValue();
-            } catch (Exception e) {}
-        }
-        return defaultValue;
-    }
-    
-    /**
-     * toIntegerString by cell<br>
-     * Integer String = Long.toString((long)doubleValue)
-     * @param cell
-     * @param defaultValue
-     * @return
-     */
-    public static String toIntegerString(Cell cell, long defaultValue) {
-        if (cell.getCellType() == CellType.NUMERIC) {
-            return Long.toString((long)cell.getNumericCellValue());
-        }
-        String val = toString(cell, null);
-        if (val == null) {
-            return Long.toString(defaultValue);
-        }
-        if ((val = val.trim()).matches("[\\d]+\\.[\\d]+")) {
-            val = val.substring(0, val.indexOf('.'));
-        }
-        return val.matches("[\\d]+") ? val : Long.toString(defaultValue);
-    }
-    
-    /**
-     * toString by cell
-     * @param cell
-     * @param defaultValue
-     * @return
-     * BOOLEAN [1, 0]<br>
-     * FORMULA -> String<br>
-     * NUMERIC -> Double.toString<br>
-     * STRING -> String<br>
-     * ETC -> defaultValue
-     */
-    public static String toString(Cell cell, String defaultValue) {
-        if (cell != null) {
-            switch (cell.getCellType()) {
-                case BOOLEAN:
-                    return cell.getBooleanCellValue() ? "1" : "0";
-                case FORMULA:
-                    return cell.getCellFormula();
-                case NUMERIC:
-                    return Double.toString(cell.getNumericCellValue());
-                case STRING:
-                    return cell.getStringCellValue();
-                case _NONE: case ERROR: case BLANK: default:
-            }
-        }
-        return defaultValue;
-    }
-    
-    /**
-     * set value
-     * @param cell
-     * @param obj
-     * @return
-     */
-    public static Cell setCellValueAuto(Cell cell, Object obj) {
-        if (obj == null) {
-            cell.setCellValue((String)null);
-            return cell;
-        }
-        set : switch (obj.getClass().getName()) {
-            case "int" : case "java.lang.Integer" :
-                cell.setCellValue((double)(int)obj);
-                break set;
-            case "long" : case "java.lang.Long" : 
-                cell.setCellValue((double)(long)obj);
-                break set;
-            case "float" : case "java.lang.Float" :
-                cell.setCellValue((double)(float)obj);
-                break set;
-            case "double" : case "java.lang.Double" :
-                cell.setCellValue((double)obj);
-                break set;
-            case "Date" :
-                cell.setCellValue((Date)obj);
-                break set;
-            default :
-                cell.setCellValue(obj.toString());
-        }
-        return cell;
+        int[] src = toRowCellIndex(startColumnName);
+        int[] erc = toRowCellIndex(endColumnName);
+        return new ExcelStyle((XSSFSheet) sheet, src[0], src[1], erc[0], erc[1]);
     }
 }
