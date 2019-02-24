@@ -62,7 +62,7 @@ public class WebBuilder {
      * @param url
      * @param method
      */
-    private WebBuilder(String url, String method) {
+    protected WebBuilder(String url, String method) {
         int point;
         if ((point = url.indexOf('?')) > -1) {
             if ((point) < url.length()) {
@@ -94,60 +94,6 @@ public class WebBuilder {
     public WebBuilder setReadTimeout(int readTimeout) {
         this.readTimeout = readTimeout;
         return this;
-    }
-
-    /**
-     * create get method Web
-     * @param url
-     * @return
-     */
-    public static WebBuilder get(String url) {
-        return new WebBuilder(url, "GET");
-    }
-
-    /**
-     * create post method Web
-     * @param url
-     * @return
-     */
-    public static WebBuilder post(String url) {
-        return new WebBuilder(url, "POST");
-    }
-
-    /**
-     * create put method Web
-     * @param url
-     * @return
-     */
-    public static WebBuilder put(String url) {
-        return new WebBuilder(url, "PUT");
-    }
-
-    /**
-     * create patch method Web
-     * @param url
-     * @return
-     */
-    public static WebBuilder patch(String url) {
-        return new WebBuilder(url, "PATCH");
-    }
-
-    /**
-     * create delete method Web
-     * @param url
-     * @return
-     */
-    public static WebBuilder delete(String url) {
-        return new WebBuilder(url, "DELETE");
-    }
-
-    /**
-     * create custom method Web
-     * @param url
-     * @return
-     */
-    public static WebBuilder custom(String url, String method) {
-        return new WebBuilder(url, method);
     }
 
     /**
