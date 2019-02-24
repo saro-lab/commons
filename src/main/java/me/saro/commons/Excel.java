@@ -19,7 +19,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import me.saro.commons.excel.ExcelStaticTools;
+import me.saro.commons.excel.Excels;
 import me.saro.commons.function.ThrowableFunction;
 
 /**
@@ -27,7 +27,7 @@ import me.saro.commons.function.ThrowableFunction;
  * @author      PARK Yong Seo
  * @since       2.0
  */
-public class Excel extends ExcelStaticTools implements Closeable {
+public class Excel extends Excels implements Closeable {
     
     final private Workbook book;
     
