@@ -5,6 +5,11 @@ import java.util.Date;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 
+/**
+ * excel static
+ * @author      PARK Yong Seo
+ * @since       2.2
+ */
 public abstract class Excels {
     
     final private static int CHAR_A = (int)'A';
