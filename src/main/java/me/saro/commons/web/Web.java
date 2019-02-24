@@ -1,5 +1,10 @@
 package me.saro.commons.web;
 
+/**
+ * Web Client
+ * @author      PARK Yong Seo
+ * @since       0.1
+ */
 public class Web {
     /**
      * create get method Web
