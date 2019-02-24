@@ -15,46 +15,47 @@ import org.junit.jupiter.api.Test;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import me.saro.commons.excel.ExcelImpl;
 
 
 public class ExcelTest {
     
     @Test
     public void toColumnNameByCellIndex() {
-        assertEquals(Excel.toColumnNameByCellIndex(1 - 1), "A");
-        assertEquals(Excel.toColumnNameByCellIndex(26 - 1), "Z");
-        assertEquals(Excel.toColumnNameByCellIndex(27 - 1), "AA");
-        assertEquals(Excel.toColumnNameByCellIndex(52 - 1), "AZ");
-        assertEquals(Excel.toColumnNameByCellIndex(520 - 1), "SZ");
-        assertEquals(Excel.toColumnNameByCellIndex(2600 - 1), "CUZ");
-        assertEquals(Excel.toColumnNameByCellIndex(10000 - 1), "NTP");
+        assertEquals(ExcelImpl.toColumnNameByCellIndex(1 - 1), "A");
+        assertEquals(ExcelImpl.toColumnNameByCellIndex(26 - 1), "Z");
+        assertEquals(ExcelImpl.toColumnNameByCellIndex(27 - 1), "AA");
+        assertEquals(ExcelImpl.toColumnNameByCellIndex(52 - 1), "AZ");
+        assertEquals(ExcelImpl.toColumnNameByCellIndex(520 - 1), "SZ");
+        assertEquals(ExcelImpl.toColumnNameByCellIndex(2600 - 1), "CUZ");
+        assertEquals(ExcelImpl.toColumnNameByCellIndex(10000 - 1), "NTP");
     }
     
     @Test
     public void toCellIndex() {
         int idx = 0;
-        assertEquals(Excel.toCellIndex(Excel.toColumnNameByCellIndex(idx)), idx);
+        assertEquals(ExcelImpl.toCellIndex(ExcelImpl.toColumnNameByCellIndex(idx)), idx);
         idx = 321;
-        assertEquals(Excel.toCellIndex(Excel.toColumnNameByCellIndex(idx)), idx);
+        assertEquals(ExcelImpl.toCellIndex(ExcelImpl.toColumnNameByCellIndex(idx)), idx);
         idx = 3289;
-        assertEquals(Excel.toCellIndex(Excel.toColumnNameByCellIndex(idx)), idx);
+        assertEquals(ExcelImpl.toCellIndex(ExcelImpl.toColumnNameByCellIndex(idx)), idx);
         idx = 10111;
-        assertEquals(Excel.toCellIndex(Excel.toColumnNameByCellIndex(idx)), idx);
+        assertEquals(ExcelImpl.toCellIndex(ExcelImpl.toColumnNameByCellIndex(idx)), idx);
         idx = 457;
-        assertEquals(Excel.toCellIndex(Excel.toColumnNameByCellIndex(idx)), idx);
+        assertEquals(ExcelImpl.toCellIndex(ExcelImpl.toColumnNameByCellIndex(idx)), idx);
     }
     
     @Test
     public void toRowIndex() {
-        assertEquals(Excel.toRowIndex("1"), 0);
-        assertEquals(Excel.toRowIndex("100"), 99);
-        assertEquals(Excel.toRowIndex("2341"), 2340);
-        assertEquals(Excel.toRowIndex("16000"), 15999);
+        assertEquals(ExcelImpl.toRowIndex("1"), 0);
+        assertEquals(ExcelImpl.toRowIndex("100"), 99);
+        assertEquals(ExcelImpl.toRowIndex("2341"), 2340);
+        assertEquals(ExcelImpl.toRowIndex("16000"), 15999);
     }
     
     @Test
     public void readTable() throws IOException {
-        try (Excel excel = Excel.create()) {
+        try (ExcelImpl excel = ExcelImpl.create()) {
             
             List<Map<String, Object>> list = new ArrayList<>();
             list.add(Converter.toMap("a", 1, "b", "AA"));
@@ -63,8 +64,8 @@ public class ExcelTest {
             excel.writeTable("B2", Arrays.asList("a", "b"), list);
             
             List<List<String>> rv = excel.readTable("B2", 2, e -> Arrays.asList(
-                Excel.toIntegerString(e.get(0), -1),
-                Excel.toString(e.get(1), null)
+                ExcelImpl.toIntegerString(e.get(0), -1),
+                ExcelImpl.toString(e.get(1), null)
             )); 
             
             assertEquals(rv.get(0).get(0), "1");
@@ -77,7 +78,7 @@ public class ExcelTest {
     
     @Test
     public void readPivotTable() throws IOException {
-        try (Excel excel = Excel.create()) {
+        try (ExcelImpl excel = ExcelImpl.create()) {
             
             List<Map<String, Object>> list = new ArrayList<>();
             list.add(Converter.toMap("a", "1", "b", "AA"));
@@ -86,8 +87,8 @@ public class ExcelTest {
             excel.writeTable("B2", Arrays.asList("a", "b"), list);
             
             List<List<String>> rv = excel.readPivotTable("B2", 2, e -> Arrays.asList(
-                Excel.toString(e.get(0), null),
-                Excel.toString(e.get(1), null)
+                ExcelImpl.toString(e.get(0), null),
+                ExcelImpl.toString(e.get(1), null)
             ));
             
             assertEquals(rv.get(0).get(0), "1");
@@ -100,7 +101,7 @@ public class ExcelTest {
     
     @Test
     public void writeTableByListMap() throws IOException {
-        try (Excel excel = Excel.create()) {
+        try (ExcelImpl excel = ExcelImpl.create()) {
             
             List<Map<String, Object>> list = new ArrayList<>();
             list.add(Converter.toMap("a", 1, "b", "AA"));
@@ -118,7 +119,7 @@ public class ExcelTest {
     
     @Test
     public void writePivotTableByListMap() throws IOException {
-        try (Excel excel = Excel.create()) {
+        try (ExcelImpl excel = ExcelImpl.create()) {
             
             List<Map<String, Object>> list = new ArrayList<>();
             list.add(Converter.toMap("a", 1, "b", "AA"));
@@ -136,7 +137,7 @@ public class ExcelTest {
     
     @Test
     public void writeHorizontalList() throws IOException {
-        try (Excel excel = Excel.create()) {
+        try (ExcelImpl excel = ExcelImpl.create()) {
             excel.writeHorizontalList("A1", Arrays.asList("1", "2", "3"));
             
             assertEquals(excel.move("A1").getString(), "1");
@@ -147,7 +148,7 @@ public class ExcelTest {
     
     @Test
     public void writeVerticalList() throws IOException {
-        try (Excel excel = Excel.create()) {
+        try (ExcelImpl excel = ExcelImpl.create()) {
             excel.writeVerticalList("A1", Arrays.asList("1", "2", "3"));
             
             assertEquals(excel.move("A1").getString(), "1");
@@ -158,7 +159,7 @@ public class ExcelTest {
     
     @Test
     public void writeTable() throws IOException {
-        try (Excel excel = Excel.create()) {
+        try (ExcelImpl excel = ExcelImpl.create()) {
             
             @Data @AllArgsConstructor
             class TestObject {
@@ -182,7 +183,7 @@ public class ExcelTest {
     
     @Test
     public void writePivotTable() throws IOException {
-        try (Excel excel = Excel.create()) {
+        try (ExcelImpl excel = ExcelImpl.create()) {
             
             @Data @AllArgsConstructor
             class TestObject {

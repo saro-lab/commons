@@ -10,7 +10,7 @@ import org.apache.poi.ss.usermodel.CellType;
  * @author      PARK Yong Seo
  * @since       2.2
  */
-public abstract class Excels {
+public abstract class ExcelStatic {
     
     final private static int CHAR_A = (int)'A';
     
