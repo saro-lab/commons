@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import me.saro.commons.bytes.Bytes;
 import me.saro.commons.bytes.FixedDataFormat;
+import me.saro.commons.excel.ExcelImpl;
 import me.saro.commons.ftp.FTP;
 import me.saro.commons.ssh.SSHExecutor;
 import me.saro.commons.ssh.SSHShell;
@@ -29,7 +30,6 @@ public class ReadmeTest {
         outClassInfo(Maps.class);
         outClassInfo(Zips.class);
         outClassInfo(Crypt.class);
-        outClassInfo(Excel.class);
         outClassInfo(ByteData.class);
         outClassInfo(Web.class);
         outClassInfo(Valids.class);
@@ -44,6 +44,7 @@ public class ReadmeTest {
         outClassInfo(SSHShell.class);
         outClassInfo(SSHExecutor.class);
         outClassInfo(DateFormat.class);
+        outClassInfo(ExcelImpl.class);
         outClassInfo(JsonReader.class);
         outClassInfo(NullOutputStream.class);
 
