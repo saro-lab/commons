@@ -1,7 +1,6 @@
 package me.saro.commons.web;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -10,16 +9,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import me.saro.commons.Converter;
-import me.saro.commons.Files;
-import me.saro.commons.JsonReader;
-import me.saro.commons.function.ThrowableConsumer;
+import lombok.Getter;
 import me.saro.commons.function.ThrowableFunction;
 
 /**
@@ -27,7 +19,7 @@ import me.saro.commons.function.ThrowableFunction;
  * @author      PARK Yong Seo
  * @since       2.3
  */
-public class WebImpl implements Web {
+public class BasicWeb implements Web {
 
     // url
     final String url;
@@ -36,8 +28,8 @@ public class WebImpl implements Web {
     final String method;
 
     // chaset
-    String requestCharset = "UTF-8";
-    String responseCharset = "UTF-8";
+    @Getter String requestCharset = "UTF-8";
+    @Getter String responseCharset = "UTF-8";
 
     // url parameter
     StringBuilder urlParameter = new StringBuilder(100);
@@ -62,7 +54,7 @@ public class WebImpl implements Web {
      * @param url
      * @param method
      */
-    protected WebImpl(String url, String method) {
+    protected BasicWeb(String url, String method) {
         int point;
         if ((point = url.indexOf('?')) > -1) {
             if ((point) < url.length()) {
@@ -164,15 +156,6 @@ public class WebImpl implements Web {
     }
 
     /**
-     * set header ContentType
-     * @param value
-     * @return
-     */
-    public Web setContentType(String value) {
-        return setHeader("Content-Type", value);
-    }
-
-    /**
      * write body binary
      * @param bytes
      * @return
@@ -184,32 +167,6 @@ public class WebImpl implements Web {
             throw new RuntimeException(e);
         }
         return this;
-    }
-
-    /**
-     * write Body text
-     * @param text
-     * @return
-     */
-    public Web writeBody(String text) {
-        try {
-            return writeBody(text.getBytes(requestCharset));
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * write json class
-     * <br>
-     * use jackson lib
-     * @param toJsonObject
-     * @return
-     * @see
-     * com.fasterxml.jackson.databind.ObjectMapper
-     */
-    public Web writeJsonByClass(Object toJsonObject) {
-        return writeBody(Converter.toJson(toJsonObject));
     }
 
     /**
@@ -296,78 +253,5 @@ public class WebImpl implements Web {
         }
 
         return result;
-    }
-
-    /**
-     * to Custom result
-     * @param function
-     * @return
-     */
-    public <R> WebResult<R> toCustom(ThrowableFunction<InputStream, R> function) {
-        return toCustom(new WebResult<R>(), function);
-    }
-
-    /**
-     * to Map result by JsonObject
-     * @return
-     */
-    public WebResult<Map<String, Object>> toMapByJsonObject() {
-        return toJsonTypeReference(new TypeReference<Map<String, Object>>(){});
-    }
-
-    /**
-     * to Map List result by JsonArray
-     * @return
-     */
-    public WebResult<List<Map<String, Object>>> toMapListByJsonArray() {
-        return toJsonTypeReference(new TypeReference<List<Map<String, Object>>>(){});
-    }
-
-    /**
-     * to JsonReader
-     * @return
-     */
-    public WebResult<JsonReader> toJsonReader() {
-        return toCustom(is -> JsonReader.create(Converter.toStringNotClose(is, responseCharset)));
-    }
-
-    /**
-     * to Json result by TypeReference
-     * @param typeReference
-     * @return
-     */
-    public <T> WebResult<T> toJsonTypeReference(TypeReference<T> typeReference) {
-        return toCustom(is -> new ObjectMapper().readValue(is, typeReference));
-    }
-
-    /**
-     * to text result
-     * @return
-     */
-    public WebResult<String> toPlainText() {
-        return toCustom(is -> Converter.toStringNotClose(is, responseCharset));
-    }
-
-    /**
-     * save file and return WebResult
-     * @return WebResult[WebResult]
-     */
-    public WebResult<File> saveFile(File file, boolean overwrite) {
-        return toCustom(is -> {
-            Files.createFile(file, overwrite, is);
-            return file;
-        });
-    }
-
-    /**
-     * readRawResultStream
-     * @param reader
-     * @return it has Body
-     */
-    public WebResult<String> readRawResultStream(ThrowableConsumer<InputStream> reader) {
-        return toCustom(is -> {
-            reader.accept(is);
-            return "OK";
-        });
     }
 }

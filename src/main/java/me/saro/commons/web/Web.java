@@ -2,11 +2,15 @@ package me.saro.commons.web;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
+import me.saro.commons.Converter;
+import me.saro.commons.Files;
 import me.saro.commons.JsonReader;
 import me.saro.commons.function.ThrowableConsumer;
 import me.saro.commons.function.ThrowableFunction;
@@ -23,7 +27,7 @@ public interface Web {
      * @return
      */
     public static Web get(String url) {
-        return new WebImpl(url, "GET");
+        return new BasicWeb(url, "GET");
     }
 
     /**
@@ -32,7 +36,7 @@ public interface Web {
      * @return
      */
     public static Web post(String url) {
-        return new WebImpl(url, "POST");
+        return new BasicWeb(url, "POST");
     }
 
     /**
@@ -41,7 +45,7 @@ public interface Web {
      * @return
      */
     public static Web put(String url) {
-        return new WebImpl(url, "PUT");
+        return new BasicWeb(url, "PUT");
     }
 
     /**
@@ -50,7 +54,7 @@ public interface Web {
      * @return
      */
     public static Web patch(String url) {
-        return new WebImpl(url, "PATCH");
+        return new BasicWeb(url, "PATCH");
     }
 
     /**
@@ -59,8 +63,20 @@ public interface Web {
      * @return
      */
     public static Web delete(String url) {
-        return new WebImpl(url, "DELETE");
+        return new BasicWeb(url, "DELETE");
     }
+    
+    /**
+     * request charset
+     * @return
+     */
+    public String getRequestCharset();
+    
+    /**
+     * response charset
+     * @return
+     */
+    public String getResponseCharset();
 
     /**
      * create custom method Web
@@ -68,7 +84,7 @@ public interface Web {
      * @return
      */
     public static Web custom(String url, String method) {
-        return new WebImpl(url, method);
+        return new BasicWeb(url, method);
     }
     
     /**
@@ -131,36 +147,11 @@ public interface Web {
     public Web setHeader(String name, String value);
     
     /**
-     * set header ContentType
-     * @param value
-     * @return
-     */
-    public Web setContentType(String value);
-    
-    /**
      * write body binary
      * @param bytes
      * @return
      */
     public Web writeBody(byte[] bytes);
-    
-    /**
-     * write Body text
-     * @param text
-     * @return
-     */
-    public Web writeBody(String text);
-    
-    /**
-     * write json class
-     * <br>
-     * use jackson lib
-     * @param toJsonObject
-     * @return
-     * @see
-     * com.fasterxml.jackson.databind.ObjectMapper
-     */
-    public Web writeJsonByClass(Object toJsonObject);
     
     /**
      * writeBodyParameter
@@ -196,49 +187,108 @@ public interface Web {
      * @param function
      * @return
      */
-    public <R> WebResult<R> toCustom(ThrowableFunction<InputStream, R> function);
-    
+    default public <R> WebResult<R> toCustom(ThrowableFunction<InputStream, R> function) {
+        return toCustom(new WebResult<R>(), function);
+    }
+
     /**
      * to Map result by JsonObject
      * @return
      */
-    public WebResult<Map<String, Object>> toMapByJsonObject();
-    
+    default public WebResult<Map<String, Object>> toMapByJsonObject() {
+        return toJsonTypeReference(new TypeReference<Map<String, Object>>(){});
+    }
+
     /**
      * to Map List result by JsonArray
      * @return
      */
-    public WebResult<List<Map<String, Object>>> toMapListByJsonArray();
-    
+    default public WebResult<List<Map<String, Object>>> toMapListByJsonArray() {
+        return toJsonTypeReference(new TypeReference<List<Map<String, Object>>>(){});
+    }
+
     /**
      * to JsonReader
      * @return
      */
-    public WebResult<JsonReader> toJsonReader();
-    
+    default public WebResult<JsonReader> toJsonReader() {
+        return toCustom(is -> JsonReader.create(Converter.toStringNotClose(is, getResponseCharset())));
+    }
+
     /**
      * to Json result by TypeReference
      * @param typeReference
      * @return
      */
-    public <T> WebResult<T> toJsonTypeReference(TypeReference<T> typeReference);
-    
+    default public <T> WebResult<T> toJsonTypeReference(TypeReference<T> typeReference) {
+        return toCustom(is -> new ObjectMapper().readValue(is, typeReference));
+    }
+
     /**
      * to text result
      * @return
      */
-    public WebResult<String> toPlainText();
-    
+    default public WebResult<String> toPlainText() {
+        return toCustom(is -> Converter.toStringNotClose(is, getResponseCharset()));
+    }
+
     /**
      * save file and return WebResult
      * @return WebResult[WebResult]
      */
-    public WebResult<File> saveFile(File file, boolean overwrite);
-    
+    default public WebResult<File> saveFile(File file, boolean overwrite) {
+        return toCustom(is -> {
+            Files.createFile(file, overwrite, is);
+            return file;
+        });
+    }
+
     /**
      * readRawResultStream
      * @param reader
      * @return it has Body
      */
-    public WebResult<String> readRawResultStream(ThrowableConsumer<InputStream> reader);
+    default public WebResult<String> readRawResultStream(ThrowableConsumer<InputStream> reader) {
+        return toCustom(is -> {
+            reader.accept(is);
+            return "OK";
+        });
+    }
+    
+    
+    
+    /**
+     * set header ContentType
+     * @param value
+     * @return
+     */
+    default public Web setContentType(String value) {
+        return setHeader("Content-Type", value);
+    }
+    
+    /**
+     * write Body text
+     * @param text
+     * @return
+     */
+    default public Web writeBody(String text) {
+        try {
+            return writeBody(text.getBytes(getRequestCharset()));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * write json class
+     * <br>
+     * use jackson lib
+     * @param toJsonObject
+     * @return
+     * @see
+     * com.fasterxml.jackson.databind.ObjectMapper
+     */
+    default public Web writeJsonByClass(Object toJsonObject) {
+        return writeBody(Converter.toJson(toJsonObject));
+    }
 }
