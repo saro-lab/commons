@@ -7,7 +7,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import me.saro.commons.function.ThrowableTriConsumer;
-import me.saro.commons.web.WebBuilder;
+import me.saro.commons.web.WebImpl;
 import me.saro.commons.web.WebResult;
 
 /**
@@ -60,7 +60,7 @@ public class Zips {
      * (String fileName, ZipEntry zipEntry, InputStream inputStream)
      * @throws Exception 
      */
-    public static void openFromWeb(WebBuilder web, ThrowableTriConsumer<String, ZipEntry, InputStream> callbackFileInputstream) throws Exception {
+    public static void openFromWeb(WebImpl web, ThrowableTriConsumer<String, ZipEntry, InputStream> callbackFileInputstream) throws Exception {
         WebResult<String> res; 
         if ((res = web.readRawResultStream(is -> {
             openStreamNotClose(is, callbackFileInputstream);
