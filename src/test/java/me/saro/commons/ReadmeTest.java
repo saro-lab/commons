@@ -12,13 +12,13 @@ import me.saro.commons.bytes.FixedDataFormat;
 import me.saro.commons.ftp.FTP;
 import me.saro.commons.ssh.SSHExecutor;
 import me.saro.commons.ssh.SSHShell;
+import me.saro.commons.web.Web;
 import me.saro.commons.web.WebBuilder;
 public class ReadmeTest {
 
     @Test	
     public void justPrintReadme() {
-
-
+        
         System.out.println("# STATIC");
         System.out.println();
 
@@ -31,6 +31,7 @@ public class ReadmeTest {
         outClassInfo(Crypt.class);
         outClassInfo(Excel.class);
         outClassInfo(ByteData.class);
+        outClassInfo(Web.class);
         outClassInfo(Valids.class);
         outClassInfo(Tests.class);
         
