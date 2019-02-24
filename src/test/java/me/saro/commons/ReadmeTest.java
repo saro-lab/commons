@@ -14,7 +14,7 @@ import me.saro.commons.ftp.FTP;
 import me.saro.commons.ssh.SSHExecutor;
 import me.saro.commons.ssh.SSHShell;
 import me.saro.commons.web.Web;
-import me.saro.commons.web.WebImpl;
+import me.saro.commons.web.BasicWeb;
 public class ReadmeTest {
 
     @Test	
@@ -39,7 +39,7 @@ public class ReadmeTest {
         System.out.println();
 
         outClassInfo(FixedDataFormat.class);
-        outClassInfo(WebImpl.class);
+        outClassInfo(BasicWeb.class);
         outClassInfo(FTP.class);
         outClassInfo(SSHShell.class);
         outClassInfo(SSHExecutor.class);
