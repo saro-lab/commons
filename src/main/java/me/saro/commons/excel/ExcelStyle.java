@@ -3,6 +3,7 @@ package me.saro.commons.excel;
 import java.util.function.Consumer;
 
 import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
@@ -29,13 +30,13 @@ public class ExcelStyle {
         this.endRowIndex = endRowIndex;
     }
     
-    public void forEach(Consumer<XSSFCell> consumer) {
+    public void forEach(Consumer<XSSFCellStyle> consumer) {
         for (int irow = startRowIndex ; irow <= endRowIndex ; irow++) {
             XSSFRow row = Utils.nvl(sheet.getRow(irow), sheet.createRow(irow));
             for (int icell = startCellIndex ; icell <= endCellIndex ; icell++) {
-                consumer.accept(Utils.nvl(row.getCell(icell), row.createCell(icell)));
+                XSSFCell cell = Utils.nvl(row.getCell(icell), row.createCell(icell));
+                consumer.accept(cell.getCellStyle());
             }
         }
-        
     }
 }
