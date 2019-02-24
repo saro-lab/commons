@@ -1,6 +1,5 @@
 package me.saro.commons.excel;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -13,14 +12,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import me.saro.commons.Converter;
 import me.saro.commons.NullOutputStream;
@@ -31,7 +28,7 @@ import me.saro.commons.function.ThrowableFunction;
  * @author      PARK Yong Seo
  * @since       2.0
  */
-public class ExcelImpl extends ExcelStatic implements Closeable {
+public class BasicExcel implements Excel {
     
     final private Workbook book;
     final private boolean bulk;
@@ -46,23 +43,11 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
     
     File file;
     
-    private ExcelImpl(Workbook book, File file) {
+    protected BasicExcel(Workbook book, File file) {
         this.book = book;
         this.file = file;
         this.bulk = book.getClass().getName().equals(SXSSFWorkbook.class.getName());
         moveSheet(0).move(0, 0, false);
-    }
-    
-    public static ExcelImpl createBulkExcel() {
-        return new ExcelImpl(new SXSSFWorkbook(100), null);
-    }
-    
-    public static ExcelImpl create() {
-        return new ExcelImpl(new XSSFWorkbook(), null);
-    }
-    
-    public static ExcelImpl open(File file, boolean overwrite) throws IOException, InvalidFormatException {
-        return new ExcelImpl(new XSSFWorkbook(file), file);
     }
     
     /**
@@ -71,13 +56,13 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
      * @param values
      * @return
      */
-    public <T> ExcelImpl writeHorizontalList(String startColumnName, Collection<T> values) {
+    public <T> Excel writeHorizontalList(String startColumnName, Collection<T> values) {
         if (values != null) {
             move(startColumnName, true);
             int ci = this.cellIndex;
             for (T value : values) {
                 moveCell(ci++, true);
-                setCellValueAuto(this.cell, value);
+                Excel.setCellValueAuto(this.cell, value);
             }
         }
         return this;
@@ -89,14 +74,14 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
      * @param values
      * @return
      */
-    public <T> ExcelImpl writeVerticalList(String startColumnName, Collection<T> values) {
+    public <T> Excel writeVerticalList(String startColumnName, Collection<T> values) {
         if (values != null) {
-            int[] rc = toRowCellIndex(startColumnName);
+            int[] rc = Excel.toRowCellIndex(startColumnName);
             int ri = rc[0];
             int ci = rc[1];
             for (T value : values) {
                 move(ri++, ci, true);
-                setCellValueAuto(this.cell, value);
+                Excel.setCellValueAuto(this.cell, value);
             }
         }
         return this;
@@ -109,9 +94,9 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
      * @param list
      * @return
      */
-    public <T> ExcelImpl writeTable(String startColumnName, Collection<String> columnNames, List<T> list) {
+    public <T> Excel writeTable(String startColumnName, Collection<String> columnNames, List<T> list) {
         if (list != null && !list.isEmpty()) {
-            int[] rc = toRowCellIndex(startColumnName);
+            int[] rc = Excel.toRowCellIndex(startColumnName);
             int ri = rc[0];
             int sci = rc[1];
             int ci = sci;
@@ -121,7 +106,7 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
                 ci = sci;
                 for (String name : columnNames) {
                     moveCell(ci++, true);
-                    setCellValueAuto(this.cell, map.get(name));
+                    Excel.setCellValueAuto(this.cell, map.get(name));
                 }
             }
         }
@@ -135,9 +120,9 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
      * @param list
      * @return
      */
-    public <T> ExcelImpl writePivotTable(String startColumnName, Collection<String> columnNames, List<T> list) {
+    public <T> Excel writePivotTable(String startColumnName, Collection<String> columnNames, List<T> list) {
         if (list != null && !list.isEmpty()) {
-            int[] rc = toRowCellIndex(startColumnName);
+            int[] rc = Excel.toRowCellIndex(startColumnName);
             int sri = rc[0];
             int ri = sri;
             int ci = rc[1];
@@ -146,7 +131,7 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
                 ri = sri;
                 for (String name : columnNames) {
                     move(ri++, ci, true);
-                    setCellValueAuto(this.cell, map.get(name));
+                    Excel.setCellValueAuto(this.cell, map.get(name));
                 }
                 ci++;
             }
@@ -180,7 +165,7 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
      * @return Cell or null
      */
     public Cell readCell(String startColumnName) {
-        int[] rc = toRowCellIndex(startColumnName);
+        int[] rc = Excel.toRowCellIndex(startColumnName);
         return readCell(rc[0], rc[1]);
     }
     
@@ -204,7 +189,7 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
      * @return
      */
     public <R> List<R> readTable(String startColumnName, int columnCount, int limitRowCount, ThrowableFunction<List<Cell>, R> map) {
-        int[] rc = toRowCellIndex(startColumnName);
+        int[] rc = Excel.toRowCellIndex(startColumnName);
         int ri = rc[0];
         int eri = Math.min(ri + limitRowCount, sheet.getLastRowNum() + 1);
         int ci = rc[1];
@@ -227,7 +212,7 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
                     rv.add(r);
                 }
             } catch (Exception e) {
-                throw new RuntimeException("row["+toColumnNameByRowIndex(ri)+"] : " + e.getMessage(), e);
+                throw new RuntimeException("row["+Excel.toColumnNameByRowIndex(ri)+"] : " + e.getMessage(), e);
             }
         }
         
@@ -255,7 +240,7 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
      */
     public <R> List<R> readPivotTable(String startColumnName, int columnCount, int limitRowCount, ThrowableFunction<List<Cell>, R> map) {
         
-        int[] rc = toRowCellIndex(startColumnName);
+        int[] rc = Excel.toRowCellIndex(startColumnName);
         int ri = rc[0];
         int ci = rc[1];
         int eci = ci + limitRowCount;
@@ -263,7 +248,7 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
         Row[] rows = new Row[columnCount];
         for (int i = 0 ; i < columnCount ; i++) {
             if ((rows[i] = readRow(ri + i)) == null) {
-                throw new IllegalArgumentException(toColumnName(ri + i, ci) + " is does not exist");
+                throw new IllegalArgumentException(Excel.toColumnName(ri + i, ci) + " is does not exist");
             }
         }
         
@@ -289,7 +274,7 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
                     rv.add(r);
                 }
             } catch (Exception e) {
-                throw new RuntimeException("column["+toColumnNameByCellIndex(ci)+"] : " + e.getMessage(), e);
+                throw new RuntimeException("column["+Excel.toColumnNameByCellIndex(ci)+"] : " + e.getMessage(), e);
             }
         }
         
@@ -345,7 +330,7 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
      * @param index
      * @return
      */
-    public ExcelImpl moveSheet(int index) {
+    public Excel moveSheet(int index) {
         if (book.getNumberOfSheets() <= index) {
             int need = (index + 1) - book.getNumberOfSheets();
             for (int i = 0 ; i < need ; i++) {
@@ -361,7 +346,7 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
      * @param name
      * @return
      */
-    public ExcelImpl setSheetName(String name) {
+    public Excel setSheetName(String name) {
         book.setSheetName(sheetIndex, name);
         return this;
     }
@@ -387,7 +372,7 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
      * @param index
      * @return
      */
-    public ExcelImpl moveRow(int index, boolean forceCreate) {
+    public Excel moveRow(int index, boolean forceCreate) {
         if (index != this.rowIndex || (this.row == null && forceCreate)) {
             this.row = sheet.getRow(index);
             this.rowIndex = index;
@@ -403,7 +388,7 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
      * @param index
      * @return
      */
-    public ExcelImpl moveCell(int index, boolean forceCreate) {
+    public Excel moveCell(int index, boolean forceCreate) {
         if (this.row != null) {
             cell = row.getCell(index);
         } else if (forceCreate) {
@@ -425,7 +410,7 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
      * @param cellIndex
      * @return
      */
-    public ExcelImpl move(int rowIndex, int cellIndex, boolean forceCreate) {
+    public Excel move(int rowIndex, int cellIndex, boolean forceCreate) {
         return moveRow(rowIndex, forceCreate).moveCell(cellIndex, forceCreate);
     }
     
@@ -435,7 +420,7 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
      * @param cellIndex
      * @return cell or null
      */
-    public ExcelImpl move(int rowIndex, int cellIndex) {
+    public Excel move(int rowIndex, int cellIndex) {
         return move(rowIndex, cellIndex, false);
     }
     
@@ -445,8 +430,8 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
      * @param forceCreate
      * @return
      */
-    public ExcelImpl move(String columnName, boolean forceCreate) {
-        int[] rc = toRowCellIndex(columnName);
+    public Excel move(String columnName, boolean forceCreate) {
+        int[] rc = Excel.toRowCellIndex(columnName);
         return move(rc[0], rc[1], forceCreate);
     }
     
@@ -455,8 +440,8 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
      * @param columnName
      * @return cell or null
      */
-    public ExcelImpl move(String columnName) {
-        int[] rc = toRowCellIndex(columnName);
+    public Excel move(String columnName) {
+        int[] rc = Excel.toRowCellIndex(columnName);
         return move(rc[0], rc[1]);
     }
     
@@ -465,7 +450,7 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
      * @param forceCreate
      * @return
      */
-    public ExcelImpl moveNextRow(boolean forceCreate) {
+    public Excel moveNextRow(boolean forceCreate) {
         return moveRow(rowIndex + 1, forceCreate);
     }
     
@@ -474,7 +459,7 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
      * @param forceCreate
      * @return
      */
-    public ExcelImpl moveNextCell(boolean forceCreate) {
+    public Excel moveNextCell(boolean forceCreate) {
         return moveCell(cellIndex + 1, forceCreate);
     }
     
@@ -484,7 +469,7 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
      * @return
      */
     public int getInt(int defaultValue) {
-        return toInt(cell, defaultValue);
+        return Excel.toInt(cell, defaultValue);
     }
     
     /**
@@ -493,7 +478,7 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
      * @return
      */
     public long getLong(long defaultValue) {
-        return toLong(cell, defaultValue);
+        return Excel.toLong(cell, defaultValue);
     }
     
     /**
@@ -502,7 +487,7 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
      * @return
      */
     public float getFloat(float defaultValue) {
-        return toFloat(cell, defaultValue);
+        return Excel.toFloat(cell, defaultValue);
     }
     
     /**
@@ -511,7 +496,7 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
      * @return
      */
     public double getDouble(double defaultValue) {
-        return toDouble(cell, defaultValue);
+        return Excel.toDouble(cell, defaultValue);
     }
     
     /**
@@ -520,7 +505,7 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
      * @return
      */
     public Date getDate(Date defaultValue) {
-        return toDate(cell, defaultValue);
+        return Excel.toDate(cell, defaultValue);
     }
     
     /**
@@ -529,7 +514,7 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
      * @return
      */
     public String toIntegerString(long defaultValue) {
-        return toIntegerString(cell, defaultValue);
+        return Excel.toIntegerString(cell, defaultValue);
     }
     
     /**
@@ -538,7 +523,7 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
      * @return
      */
     public String getString(String defaultValue) {
-        return toString(cell, defaultValue);
+        return Excel.toString(cell, defaultValue);
     }
     
     /**
@@ -546,7 +531,7 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
      * @return
      */
     public String getString() {
-        return toString(cell, null);
+        return Excel.toString(cell, null);
     }
     
     /**
@@ -554,14 +539,14 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
      * @param obj
      * @return
      */
-    public ExcelImpl setValue(Object obj) {
+    public Excel setValue(Object obj) {
         if (cell == null) {
             if (row == null) {
                 row = sheet.createRow(rowIndex);
             }
             cell = row.createCell(cellIndex);
         }
-        setCellValueAuto(cell, obj);
+        Excel.setCellValueAuto(cell, obj);
         return this;
     }
     
@@ -596,7 +581,7 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
      * @return
      */
     public String getColumnNameX() {
-        return toColumnNameByCellIndex(this.cellIndex);
+        return Excel.toColumnNameByCellIndex(this.cellIndex);
     }
     
     /**
@@ -605,7 +590,7 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
      * @return
      */
     public String getColumnNameY() {
-        return toColumnNameByRowIndex(this.rowIndex);
+        return Excel.toColumnNameByRowIndex(this.rowIndex);
     }
     
     /**
@@ -646,7 +631,7 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
         if (bulk) {
             throw new RuntimeException("bulk mode does not support style");
         }
-        int[] rc = toRowCellIndex(columnName);
+        int[] rc = Excel.toRowCellIndex(columnName);
         return new ExcelStyle((XSSFSheet) sheet, rc[0], rc[1], rc[0], rc[1]);
     }
     
@@ -659,8 +644,8 @@ public class ExcelImpl extends ExcelStatic implements Closeable {
         if (bulk) {
             throw new RuntimeException("bulk mode does not support style");
         }
-        int[] src = toRowCellIndex(startColumnName);
-        int[] erc = toRowCellIndex(endColumnName);
+        int[] src = Excel.toRowCellIndex(startColumnName);
+        int[] erc = Excel.toRowCellIndex(endColumnName);
         return new ExcelStyle((XSSFSheet) sheet, src[0], src[1], erc[0], erc[1]);
     }
 }
