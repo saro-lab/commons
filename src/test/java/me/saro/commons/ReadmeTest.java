@@ -31,7 +31,6 @@ public class ReadmeTest {
         outClassInfo(Zips.class);
         outClassInfo(Crypt.class);
         outClassInfo(ByteData.class);
-        outClassInfo(Excels.class);
         outClassInfo(Web.class);
         outClassInfo(Valids.class);
         outClassInfo(Tests.class);
