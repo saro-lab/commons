@@ -1,4 +1,4 @@
-package me.saro.commons;
+package me.saro.commons.excel;
 
 import java.io.Closeable;
 import java.io.File;
@@ -8,8 +8,10 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -17,9 +19,11 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import me.saro.commons.excel.Excels;
+import me.saro.commons.Converter;
+import me.saro.commons.NullOutputStream;
 import me.saro.commons.function.ThrowableFunction;
 
 /**
@@ -30,6 +34,7 @@ import me.saro.commons.function.ThrowableFunction;
 public class Excel extends Excels implements Closeable {
     
     final private Workbook book;
+    final private boolean bulk;
     
     private int sheetIndex = -1;
     private int rowIndex = - 1;
@@ -44,6 +49,7 @@ public class Excel extends Excels implements Closeable {
     private Excel(Workbook book, File file) {
         this.book = book;
         this.file = file;
+        this.bulk = book.getClass().getName().equals(SXSSFWorkbook.class.getName());
         moveSheet(0).move(0, 0, false);
     }
     
@@ -602,5 +608,59 @@ public class Excel extends Excels implements Closeable {
         return toColumnNameByRowIndex(this.rowIndex);
     }
     
+    /**
+     * autoSizeColumn
+     */
+    public void autoSizeColumn() {
+        if (bulk) {
+            throw new RuntimeException("bulk mode does not support autoSizeColumn");
+        }
+        Set<Integer> set = new HashSet<>();
+        for (Row row : sheet) {
+            for (Cell cell : row) {
+                set.add(cell.getColumnIndex());
+            }
+        }
+        for (Integer i : set) {
+            sheet.autoSizeColumn(i);
+        }
+    }
     
+    /**
+     * autoSizeColumn
+     * @param cellIndex
+     */
+    public void autoSizeColumn(int cellIndex) {
+        if (bulk) {
+            throw new RuntimeException("bulk mode does not support autoSizeColumn");
+        }
+        sheet.autoSizeColumn(cellIndex);
+    }
+    
+    /**
+     * style
+     * @param columnName
+     * @return
+     */
+    public ExcelStyle style(String columnName) {
+        if (bulk) {
+            throw new RuntimeException("bulk mode does not support style");
+        }
+        int[] rc = toRowCellIndex(columnName);
+        return new ExcelStyle((XSSFSheet) sheet, rc[0], rc[1], rc[0], rc[1]);
+    }
+    
+    /**
+     * style
+     * @param columnName
+     * @return
+     */
+    public ExcelStyle style(String startColumnName, String endColumnName) {
+        if (bulk) {
+            throw new RuntimeException("bulk mode does not support style");
+        }
+        int[] src = toRowCellIndex(startColumnName);
+        int[] erc = toRowCellIndex(endColumnName);
+        return new ExcelStyle((XSSFSheet) sheet, src[0], src[1], erc[0], erc[1]);
+    }
 }
