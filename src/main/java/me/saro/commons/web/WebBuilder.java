@@ -23,9 +23,9 @@ import me.saro.commons.function.ThrowableConsumer;
 import me.saro.commons.function.ThrowableFunction;
 
 /**
- * Web Client
+ * Web Client Builder
  * @author      PARK Yong Seo
- * @since       0.1
+ * @since       2.3
  */
 public class WebBuilder {
 
