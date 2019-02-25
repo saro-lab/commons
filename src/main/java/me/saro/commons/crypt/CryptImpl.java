@@ -1,4 +1,4 @@
-package me.saro.commons;
+package me.saro.commons.crypt;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,6 +19,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import me.saro.commons.Utils;
 import me.saro.commons.bytes.Bytes;
 
 /**
@@ -27,21 +28,21 @@ import me.saro.commons.bytes.Bytes;
  * @author      PARK Yong Seo
  * @since       2.2
  */
-public interface Crypt {
+public class CryptImpl {
     
     final private Integer LOCK = 1;
     final private Cipher cipher;
     //final private int mode;
     
-    private Crypt(Cipher cipher, int mode) {
+    private CryptImpl(Cipher cipher, int mode) {
         this.cipher = cipher;
         //this.mode = mode;
     }
     
-    private static Crypt crypt(String transformation, int mode, byte[] key, byte[] iv) throws InvalidKeyException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchPaddingException {
+    private static CryptImpl crypt(String transformation, int mode, byte[] key, byte[] iv) throws InvalidKeyException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchPaddingException {
         Cipher cipher = Cipher.getInstance(transformation);
         cipher.init(mode, new SecretKeySpec(key, cipher.getAlgorithm().split("\\/")[0]), new IvParameterSpec(iv));
-        return new Crypt(cipher, mode);
+        return new CryptImpl(cipher, mode);
     }
     
     /**
@@ -55,7 +56,7 @@ public interface Crypt {
      * @throws NoSuchAlgorithmException
      * @throws NoSuchPaddingException
      */
-    public static Crypt encrypt(String transformation, byte[] key, byte[] iv) throws InvalidKeyException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchPaddingException {
+    public static CryptImpl encrypt(String transformation, byte[] key, byte[] iv) throws InvalidKeyException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchPaddingException {
         return crypt(transformation, Cipher.ENCRYPT_MODE, key, iv);
     }
     
@@ -70,7 +71,7 @@ public interface Crypt {
      * @throws NoSuchAlgorithmException
      * @throws NoSuchPaddingException
      */
-    public static Crypt decrypt(String transformation, byte[] key, byte[] iv) throws InvalidKeyException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchPaddingException {
+    public static CryptImpl decrypt(String transformation, byte[] key, byte[] iv) throws InvalidKeyException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchPaddingException {
         return crypt(transformation, Cipher.DECRYPT_MODE, key, iv);
     }
     
