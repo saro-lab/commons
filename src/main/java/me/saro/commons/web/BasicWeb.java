@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lombok.Getter;
+import me.saro.commons.Converter;
 import me.saro.commons.function.ThrowableFunction;
 
 /**
@@ -237,17 +238,16 @@ public class BasicWeb implements Web {
 
             result.setStatus(connection.getResponseCode());
             result.setHeaders(connection.getHeaderFields());
-
-            InputStream commonInputStream;
+            
             try {
-                commonInputStream = connection.getInputStream();
+                try (InputStream is = connection.getInputStream()) {
+                    result.setBody(function.apply(is));
+                }
             } catch (IOException ie) {
-                commonInputStream = connection.getErrorStream();
+                result.setErrorBody(Converter.toString(connection.getErrorStream(), getResponseCharset()));
             }
 
-            try (InputStream is = commonInputStream) {
-                result.setBody(function.apply(is));
-            }
+            
         } catch (Exception e) {
             result.setException(e);
         }
