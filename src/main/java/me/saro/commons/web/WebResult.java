@@ -21,16 +21,18 @@ public class WebResult<T> {
     }
 
     // http status
-    @Getter @Setter(lombok.AccessLevel.PACKAGE) int status = -1;
+    @Getter @Setter(lombok.AccessLevel.PACKAGE) private int status = -1;
 
     // exception
-    @Getter @Setter(lombok.AccessLevel.PACKAGE) Exception exception;
+    @Getter @Setter(lombok.AccessLevel.PACKAGE) private Exception exception;
 
     // headers
-    @Getter @Setter(lombok.AccessLevel.PACKAGE) Map<String, List<String>> headers = Collections.emptyMap();
+    @Getter @Setter(lombok.AccessLevel.PACKAGE) private Map<String, List<String>> headers = Collections.emptyMap();
 
     // response body data
-    @Setter(lombok.AccessLevel.PACKAGE) T body;
+    @Setter(lombok.AccessLevel.PACKAGE) private T body;
+    
+    @Setter(lombok.AccessLevel.PACKAGE) private String errorBody;
 
     /**
      * is status 2xx
@@ -70,5 +72,13 @@ public class WebResult<T> {
      */
     public Optional<T> getBody() {
         return Optional.ofNullable(body);
+    }
+    
+    /**
+     * get response body data
+     * @return Optional response body data
+     */
+    public Optional<String> getErrorBody() {
+        return Optional.ofNullable(errorBody);
     }
 }
