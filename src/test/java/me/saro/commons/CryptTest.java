@@ -13,6 +13,8 @@ import javax.crypto.NoSuchPaddingException;
 
 import org.junit.jupiter.api.Test;
 
+import me.saro.commons.crypt.Crypt;
+
 public class CryptTest {
     
     final static String CHARSET = "UTF-8";
