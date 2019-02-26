@@ -9,10 +9,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.xssf.usermodel.IndexedColorMap;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.Test;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import me.saro.commons.excel.BasicExcel;
 import me.saro.commons.excel.Excel;
 
 
@@ -228,8 +236,26 @@ public class ExcelTest {
             excel.autoSizeColumn(3);
             excel.autoSizeColumn(4);
             
-            //excel.style("B3").forEach(e -> e.setFillForegroundColor((short)234));
+            XSSFCell cell = (XSSFCell)excel.readCell("B2");
+            XSSFWorkbook book = (XSSFWorkbook)((BasicExcel)excel).getBook();
+            XSSFCellStyle s = book.createCellStyle();
             
+            IndexedColorMap icm = book.getStylesSource().getIndexedColors();
+            XSSFColor grey = new XSSFColor(new java.awt.Color(255, 0, 255), icm);
+            s.setFillBackgroundColor(grey);
+            cell.setCellStyle(s);
+
+           
+            grey = new XSSFColor(new java.awt.Color(255, 255, 255), icm);
+            XSSFFont font = new XSSFFont();
+            font.setColor(grey);
+            s.setFont(font);
+            excel.readCell("B3").setCellStyle(s);
+            
+            s = book.createCellStyle();
+            s.setFillForegroundColor(new XSSFColor(new java.awt.Color(128, 0, 128)));
+            
+            excel.readCell("C3").setCellStyle(s);
             
             excel.save(new File("C:\\Users\\SARO\\Desktop\\abc.xlsx"), true);
         }
