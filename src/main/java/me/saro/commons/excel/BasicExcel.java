@@ -18,7 +18,9 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import lombok.Getter;
 import me.saro.commons.Converter;
 import me.saro.commons.NullOutputStream;
 import me.saro.commons.function.ThrowableFunction;
@@ -30,7 +32,7 @@ import me.saro.commons.function.ThrowableFunction;
  */
 public class BasicExcel implements Excel {
     
-    final private Workbook book;
+    @Getter final private Workbook book;
     final private boolean bulk;
     
     private int sheetIndex = -1;
@@ -632,7 +634,7 @@ public class BasicExcel implements Excel {
             throw new RuntimeException("bulk mode does not support style");
         }
         int[] rc = Excel.toRowCellIndex(columnName);
-        return new ExcelStyle((XSSFSheet) sheet, rc[0], rc[1], rc[0], rc[1]);
+        return new ExcelStyle((XSSFSheet) sheet, rc[0], rc[1], rc[0], rc[1], ((XSSFWorkbook)book).getStylesSource());
     }
     
     /**
@@ -646,6 +648,6 @@ public class BasicExcel implements Excel {
         }
         int[] src = Excel.toRowCellIndex(startColumnName);
         int[] erc = Excel.toRowCellIndex(endColumnName);
-        return new ExcelStyle((XSSFSheet) sheet, src[0], src[1], erc[0], erc[1]);
+        return new ExcelStyle((XSSFSheet) sheet, src[0], src[1], erc[0], erc[1], ((XSSFWorkbook)book).getStylesSource());
     }
 }
