@@ -76,9 +76,27 @@ public class WebResult<T> {
     
     /**
      * get response body data
+     * @param orElse
+     * @return
+     */
+    public T getBody(T orElse) {
+        return body != null ? body : orElse;
+    }
+    
+    /**
+     * get response error body data
      * @return Optional response body data
      */
     public Optional<String> getErrorBody() {
         return Optional.ofNullable(errorBody);
+    }
+    
+    /**
+     * get response error body data
+     * @param orElse
+     * @return
+     */
+    public String getErrorBody(String orElse) {
+        return errorBody != null ? errorBody : orElse;
     }
 }
