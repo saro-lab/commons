@@ -73,6 +73,15 @@ public class Utils {
     }
     
     /**
+     * is blank
+     * @param val
+     * @return
+     */
+    public static boolean blank(String val) {
+        return val == null || val.matches("[\\s]*");
+    }
+    
+    /**
      * zerofill
      * @param number
      * @param length
