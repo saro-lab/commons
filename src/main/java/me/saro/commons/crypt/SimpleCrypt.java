@@ -20,12 +20,12 @@ import me.saro.commons.Utils;
  * @author      PARK Yong Seo
  * @since       2.2
  */
-public class CryptImpl implements Crypt {
+public class SimpleCrypt implements Crypt {
     
     final private Integer LOCK = 1;
     final private Cipher cipher;
     
-    CryptImpl(Cipher cipher) {
+    SimpleCrypt(Cipher cipher) {
         this.cipher = cipher;
     }
     
