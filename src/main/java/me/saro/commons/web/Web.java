@@ -267,6 +267,14 @@ public interface Web {
     }
     
     /**
+     * ContentType application/json
+     * @return
+     */
+    default public Web setContentTypeApplicationJson() {
+        return setHeader("Content-Type", "application/json");
+    }
+    
+    /**
      * write Body text
      * @param text
      * @return
