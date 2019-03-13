@@ -97,19 +97,19 @@ public class Files {
         return t;
     }
     
-    /**
-     * byte reader
-     * @param file
-     * @param lineReader
-     * @throws Exception
-     */
-    public static void lineReader(File file, ThrowableFunction<Stream<String>, T> lineReader) throws Exception {
-        T t = null;
-        try (FileInputStream fis = new FileInputStream(file)) {
-            t = Utils.inputStreamLineReader(fis, charset, lineReader);
-        }
-        return t;
-    }
+//    /**
+//     * byte reader
+//     * @param file
+//     * @param lineReader
+//     * @throws Exception
+//     */
+//    public static void lineReader(File file, ThrowableFunction<Stream<String>, T> lineReader) throws Exception {
+//        T t = null;
+//        try (FileInputStream fis = new FileInputStream(file)) {
+//            t = Utils.inputStreamLineReader(fis, charset, lineReader);
+//        }
+//        return t;
+//    }
     
     /**
      * read line in the file
