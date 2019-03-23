@@ -34,7 +34,7 @@ public class ReadmeTest {
         outClassInfo(ByteData.class);
         outClassInfo(Web.class);
         outClassInfo(Valids.class);
-        outClassInfo(Tests.class);
+        outClassInfo(Naming.class);
         
         System.out.println("# INSTANCE");
         System.out.println();
