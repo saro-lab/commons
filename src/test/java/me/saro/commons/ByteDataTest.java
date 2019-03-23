@@ -7,6 +7,8 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 
+import me.saro.commons.bytes.ByteData;
+
 public class ByteDataTest {
     
     final static byte SPACE = ' ';
