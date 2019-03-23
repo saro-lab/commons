@@ -212,7 +212,7 @@ public interface Web {
      * @return
      */
     default public WebResult<JsonReader> toJsonReader() {
-        return toCustom(is -> JsonReader.create(Converter.toStringNotClose(is, getResponseCharset())));
+        return toCustom(is -> new JsonReader(Converter.toStringNotClose(is, getResponseCharset())));
     }
 
     /**
