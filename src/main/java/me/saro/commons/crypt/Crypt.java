@@ -22,7 +22,7 @@ import me.saro.commons.bytes.Bytes;
  * Crypt
  * thread-safe
  * @author      PARK Yong Seo
- * @since       2.2
+ * @since       3.0
  */
 public interface Crypt {
     
