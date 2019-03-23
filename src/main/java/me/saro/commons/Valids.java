@@ -53,14 +53,31 @@ public class Valids {
     }
     
     /**
-     * all parameters not null
+     * all parameters is not null
      * @param objs
      * @return
      */
-    public static boolean allNotNull(Object... objs) {
+    public static boolean isNotNull(Object... objs) {
         if (objs != null) {
             for (Object obj : objs) {
                 if (obj == null) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * all parameters is not blank
+     * @param texts
+     * @return
+     */
+    public static boolean isNotBlank(String... texts) {
+        if (texts != null) {
+            for (String text : texts) {
+                if (text == null || text.matches("[\\s]*")) {
                     return false;
                 }
             }
