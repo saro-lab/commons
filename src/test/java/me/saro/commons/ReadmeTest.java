@@ -16,10 +16,11 @@ import me.saro.commons.ftp.FTP;
 import me.saro.commons.json.JsonReader;
 import me.saro.commons.ssh.SSHExecutor;
 import me.saro.commons.ssh.SSHShell;
-import me.saro.commons.web.Web;
 import me.saro.commons.web.BasicWeb;
+import me.saro.commons.web.Web;
 public class ReadmeTest {
 
+    @SuppressWarnings("deprecation")
     @Test	
     public void justPrintReadme() {
         
