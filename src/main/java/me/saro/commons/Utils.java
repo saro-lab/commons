@@ -74,6 +74,25 @@ public class Utils {
     }
     
     /**
+     * Blank Value Logic
+     * 
+     * @param list
+     * nullable String
+     * @return
+     *  - first not null and not blank string
+     *  <br>
+     *  - if not found return null
+     */
+    public static String bvl(String... list) {
+        for (String val : list) {
+            if (val != null && !val.matches("[\\s]*")) {
+                return val;
+            }
+        }
+        return null;
+    }
+    
+    /**
      * is blank
      * @param val
      * @return
