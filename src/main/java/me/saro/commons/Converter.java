@@ -487,6 +487,9 @@ public class Converter {
      * (StackTrace + \n)...
      */
     public static String toString(Exception e) {
+        if (e == null) {
+            return null;
+        }
         StringBuilder sb = new StringBuilder(512);
         sb.append(e.getMessage());
         for (StackTraceElement stackTraceElement : e.getStackTrace()) {
