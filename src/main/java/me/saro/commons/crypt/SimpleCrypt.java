@@ -18,9 +18,9 @@ import me.saro.commons.Utils;
  * Crypt
  * thread-safe
  * @author      PARK Yong Seo
- * @since       2.2
+ * @since       3.0
  */
-public class SimpleCrypt implements Crypt {
+class SimpleCrypt implements Crypt {
     
     final private Integer LOCK = 1;
     final private Cipher cipher;
