@@ -19,6 +19,7 @@ import lombok.SneakyThrows;
 import me.saro.commons.function.StreamReadConsumer;
 import me.saro.commons.function.ThrowableConsumer;
 import me.saro.commons.function.ThrowableFunction;
+import me.saro.commons.function.ThrowableRunnable;
 
 /**
  * util class
@@ -324,5 +325,25 @@ public class Utils {
                 task.accept(this);
             }
         };
+    }
+    
+    
+    /**
+     * timestamp<br>
+     * check time of the runnable
+     * @param runnable
+     * @return
+     * timeMillis
+     */
+    public static long timestamp(ThrowableRunnable runnable) {
+        long ts = System.currentTimeMillis();
+        try {
+            runnable.run();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ts = System.currentTimeMillis() - ts;
+        System.out.println("timestamp : " + ts);
+        return ts;
     }
 }
