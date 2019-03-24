@@ -4,7 +4,7 @@
     <groupId>me.saro</groupId>
     <artifactId>commons</artifactId>
     <description>java commons</description>
-    <version>2.3-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>commons</name>
