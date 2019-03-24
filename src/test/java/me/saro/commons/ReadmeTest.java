@@ -11,7 +11,9 @@ import me.saro.commons.bytes.ByteData;
 import me.saro.commons.bytes.Bytes;
 import me.saro.commons.bytes.FixedDataFormat;
 import me.saro.commons.crypt.Crypt;
-import me.saro.commons.excel.BasicExcel;
+import me.saro.commons.excel.Excel;
+import me.saro.commons.excel.ExcelCell;
+import me.saro.commons.excel.ExcelRow;
 import me.saro.commons.ftp.FTP;
 import me.saro.commons.json.JsonReader;
 import me.saro.commons.ssh.SSHExecutor;
@@ -48,7 +50,9 @@ public class ReadmeTest {
         outClassInfo(SSHShell.class);
         outClassInfo(SSHExecutor.class);
         outClassInfo(DateFormat.class);
-        outClassInfo(BasicExcel.class);
+        outClassInfo(Excel.class);
+        outClassInfo(ExcelRow.class);
+        outClassInfo(ExcelCell.class);
         outClassInfo(JsonReader.class);
         outClassInfo(NullOutputStream.class);
 
