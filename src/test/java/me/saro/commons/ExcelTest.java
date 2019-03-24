@@ -9,53 +9,48 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.xssf.usermodel.IndexedColorMap;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFColor;
-import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.Test;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import me.saro.commons.excel.BasicExcel;
 import me.saro.commons.excel.Excel;
+import me.saro.commons.excel.ExcelCell;
+import me.saro.commons.excel.ExcelRow;
 
 
 public class ExcelTest {
     
     @Test
     public void toColumnNameByCellIndex() {
-        assertEquals(Excel.toColumnNameByCellIndex(1 - 1), "A");
-        assertEquals(Excel.toColumnNameByCellIndex(26 - 1), "Z");
-        assertEquals(Excel.toColumnNameByCellIndex(27 - 1), "AA");
-        assertEquals(Excel.toColumnNameByCellIndex(52 - 1), "AZ");
-        assertEquals(Excel.toColumnNameByCellIndex(520 - 1), "SZ");
-        assertEquals(Excel.toColumnNameByCellIndex(2600 - 1), "CUZ");
-        assertEquals(Excel.toColumnNameByCellIndex(10000 - 1), "NTP");
+        assertEquals(ExcelCell.toColumnNameByCellIndex(1 - 1), "A");
+        assertEquals(ExcelCell.toColumnNameByCellIndex(26 - 1), "Z");
+        assertEquals(ExcelCell.toColumnNameByCellIndex(27 - 1), "AA");
+        assertEquals(ExcelCell.toColumnNameByCellIndex(52 - 1), "AZ");
+        assertEquals(ExcelCell.toColumnNameByCellIndex(520 - 1), "SZ");
+        assertEquals(ExcelCell.toColumnNameByCellIndex(2600 - 1), "CUZ");
+        assertEquals(ExcelCell.toColumnNameByCellIndex(10000 - 1), "NTP");
     }
     
     @Test
     public void toCellIndex() {
         int idx = 0;
-        assertEquals(Excel.toCellIndex(Excel.toColumnNameByCellIndex(idx)), idx);
+        assertEquals(ExcelCell.toCellIndex(ExcelCell.toColumnNameByCellIndex(idx)), idx);
         idx = 321;
-        assertEquals(Excel.toCellIndex(Excel.toColumnNameByCellIndex(idx)), idx);
+        assertEquals(ExcelCell.toCellIndex(ExcelCell.toColumnNameByCellIndex(idx)), idx);
         idx = 3289;
-        assertEquals(Excel.toCellIndex(Excel.toColumnNameByCellIndex(idx)), idx);
+        assertEquals(ExcelCell.toCellIndex(ExcelCell.toColumnNameByCellIndex(idx)), idx);
         idx = 10111;
-        assertEquals(Excel.toCellIndex(Excel.toColumnNameByCellIndex(idx)), idx);
+        assertEquals(ExcelCell.toCellIndex(ExcelCell.toColumnNameByCellIndex(idx)), idx);
         idx = 457;
-        assertEquals(Excel.toCellIndex(Excel.toColumnNameByCellIndex(idx)), idx);
+        assertEquals(ExcelCell.toCellIndex(ExcelCell.toColumnNameByCellIndex(idx)), idx);
     }
     
     @Test
     public void toRowIndex() {
-        assertEquals(Excel.toRowIndex("1"), 0);
-        assertEquals(Excel.toRowIndex("100"), 99);
-        assertEquals(Excel.toRowIndex("2341"), 2340);
-        assertEquals(Excel.toRowIndex("16000"), 15999);
+        assertEquals(ExcelRow.toRowIndex("1"), 0);
+        assertEquals(ExcelRow.toRowIndex("100"), 99);
+        assertEquals(ExcelRow.toRowIndex("2341"), 2340);
+        assertEquals(ExcelRow.toRowIndex("16000"), 15999);
     }
     
     @Test
@@ -69,8 +64,8 @@ public class ExcelTest {
             excel.writeTable("B2", Arrays.asList("a", "b"), list);
             
             List<List<String>> rv = excel.readTable("B2", 2, e -> Arrays.asList(
-                Excel.toIntegerString(e.get(0), -1),
-                Excel.toString(e.get(1), null)
+                e.get(0).getIntegerStringValue(-1),
+                e.get(1).getStringValue(null)
             )); 
             
             assertEquals(rv.get(0).get(0), "1");
@@ -92,8 +87,8 @@ public class ExcelTest {
             excel.writeTable("B2", Arrays.asList("a", "b"), list);
             
             List<List<String>> rv = excel.readPivotTable("B2", 2, e -> Arrays.asList(
-                Excel.toString(e.get(0), null),
-                Excel.toString(e.get(1), null)
+                e.get(0).getStringValue(null),
+                e.get(1).getStringValue(null)
             ));
             
             assertEquals(rv.get(0).get(0), "1");
@@ -114,11 +109,11 @@ public class ExcelTest {
             
             excel.writeTable("B2", Arrays.asList("a", "b"), list);
             
-            assertEquals(excel.move("B2").getInt(-1), 1);
-            assertEquals(excel.move("B3").getInt(-1), 2);
+            assertEquals(excel.getCell("B2").getIntValue(-1), 1);
+            assertEquals(excel.getCell("B3").getIntValue(-1), 2);
             
-            assertEquals(excel.move("C2").getString(), "AA");
-            assertEquals(excel.move("C3").getString(), "BB");
+            assertEquals(excel.getCell("C2").getStringValue(null), "AA");
+            assertEquals(excel.getCell("C3").getStringValue(null), "BB");
         }
     }
     
@@ -132,11 +127,11 @@ public class ExcelTest {
             
             excel.writePivotTable("B2", Arrays.asList("a", "b"), list);
             
-            assertEquals(excel.move("B2").getInt(-1), 1);
-            assertEquals(excel.move("C2").getInt(-1), 2);
+            assertEquals(excel.getCell("B2").getIntValue(-1), 1);
+            assertEquals(excel.getCell("C2").getIntValue(-1), 2);
             
-            assertEquals(excel.move("B3").getString(), "AA");
-            assertEquals(excel.move("C3").getString(), "BB");
+            assertEquals(excel.getCell("B3").getStringValue(), "AA");
+            assertEquals(excel.getCell("C3").getStringValue(), "BB");
         }
     }
     
@@ -145,9 +140,9 @@ public class ExcelTest {
         try (Excel excel = Excel.create()) {
             excel.writeHorizontalList("A1", Arrays.asList("1", "2", "3"));
             
-            assertEquals(excel.move("A1").getString(), "1");
-            assertEquals(excel.move("B1").getString(), "2");
-            assertEquals(excel.move("C1").getString(), "3");
+            assertEquals(excel.getCell("A1").getStringValue(), "1");
+            assertEquals(excel.getCell("B1").getStringValue(), "2");
+            assertEquals(excel.getCell("C1").getStringValue(), "3");
         }
     }
     
@@ -156,9 +151,9 @@ public class ExcelTest {
         try (Excel excel = Excel.create()) {
             excel.writeVerticalList("A1", Arrays.asList("1", "2", "3"));
             
-            assertEquals(excel.move("A1").getString(), "1");
-            assertEquals(excel.move("A2").getString(), "2");
-            assertEquals(excel.move("A3").getString(), "3");
+            assertEquals(excel.getCell("A1").getStringValue(), "1");
+            assertEquals(excel.getCell("A2").getStringValue(), "2");
+            assertEquals(excel.getCell("A3").getStringValue(), "3");
         }
     }
     
@@ -178,11 +173,11 @@ public class ExcelTest {
             
             excel.writeTable("B2", Arrays.asList("a", "b"), list);
             
-            assertEquals(excel.move("B2").getInt(-1), 11);
-            assertEquals(excel.move("B3").getInt(-1), 22);
+            assertEquals(excel.getCell("B2").getIntValue(-1), 11);
+            assertEquals(excel.getCell("B3").getIntValue(-1), 22);
             
-            assertEquals(excel.move("C2").getString(), "AAA");
-            assertEquals(excel.move("C3").getString(), "BBB");
+            assertEquals(excel.getCell("C2").getStringValue(), "AAA");
+            assertEquals(excel.getCell("C3").getStringValue(), "BBB");
         }
     }
     
@@ -202,61 +197,30 @@ public class ExcelTest {
             
             excel.writePivotTable("B2", Arrays.asList("a", "b"), list);
             
-            assertEquals(excel.move("B2").getInt(-1), 11);
-            assertEquals(excel.move("C2").getInt(-1), 22);
+            assertEquals(excel.getCell("B2").getIntValue(-1), 11);
+            assertEquals(excel.getCell("C2").getIntValue(-1), 22);
             
-            assertEquals(excel.move("B3").getString(), "AAA");
-            assertEquals(excel.move("C3").getString(), "BBB");
+            assertEquals(excel.getCell("B3").getStringValue(), "AAA");
+            assertEquals(excel.getCell("C3").getStringValue(), "BBB");
         }
     }
     
-    @Test
-    public void test() throws IOException {
-        try (Excel excel = Excel.create()) {
+    //@Test
+    public void file() throws Exception {
+        try (Excel excel = Excel.open(new File("C:\\Users\\SARO\\Desktop\\aaa.xlsx"))) {
+            System.out.println(excel.getCell("A1").getDoubleValue(-1));
+            System.out.println(excel.getCell("A2").getIntValue(-1));
+            System.out.println(excel.getCell("A3").getIntValue(-1));
+            System.out.println(excel.getCell("A4").getIntValue(-1));
+            System.out.println(excel.getCell("A5").getIntValue(-1));
+            System.out.println(excel.getCell("A6").getIntValue(-1));
             
-            @Data @AllArgsConstructor
-            class TestObject {
-                int a;
-                String b;
-            }
-            
-            List<TestObject> list = new ArrayList<>();
-            list.add(new TestObject(11, "AA가나다란망ㄹ먼이라ㅓㅁㄴ이라ㅓㅁㄴㅇㄻㄴㅇㄻㄴㅇㄹA"));
-            list.add(new TestObject(22, "BBBㅁㄴㅇ럼ㄴ이라ㅓㅁㄴ이라ㅓㅁㄴ이람넝리ㅏㅁㄴ어림나ㅓㅇㄹ"));
-            list.add(new TestObject(22, "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"));
-            
-            excel.writePivotTable("B2", Arrays.asList("a", "b"), list);
-            
-            
-            
-            excel.autoSizeColumn(0);
-            excel.autoSizeColumn(1);
-            excel.autoSizeColumn(2);
-            excel.autoSizeColumn(3);
-            excel.autoSizeColumn(4);
-            
-            XSSFCell cell = (XSSFCell)excel.readCell("B2");
-            XSSFWorkbook book = (XSSFWorkbook)((BasicExcel)excel).getBook();
-            XSSFCellStyle s = book.createCellStyle();
-            
-            IndexedColorMap icm = book.getStylesSource().getIndexedColors();
-            XSSFColor grey = new XSSFColor(new java.awt.Color(255, 0, 255), icm);
-            s.setFillBackgroundColor(grey);
-            cell.setCellStyle(s);
-
-           
-            grey = new XSSFColor(new java.awt.Color(255, 255, 255), icm);
-            XSSFFont font = new XSSFFont();
-            font.setColor(grey);
-            s.setFont(font);
-            excel.readCell("B3").setCellStyle(s);
-            
-            s = book.createCellStyle();
-            s.setFillForegroundColor(new XSSFColor(new java.awt.Color(128, 0, 128)));
-            
-            excel.readCell("C3").setCellStyle(s);
-            
-            excel.save(new File("C:\\Users\\SARO\\Desktop\\abc.xlsx"), true);
+            System.out.println(excel.getCell("A1").getIntegerStringValue(-1));
+            System.out.println(excel.getCell("A2").getIntegerStringValue(-1));
+            System.out.println(excel.getCell("A3").getIntegerStringValue(-1));
+            System.out.println(excel.getCell("A4").getIntegerStringValue(-1));
+            System.out.println(excel.getCell("A5").getIntegerStringValue(-1));
+            System.out.println(excel.getCell("A6").getIntegerStringValue(-1));
         }
     }
 }
