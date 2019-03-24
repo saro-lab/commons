@@ -7,17 +7,22 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
+import me.saro.commons.bytes.ByteData;
 import me.saro.commons.bytes.Bytes;
 import me.saro.commons.bytes.FixedDataFormat;
 import me.saro.commons.crypt.Crypt;
-import me.saro.commons.excel.BasicExcel;
+import me.saro.commons.excel.Excel;
+import me.saro.commons.excel.ExcelCell;
+import me.saro.commons.excel.ExcelRow;
 import me.saro.commons.ftp.FTP;
+import me.saro.commons.json.JsonReader;
 import me.saro.commons.ssh.SSHExecutor;
 import me.saro.commons.ssh.SSHShell;
-import me.saro.commons.web.Web;
 import me.saro.commons.web.BasicWeb;
+import me.saro.commons.web.Web;
 public class ReadmeTest {
 
+    @SuppressWarnings("deprecation")
     @Test	
     public void justPrintReadme() {
         
@@ -34,7 +39,7 @@ public class ReadmeTest {
         outClassInfo(ByteData.class);
         outClassInfo(Web.class);
         outClassInfo(Valids.class);
-        outClassInfo(Tests.class);
+        outClassInfo(Naming.class);
         
         System.out.println("# INSTANCE");
         System.out.println();
@@ -45,7 +50,9 @@ public class ReadmeTest {
         outClassInfo(SSHShell.class);
         outClassInfo(SSHExecutor.class);
         outClassInfo(DateFormat.class);
-        outClassInfo(BasicExcel.class);
+        outClassInfo(Excel.class);
+        outClassInfo(ExcelRow.class);
+        outClassInfo(ExcelCell.class);
         outClassInfo(JsonReader.class);
         outClassInfo(NullOutputStream.class);
 

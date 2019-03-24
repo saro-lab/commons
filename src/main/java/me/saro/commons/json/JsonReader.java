@@ -1,9 +1,10 @@
-package me.saro.commons;
+package me.saro.commons.json;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import me.saro.commons.Converter;
 
 /**
  * json
@@ -14,10 +15,23 @@ import java.util.stream.Collectors;
 public class JsonReader {
 
     /**
-     * private constructor
+     * create json reader
      * @param data
      */
-    private JsonReader(Object data) {
+    public JsonReader(Object data) {
+        this.data = data;
+    }
+    
+    /**
+     * create json reader
+     * @param data
+     */
+    public JsonReader(String json) {
+        int arrayIndex = json.indexOf('[');
+        int objectIndex = json.indexOf('{');
+        Object data = (arrayIndex > -1 && (arrayIndex < objectIndex || objectIndex == -1))
+                ? Converter.toMapListByJsonArray(json)
+                : Converter.toMapByJsonObject(json);
         this.data = data;
     }
 
@@ -26,37 +40,7 @@ public class JsonReader {
 
     // data
     Object data;
-
-    /**
-     * create JsonReader
-     * @param json
-     * @return
-     */
-    public static JsonReader create(String json) {
-        int arrayIndex = json.indexOf('[');
-        int objectIndex = json.indexOf('{');
-        Object data = (arrayIndex > -1 && (arrayIndex < objectIndex || objectIndex == -1))
-                ? Converter.toMapListByJsonArray(json)
-                        : Converter.toMapByJsonObject(json);
-                return new JsonReader(data);
-    }
-
-    /**
-     * create empty Object JsonReader
-     * @return
-     */
-    public static JsonReader emptyObject() {
-        return new JsonReader(Collections.emptyMap());
-    }
-
-    /**
-     * create empty Array JsonReader
-     * @return
-     */
-    public static JsonReader emptyList() {
-        return new JsonReader(Collections.emptyList());
-    }
-
+    
     /**
      * is Array
      * @return

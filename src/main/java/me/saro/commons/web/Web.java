@@ -11,9 +11,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import me.saro.commons.Converter;
 import me.saro.commons.Files;
-import me.saro.commons.JsonReader;
 import me.saro.commons.function.ThrowableConsumer;
 import me.saro.commons.function.ThrowableFunction;
+import me.saro.commons.json.JsonReader;
 
 /**
  * Web Client
@@ -212,7 +212,7 @@ public interface Web {
      * @return
      */
     default public WebResult<JsonReader> toJsonReader() {
-        return toCustom(is -> JsonReader.create(Converter.toStringNotClose(is, getResponseCharset())));
+        return toCustom(is -> new JsonReader(Converter.toStringNotClose(is, getResponseCharset())));
     }
 
     /**
@@ -264,6 +264,14 @@ public interface Web {
      */
     default public Web setContentType(String value) {
         return setHeader("Content-Type", value);
+    }
+    
+    /**
+     * ContentType application/json
+     * @return
+     */
+    default public Web setContentTypeApplicationJson() {
+        return setHeader("Content-Type", "application/json");
     }
     
     /**

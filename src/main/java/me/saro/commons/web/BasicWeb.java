@@ -239,9 +239,14 @@ public class BasicWeb implements Web {
             result.setStatus(connection.getResponseCode());
             result.setHeaders(connection.getHeaderFields());
             
-            try {
+            input : try {
                 try (InputStream is = connection.getInputStream()) {
-                    result.setBody(function.apply(is));
+                    try {
+                        result.setBody(function.apply(is));
+                    } catch (Exception e) {
+                        result.setException(new Exception("TYPE CAST ERROR : " + e.getMessage(), e));
+                        break input;
+                    }
                 }
             } catch (IOException ie) {
                 result.setErrorBody(Converter.toString(connection.getErrorStream(), getResponseCharset()));

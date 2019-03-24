@@ -1,4 +1,4 @@
-package me.saro.commons;
+package me.saro.commons.bytes;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,9 +16,11 @@ import lombok.SneakyThrows;
  * thread-non-safe :<br>
  * Be sure to use it in a single thread.
  * 
+ * @deprecated alpha test class
  * @author PARK Yong Seo
- * @since 2.1
+ * @since 3.0
  */
+@Deprecated
 public class ByteData {
     
     final private static byte[] BYTES_NEW_LINE = new byte[] { '\r', '\n' };

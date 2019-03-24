@@ -9,6 +9,14 @@ import me.saro.commons.bytes.Bytes;
 public class BytesTest {
     
     @Test
+    public void base64() {
+        String sample = "가나다abcd";
+        String encode = Bytes.encodeBase64String(sample, "UTF-8");
+        String decode = Bytes.decodeBase64(encode, "UTF-8");
+        assertEquals(sample, decode);
+    }
+    
+    @Test
     public void toBytesByHex() {
         String sample = "fff0fa32713281af";
         assertEquals(Bytes.toHex(Bytes.toBytesByHex(sample)), sample);

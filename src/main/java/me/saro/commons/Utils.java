@@ -19,6 +19,7 @@ import lombok.SneakyThrows;
 import me.saro.commons.function.StreamReadConsumer;
 import me.saro.commons.function.ThrowableConsumer;
 import me.saro.commons.function.ThrowableFunction;
+import me.saro.commons.function.ThrowableRunnable;
 
 /**
  * util class
@@ -70,6 +71,34 @@ public class Utils {
             }
         }
         return null;
+    }
+    
+    /**
+     * Blank Value Logic
+     * 
+     * @param list
+     * nullable String
+     * @return
+     *  - first not null and not blank string
+     *  <br>
+     *  - if not found return null
+     */
+    public static String bvl(String... list) {
+        for (String val : list) {
+            if (val != null && !val.matches("[\\s]*")) {
+                return val;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * is blank
+     * @param val
+     * @return
+     */
+    public static boolean blank(String val) {
+        return val == null || val.matches("[\\s]*");
     }
     
     /**
@@ -315,5 +344,25 @@ public class Utils {
                 task.accept(this);
             }
         };
+    }
+    
+    
+    /**
+     * timestamp<br>
+     * check time of the runnable
+     * @param runnable
+     * @return
+     * timeMillis
+     */
+    public static long timestamp(ThrowableRunnable runnable) {
+        long ts = System.currentTimeMillis();
+        try {
+            runnable.run();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ts = System.currentTimeMillis() - ts;
+        System.out.println("timestamp : " + ts);
+        return ts;
     }
 }
