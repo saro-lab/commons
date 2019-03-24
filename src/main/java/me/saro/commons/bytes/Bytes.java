@@ -1,7 +1,12 @@
 package me.saro.commons.bytes;
 
 import java.nio.ByteBuffer;
+import java.util.Base64;
+import java.util.Base64.Decoder;
+import java.util.Base64.Encoder;
 import java.util.stream.IntStream;
+
+import lombok.SneakyThrows;
 
 /**
  * bytes
@@ -12,6 +17,9 @@ public class Bytes {
     
     private Bytes() {
     }
+    
+    final static Encoder EN_BASE64 = Base64.getEncoder();
+    final static Decoder DE_BASE64 = Base64.getDecoder();
     
     // HAX convert array [00 ~ FF]
     final static char[][] BYTE_TO_HEX_STR_MAP = IntStream.range(0, 256).boxed()
@@ -42,6 +50,46 @@ public class Bytes {
             rv[rvp++] = (byte) Integer.parseInt(hex.substring(i, i+2), 16);
         }
         return rv;
+    }
+    
+    /**
+     * byte data to base64String
+     * @param data
+     * @return
+     */
+    public static String encodeBase64String(byte[] data) {
+        return EN_BASE64.encodeToString(data);
+    }
+    
+    /**
+     * text to base64String
+     * @param data
+     * @param charset
+     * @return
+     */
+    @SneakyThrows
+    public static String encodeBase64String(String text, String charset) {
+        return EN_BASE64.encodeToString(text.getBytes(charset));
+    }
+    
+    /**
+     * base64String to byte data
+     * @param base64
+     * @return
+     */
+    public static byte[] decodeBase64(String base64) {
+        return DE_BASE64.decode(base64);
+    }
+    
+    /**
+     * base64 to text
+     * @param base64
+     * @param charset
+     * @return
+     */
+    @SneakyThrows
+    public static String decodeBase64(String base64, String charset) {
+        return new String(DE_BASE64.decode(base64), charset);
     }
     
     /**

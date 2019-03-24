@@ -11,14 +11,14 @@
 <dependency>
   <groupId>me.saro</groupId>
   <artifactId>commons</artifactId>
-  <version>2.2</version>
+  <version>3.0.0</version>
 </dependency>
 ```
 
 ## gradle
 
 ```
-compile 'me.saro:commons:2.2'
+compile 'me.saro:commons:3.0.0'
 ```
 
 ## repository
@@ -32,6 +32,9 @@ compile 'me.saro:commons:2.2'
 
 
 
+
+
+
 # STATIC
 
 
@@ -41,9 +44,6 @@ compile 'me.saro:commons:2.2'
 
 ```
 Converter.asList(T[]) : List<T>
-Converter.namingConvention(NamingConvention, List<String>) : String
-Converter.namingConvention(NamingConvention, NamingConvention, String) : String
-Converter.namingConvention(NamingConvention, String) : List<String>
 Converter.splitByToken(String, String) : List<String>
 Converter.splitCsvLine(String) : String[]
 Converter.toByteArrayOutputStream(InputStream, int) : ByteArrayOutputStream
@@ -82,6 +82,10 @@ Converter.toStringNotClose(InputStream, String) : String
 #### me.saro.commons.bytes.Bytes
 
 ```
+Bytes.decodeBase64(String) : byte[]
+Bytes.decodeBase64(String, String) : String
+Bytes.encodeBase64String(String, String) : String
+Bytes.encodeBase64String(byte[]) : String
 Bytes.toBytes(double) : byte[]
 Bytes.toBytes(float) : byte[]
 Bytes.toBytes(int) : byte[]
@@ -107,6 +111,8 @@ Bytes.toShort(byte[], int) : short
 #### me.saro.commons.Utils
 
 ```
+Utils.blank(String) : boolean
+Utils.bvl(String[]) : String
 Utils.createRandomBase62String(int, int) : String
 Utils.createRandomString(char[], int) : String
 Utils.createRandomString(char[], int, int) : String
@@ -121,6 +127,7 @@ Utils.linkStream(InputStream, OutputStream)
 Utils.nvl(T[]) : T
 Utils.random(long, long) : long
 Utils.timerTask(ThrowableConsumer<TimerTask>) : TimerTask
+Utils.timestamp(ThrowableRunnable) : long
 Utils.zerofill(String, int) : String
 Utils.zerofill(int, int) : String
 Utils.zerofill(long, int) : String
@@ -155,6 +162,7 @@ Files.validFileExt(String, String[]) : boolean
 Maps.clone(Map<K, V>) : Map<K, V>
 Maps.filter(Map<K, V>, Predicate<Map$Entry<K, V>>) : Map<K, V>
 Maps.pick(Map<K, V>, K[]) : Map<K, V>
+Maps.toMap(Object[]) : Map<K, V>
 ```
 
 
@@ -164,14 +172,14 @@ Maps.pick(Map<K, V>, K[]) : Map<K, V>
 
 ```
 Zips.openFromFile(File, ThrowableTriConsumer<String, ZipEntry, InputStream>) 
-Zips.openFromWeb(Web, ThrowableTriConsumer<String, ZipEntry, InputStream>) 
+Zips.openFromWeb(BasicWeb, ThrowableTriConsumer<String, ZipEntry, InputStream>) 
 Zips.openStreamNotClose(InputStream, ThrowableTriConsumer<String, ZipEntry, InputStream>) 
 ```
 
 
 ## Crypt
 
-#### me.saro.commons.Crypt
+#### me.saro.commons.crypt.Crypt
 
 ```
 Crypt.decrypt(String, byte[], byte[]) : Crypt
@@ -193,79 +201,9 @@ toHexByHex(String) : String
 ```
 
 
-## Excel
-
-#### me.saro.commons.Excel
-
-```
-Excel.create() : Excel
-Excel.create(File, boolean) : Excel
-Excel.createClone(File, File, boolean) : Excel
-Excel.createCloneXls(File, File, boolean) : Excel
-Excel.createXls() : Excel
-Excel.createXls(File, boolean) : Excel
-Excel.open(File) : Excel
-Excel.openXls(File) : Excel
-Excel.setCellValueAuto(Cell, Object) : Cell
-Excel.toCellIndex(String) : int
-Excel.toColumnName(int, int) : String
-Excel.toColumnNameByCellIndex(int) : String
-Excel.toColumnNameByRowIndex(int) : String
-Excel.toDate(Cell, Date) : Date
-Excel.toDouble(Cell, double) : double
-Excel.toFloat(Cell, float) : float
-Excel.toInt(Cell, int) : int
-Excel.toIntegerString(Cell, long) : String
-Excel.toLong(Cell, long) : long
-Excel.toRowCellIndex(String) : int[]
-Excel.toRowIndex(String) : int
-Excel.toString(Cell, String) : String
-close() 
-getCellIndex() : int
-getColumnName() : String
-getColumnNameX() : String
-getColumnNameY() : String
-getDate(Date) : Date
-getDouble(double) : double
-getFloat(float) : float
-getInt(int) : int
-getLong(long) : long
-getRowIndex() : int
-getString() : String
-getString(String) : String
-move(String) : Excel
-move(String, boolean) : Excel
-move(int, int) : Excel
-move(int, int, boolean) : Excel
-moveCell(int, boolean) : Excel
-moveNextCell(boolean) : Excel
-moveNextRow(boolean) : Excel
-moveRow(int, boolean) : Excel
-moveSheet(int) : Excel
-output(OutputStream) 
-readCell(String) : Cell
-readCell(int, int) : Cell
-readPivotTable(String, int, ThrowableFunction<List<Cell>, R>) : List<R>
-readPivotTable(String, int, int, ThrowableFunction<List<Cell>, R>) : List<R>
-readRow(int) : Row
-readTable(String, int, ThrowableFunction<List<Cell>, R>) : List<R>
-readTable(String, int, int, ThrowableFunction<List<Cell>, R>) : List<R>
-rowsLength() : int
-save(File, boolean) 
-setSheetName(String) : Excel
-setValue(Object) : Excel
-sheetsLength() : int
-toIntegerString(long) : String
-writeHorizontalList(String, Collection<T>) : Excel
-writePivotTable(String, Collection<String>, List<T>) : Excel
-writeTable(String, Collection<String>, List<T>) : Excel
-writeVerticalList(String, Collection<T>) : Excel
-```
-
-
 ## ByteData
 
-#### me.saro.commons.ByteData
+#### me.saro.commons.bytes.ByteData
 
 ```
 ByteData.create() : ByteData
@@ -314,23 +252,69 @@ writeLine2() : ByteData
 ```
 
 
+## Web
+
+#### me.saro.commons.web.Web
+
+```
+Web.custom(String, String) : Web
+Web.delete(String) : Web
+Web.get(String) : Web
+Web.patch(String) : Web
+Web.post(String) : Web
+Web.put(String) : Web
+addUrlParameter(String, String) : Web
+getRequestCharset() : String
+getResponseCharset() : String
+readRawResultStream(ThrowableConsumer<InputStream>) : WebResult<String>
+saveFile(File, boolean) : WebResult<File>
+setConnectTimeout(int) : Web
+setContentType(String) : Web
+setContentTypeApplicationJson() : Web
+setHeader(String, String) : Web
+setIgnoreCertificate(boolean) : Web
+setReadTimeout(int) : Web
+setRequestCharset(String) : Web
+setResponseCharset(String) : Web
+toCustom(ThrowableFunction<InputStream, R>) : WebResult<R>
+toCustom(WebResult<R>, ThrowableFunction<InputStream, R>) : WebResult<R>
+toJsonReader() : WebResult<JsonReader>
+toJsonTypeReference(TypeReference<T>) : WebResult<T>
+toMapByJsonObject() : WebResult<Map<String, Object>>
+toMapListByJsonArray() : WebResult<List<Map<String, Object>>>
+toPlainText() : WebResult<String>
+writeBody(String) : Web
+writeBody(byte[]) : Web
+writeBodyParameter(String, String) : Web
+writeJsonByClass(Object) : Web
+```
+
+
 ## Valids
 
 #### me.saro.commons.Valids
 
 ```
-Valids.allNotNull(Object[]) : boolean
 Valids.isDate(String, String) : boolean
 Valids.isMail(String, int) : boolean
+Valids.isNotBlank(String[]) : boolean
+Valids.isNotNull(Object[]) : boolean
 ```
 
 
-## Tests
+## Naming
 
-#### me.saro.commons.Tests
+#### me.saro.commons.Naming
 
 ```
-Tests.timestamp(ThrowableRunnable) : long
+Naming.toCamelCase(List<String>) : String
+Naming.toDashes(List<String>) : String
+Naming.toPascalCase(List<String>) : String
+Naming.toUnderscores(List<String>) : String
+Naming.toWordsByCamelCase(String) : List<String>
+Naming.toWordsByDashes(String) : List<String>
+Naming.toWordsByPascalCase(String) : List<String>
+Naming.toWordsByUnderscores(String) : List<String>
 ```
 
 # INSTANCE
@@ -354,38 +338,23 @@ toClassWithCheckSize(byte[]) : T
 ```
 
 
-## Web
+## BasicWeb
 
-#### me.saro.commons.web.Web
+#### me.saro.commons.web.BasicWeb
 
 ```
-Web.custom(String, String) : Web
-Web.delete(String) : Web
-Web.get(String) : Web
-Web.patch(String) : Web
-Web.post(String) : Web
-Web.put(String) : Web
 addUrlParameter(String, String) : Web
-readRawResultStream(ThrowableConsumer<InputStream>) : WebResult<String>
-saveFile(File, boolean) : WebResult<File>
+getRequestCharset() : String
+getResponseCharset() : String
 setConnectTimeout(int) : Web
-setContentType(String) : Web
 setHeader(String, String) : Web
 setIgnoreCertificate(boolean) : Web
 setReadTimeout(int) : Web
 setRequestCharset(String) : Web
 setResponseCharset(String) : Web
-toCustom(ThrowableFunction<InputStream, R>) : WebResult<R>
 toCustom(WebResult<R>, ThrowableFunction<InputStream, R>) : WebResult<R>
-toJsonReader() : WebResult<JsonReader>
-toJsonTypeReference(TypeReference<T>) : WebResult<T>
-toMapByJsonObject() : WebResult<Map<String, Object>>
-toMapListByJsonArray() : WebResult<List<Map<String, Object>>>
-toPlainText() : WebResult<String>
-writeBody(String) : Web
 writeBody(byte[]) : Web
 writeBodyParameter(String, String) : Web
-writeJsonByClass(Object) : Web
 ```
 
 
@@ -492,14 +461,86 @@ toString(String) : String
 ```
 
 
-## JsonReader
+## Excel
 
-#### me.saro.commons.JsonReader
+#### me.saro.commons.excel.Excel
 
 ```
-JsonReader.create(String) : JsonReader
-JsonReader.emptyList() : JsonReader
-JsonReader.emptyObject() : JsonReader
+Excel.create() : Excel
+Excel.createBulkExcel() : Excel
+Excel.open(File) : Excel
+autoSizeColumn() : Excel
+autoSizeColumn(int) : Excel
+getCell(String) : ExcelCell
+getCell(int, int) : ExcelCell
+getPoiSheet() : Sheet
+getRow() : ExcelRow
+getRow(int) : ExcelRow
+isBulk() : boolean
+moveNextRow() : Excel
+moveSheet(int) : Excel
+output(OutputStream) : Excel
+readPivotTable(String, int, ThrowableFunction<List<ExcelCell>, R>) : List<R>
+readPivotTable(String, int, int, ThrowableFunction<List<ExcelCell>, R>) : List<R>
+readTable(String, int, ThrowableFunction<List<ExcelCell>, R>) : List<R>
+readTable(String, int, int, ThrowableFunction<List<ExcelCell>, R>) : List<R>
+save(File, boolean) : Excel
+writeHorizontalList(String, Collection<Object>) : Excel
+writePivotTable(String, Collection<String>, List<T>) : Excel
+writeTable(String, Collection<String>, List<T>) : Excel
+writeVerticalList(String, Collection<Object>) : Excel
+```
+
+
+## ExcelRow
+
+#### me.saro.commons.excel.ExcelRow
+
+```
+ExcelRow.toColumnNameByRowIndex(int) : String
+ExcelRow.toRowIndex(String) : int
+getCell() : ExcelCell
+getCell(int) : ExcelCell
+getNextRow() : ExcelRow
+getPoiRow(boolean) : Row
+isEmpty() : boolean
+moveNextCell() : ExcelRow
+```
+
+
+## ExcelCell
+
+#### me.saro.commons.excel.ExcelCell
+
+```
+ExcelCell.toCellIndex(String) : int
+ExcelCell.toColumnName(int, int) : String
+ExcelCell.toColumnNameByCellIndex(int) : String
+ExcelCell.toDate(Cell, Date) : Date
+ExcelCell.toDouble(Cell, double) : double
+ExcelCell.toRowCellIndex(String) : int[]
+ExcelCell.toString(Cell, String) : String
+getDateValue(Date) : Date
+getDoubleValue(double) : double
+getFloatValue(float) : float
+getIntValue(int) : int
+getIntegerStringValue(long) : String
+getLongValue(long) : long
+getNextCell() : ExcelCell
+getNextRowCell() : ExcelCell
+getPoiCell(boolean) : Cell
+getStringValue() : String
+getStringValue(String) : String
+isEmpty() : boolean
+set(Object) : ExcelCell
+```
+
+
+## JsonReader
+
+#### me.saro.commons.json.JsonReader
+
+```
 equals(Object) : boolean
 get(String) : Object
 get(int) : JsonReader

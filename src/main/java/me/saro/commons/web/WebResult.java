@@ -3,7 +3,6 @@ package me.saro.commons.web;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +13,7 @@ import lombok.ToString;
  * @author		PARK Yong Seo
  * @since		0.1
  */
-@ToString(exclude = {"body", "headers"})
+@ToString(exclude = {"body", "errorBody", "headers", "exception"})
 public class WebResult<T> {
 
     WebResult() {
@@ -35,10 +34,18 @@ public class WebResult<T> {
     @Setter(lombok.AccessLevel.PACKAGE) private String errorBody;
 
     /**
-     * is status 2xx
+     * is status 2xx + have not exception
      * @return
      */
     public boolean isSuccess() {
+        return isStatus2xx() && exception != null;
+    }
+    
+    /**
+     * is status 2xx
+     * @return
+     */
+    public boolean isStatus2xx() {
         return status >= 200 && status < 300;
     }
 
@@ -65,20 +72,46 @@ public class WebResult<T> {
     public boolean isStatus5xx() {
         return status >= 500 && status < 600;
     }
+    
+    /**
+     * has body
+     * @return
+     */
+    public boolean hasBody() {
+        return body != null;
+    }
 
     /**
      * get response body data
      * @return Optional response body data
      */
-    public Optional<T> getBody() {
-        return Optional.ofNullable(body);
+    public T getBody() {
+        return body;
     }
     
     /**
      * get response body data
+     * @param orElse
+     * @return
+     */
+    public T getBody(T orElse) {
+        return body != null ? body : orElse;
+    }
+    
+    /**
+     * get response error body data
      * @return Optional response body data
      */
-    public Optional<String> getErrorBody() {
-        return Optional.ofNullable(errorBody);
+    public String getErrorBody() {
+        return errorBody;
+    }
+    
+    /**
+     * get response error body data
+     * @param orElse
+     * @return
+     */
+    public String getErrorBody(String orElse) {
+        return errorBody != null ? errorBody : orElse;
     }
 }

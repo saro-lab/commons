@@ -22,7 +22,7 @@ import me.saro.commons.bytes.Bytes;
  * Crypt
  * thread-safe
  * @author      PARK Yong Seo
- * @since       2.2
+ * @since       3.0
  */
 public interface Crypt {
     
@@ -40,7 +40,7 @@ public interface Crypt {
     public static Crypt encrypt(String transformation, byte[] key, byte[] iv) throws InvalidKeyException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchPaddingException {
         Cipher cipher = Cipher.getInstance(transformation);
         cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, cipher.getAlgorithm().split("\\/")[0]), new IvParameterSpec(iv));
-        return new CryptImpl(cipher);
+        return new SimpleCrypt(cipher);
     }
     
     /**
@@ -57,7 +57,7 @@ public interface Crypt {
     public static Crypt decrypt(String transformation, byte[] key, byte[] iv) throws InvalidKeyException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchPaddingException {
         Cipher cipher = Cipher.getInstance(transformation);
         cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, cipher.getAlgorithm().split("\\/")[0]), new IvParameterSpec(iv));
-        return new CryptImpl(cipher);
+        return new SimpleCrypt(cipher);
     }
     
     /**
