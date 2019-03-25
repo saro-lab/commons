@@ -39,7 +39,7 @@ public class WebResult<T> {
      * @return
      */
     public boolean isSuccess() {
-        return isStatus2xx() && exception != null;
+        return isStatus2xx() && exception == null;
     }
     
     /**
