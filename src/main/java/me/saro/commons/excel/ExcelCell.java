@@ -48,7 +48,7 @@ public class ExcelCell {
     }
     
     public int getIntValue(int defaultValue) {
-        return (int) toDouble(getPoiCell(false), defaultValue);
+        return (int)toDouble(getPoiCell(false), defaultValue);
     }
     
     public long getLongValue(long defaultValue) {
@@ -61,6 +61,22 @@ public class ExcelCell {
     
     public double getDoubleValue(double defaultValue) {
         return toDouble(getPoiCell(false), defaultValue);
+    }
+    
+    public int getIntValue() {
+        return (int)toDouble(getPoiCell(false));
+    }
+    
+    public long getLongValue() {
+        return (long)toDouble(getPoiCell(false));
+    }
+    
+    public float getFloatValue() {
+        return (float)toDouble(getPoiCell(false));
+    }
+    
+    public double getDoubleValue() {
+        return toDouble(getPoiCell(false));
     }
     
     public Date getDateValue(Date defaultValue) {
