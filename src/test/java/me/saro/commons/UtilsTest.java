@@ -20,6 +20,17 @@ public class UtilsTest {
         
         assertEquals("10P1P2P3P4P5P6P7P8P9P", rv.stream().sorted().collect(Collectors.joining("")));
     }
+    
+    @Test
+    public void norNumber() {
+        assertEquals(Utils.norNumber("1,000"), "1000");
+        assertEquals(Utils.norNumber("-000123"), "-123");
+        assertEquals(Utils.norNumber("+0001,234"), "1234");
+        assertEquals(Utils.norNumber("000123"), "123");
+        assertEquals(Utils.norNumber("000123.0000"), "123");
+        assertEquals(Utils.norNumber("123.0"), "123");
+        assertEquals(Utils.norNumber(" 123,456"), "123456");
+    }
 
     @Test
     public void zerofill() {
