@@ -86,6 +86,20 @@ public class ExcelCell {
      * @return
      */
     public static double toDouble(Cell cell, double defaultValue) {
+        try {
+            return toDouble(cell);
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+    
+    /**
+     * toDouble by cell
+     * @param cell
+     * @param defaultValue
+     * @return
+     */
+    public static double toDouble(Cell cell) {
         if (cell != null) {
             String tmp;
             switch (cell.getCellType()) {
@@ -104,7 +118,7 @@ public class ExcelCell {
                 case _NONE: case ERROR: case BLANK: default:
             }
         }
-        return defaultValue;
+        throw new IllegalArgumentException(cell + " is not number");
     }
     
     /**
