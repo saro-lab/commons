@@ -124,7 +124,10 @@ Utils.inputStreamReader(InputStream, StreamReadConsumer)
 Utils.kill(Closeable) 
 Utils.kill(Thread) 
 Utils.linkStream(InputStream, OutputStream) 
+Utils.norNumber(String) : String
 Utils.nvl(T[]) : T
+Utils.parseDouble(String) : double
+Utils.parseLong(String) : long
 Utils.random(long, long) : long
 Utils.timerTask(ThrowableConsumer<TimerTask>) : TimerTask
 Utils.timestamp(ThrowableRunnable) : long
@@ -160,7 +163,7 @@ Files.validFileExt(String, String[]) : boolean
 
 ```
 Maps.clone(Map<K, V>) : Map<K, V>
-Maps.filter(Map<K, V>, Predicate<Map$Entry<K, V>>) : Map<K, V>
+Maps.filter(Map<K, V>, Predicate<MMap$Entry<K, V>>) : Map<K, V>
 Maps.pick(Map<K, V>, K[]) : Map<K, V>
 Maps.toMap(Object[]) : Map<K, V>
 ```
@@ -517,14 +520,19 @@ ExcelCell.toCellIndex(String) : int
 ExcelCell.toColumnName(int, int) : String
 ExcelCell.toColumnNameByCellIndex(int) : String
 ExcelCell.toDate(Cell, Date) : Date
+ExcelCell.toDouble(Cell) : double
 ExcelCell.toDouble(Cell, double) : double
 ExcelCell.toRowCellIndex(String) : int[]
 ExcelCell.toString(Cell, String) : String
 getDateValue(Date) : Date
+getDoubleValue() : double
 getDoubleValue(double) : double
+getFloatValue() : float
 getFloatValue(float) : float
+getIntValue() : int
 getIntValue(int) : int
 getIntegerStringValue(long) : String
+getLongValue() : long
 getLongValue(long) : long
 getNextCell() : ExcelCell
 getNextRowCell() : ExcelCell
