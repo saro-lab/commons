@@ -3,6 +3,7 @@ package me.saro.commons.web;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -96,6 +97,29 @@ public class WebResult<T> {
      */
     public T getBody(T orElse) {
         return body != null ? body : orElse;
+    }
+    
+    /**
+     * get response body data
+     * throw null body
+     * @return Optional response body data
+     * @throws X
+     */
+    public <X extends Throwable> T getBodyWithThrow(Supplier<? extends X> exceptionSupplier) throws X {
+        if (body == null) {
+            throw exceptionSupplier.get();
+        }
+        return body;
+    }
+    
+    /**
+     * get response body data
+     * throw null body
+     * @return Optional response body data
+     * @throws NullPointerException
+     */
+    public T getBodyWithThrow() throws NullPointerException {
+        return getBodyWithThrow(NullPointerException::new);
     }
     
     /**
