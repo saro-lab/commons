@@ -6,6 +6,8 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 
+import me.saro.commons.Utils;
+
 public class ExcelCell {
     
     final ExcelRow row;
@@ -93,11 +95,11 @@ public class ExcelCell {
                     return cell.getNumericCellValue();
                 case FORMULA:
                     if ((tmp = cell.getCellFormula()) != null && !tmp.isEmpty()) {
-                        return Double.parseDouble(tmp);
+                        return Utils.parseDouble(tmp);
                     }
                 case STRING:
                     if ((tmp = cell.getStringCellValue()) != null && !tmp.isEmpty()) {
-                        return Double.parseDouble(tmp);
+                        return Utils.parseDouble(tmp);
                     }
                 case _NONE: case ERROR: case BLANK: default:
             }
