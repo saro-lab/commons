@@ -22,7 +22,6 @@ import me.saro.commons.web.BasicWeb;
 import me.saro.commons.web.Web;
 public class ReadmeTest {
 
-    @SuppressWarnings("deprecation")
     @Test	
     public void justPrintReadme() {
         
