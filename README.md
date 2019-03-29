@@ -11,14 +11,14 @@
 <dependency>
   <groupId>me.saro</groupId>
   <artifactId>commons</artifactId>
-  <version>3.0.0</version>
+  <version>3.0.1</version>
 </dependency>
 ```
 
 ## gradle
 
 ```
-compile 'me.saro:commons:3.0.0'
+compile 'me.saro:commons:3.0.1'
 ```
 
 ## repository
@@ -28,8 +28,6 @@ compile 'me.saro:commons:3.0.0'
 
 ## see
 - [가리사니 개발자공간](https://gs.saro.me)
-
-
 
 
 
@@ -163,7 +161,7 @@ Files.validFileExt(String, String[]) : boolean
 
 ```
 Maps.clone(Map<K, V>) : Map<K, V>
-Maps.filter(Map<K, V>, Predicate<MMap$Entry<K, V>>) : Map<K, V>
+Maps.filter(Map<K, V>, Predicate<Map$Entry<K, V>>) : Map<K, V>
 Maps.pick(Map<K, V>, K[]) : Map<K, V>
 Maps.toMap(Object[]) : Map<K, V>
 ```
@@ -583,4 +581,5 @@ ThrowableTriConsumer<T, U, V>
 ThrowableFunction<T, R>
 ThrowableBiFunction<T, U, R>
 ThrowableTriFunction<T, U, V, R>
+```
 ```
