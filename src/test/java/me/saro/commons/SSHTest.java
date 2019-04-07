@@ -10,10 +10,10 @@ import me.saro.commons.ssh.SSHShell;
 
 public class SSHTest {
     
-    String host = "localhost";
+    String host = "192.168.0.13";
     int port = 22;
-    String user = "user";
-    String pass = "pass";
+    String user = "saro";
+    String pass = "testtest";
     String charset = "utf-8";
     
     @Test

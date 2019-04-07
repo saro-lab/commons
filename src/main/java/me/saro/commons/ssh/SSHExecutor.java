@@ -13,6 +13,8 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
+import me.saro.commons.Utils;
+
 /**
  * SSH<br>
  * there is just execute application and output in session<br>
@@ -85,18 +87,19 @@ public class SSHExecutor implements Closeable {
      * @throws IOException
      */
     public synchronized String cmd(String... cmds) throws IOException {
-        ChannelExec channel = null;
+        
         String rv = null;
+        ChannelExec channel = null;
         
         try {
             channel = (ChannelExec) session.openChannel("exec");
             channel.setCommand(Optional.ofNullable(cmds)
                     .filter(e -> e.length > 0).map(Stream::of).map(e -> e.collect(Collectors.joining("\n", "", "\n")))
                     .orElseThrow(() -> new IllegalArgumentException("there is no command")).getBytes(charset));
-            InputStream is = channel.getInputStream();
             channel.connect();
-            rv  = read(is);
-            
+            try (InputStream is = channel.getInputStream() ; InputStream eis = channel.getErrStream()) {
+                rv  = Utils.nvl(Utils.bvl(read(is), read(eis)), "");
+            }
         } catch (JSchException je) {
             throw new IOException(je);
         } finally {
@@ -119,10 +122,11 @@ public class SSHExecutor implements Closeable {
     private String read(InputStream is) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream(512);
         int ch;
-        while ( (ch = is.read()) != 0xffffffff ) {
+        while ((ch = is.read()) != -1) {
             baos.write(ch);
         }
-        return baos.toString(charset);
+        String rv = baos.toString(charset);
+        return rv;
     }
     
     /**
