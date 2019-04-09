@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,7 +13,6 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import me.saro.commons.Converter;
-import me.saro.commons.Utils;
 import me.saro.commons.bytes.annotations.FixedBinary;
 import me.saro.commons.bytes.annotations.FixedData;
 import me.saro.commons.bytes.annotations.FixedText;
@@ -177,85 +175,51 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
     private void bindToBytesOrder(Method method, FixedBinary da) {
         int dfOffset = da.offset();
         int arrayLength = da.arrayLength();
-        String type = method.getReturnType().getName();
+        String type = method.getGenericReturnType().getTypeName();
         
         toBytesOrders.add((clazz, bytes, offset) -> {
             
             int s = offset + dfOffset;
             Object val = method.invoke(clazz);
-            String retype = null;
             
             if (val == null) {
                 return;
             }
             
-            if (type.equals("java.util.List")) {
-                switch (method.getGenericReturnType().getTypeName()) {
-                    case "java.util.List<java.lang.Short>" : 
-                        val = Converter.toShortArray((List<Short>)val);
-                        retype = "[S";
-                        break;
-                    case "java.util.List<java.lang.Integer>" : 
-                        val = Converter.toIntArray((List<Integer>)val);
-                        retype = "[I";
-                        break;
-                    case "java.util.List<java.lang.Long>" : 
-                        val = Converter.toLongArray((List<Long>)val);
-                        retype = "[J";
-                        break;
-                    case "java.util.List<java.lang.Float>" : 
-                        val = Converter.toFloatArray((List<Float>)val);
-                        retype = "[F";
-                        break;
-                    case "java.util.List<java.lang.Double>" : 
-                        val = Converter.toDoubleArray((List<Double>)val);
-                        retype = "[D";
-                        break;
-                }
-            }
-            
-            switch (Utils.nvl(retype, type)) {
-                // array
-                case "[B" : case "[Ljava.lang.Byte;" :
-                    System.arraycopy(val, 0, bytes, s, arrayLength);
-                return;  
-                case "[S" : case "[Ljava.lang.Short;" :
-                    System.arraycopy(Bytes.toBytes((short[])val), 0, bytes, s, arrayLength * 2);
-                return;
-                case "[I" : case "[Ljava.lang.Integer;" :
-                    System.arraycopy(Bytes.toBytes((int[])val), 0, bytes, s, arrayLength * 4);
-                return;
-                case "[J" : case "[Ljava.lang.Long;" : 
-                    System.arraycopy(Bytes.toBytes((long[])val), 0, bytes, s, arrayLength * 8);
-                return;
-                case "[F" : case "[Ljava.lang.Float;" : 
-                    System.arraycopy(Bytes.toBytes((float[])val), 0, bytes, s, arrayLength * 4);
-                return;
-                case "[D" : case "[Ljava.lang.Double;" : 
-                    System.arraycopy(Bytes.toBytes((double[])val), 0, bytes, s, arrayLength * 8);
-                return;
-                
+            switch (type) {
                 // object
-                case "byte" : case "java.lang.Byte" :
-                    bytes[s] = (byte)val;
-                return;
-                case "short" : case "java.lang.Short" :
-                    System.arraycopy(Bytes.toBytes((short)val), 0, bytes, s, 2);
-                return;
-                case "int" : case "java.lang.Integer" :
-                    System.arraycopy(Bytes.toBytes((int)val), 0, bytes, s, 4);
-                return;
-                case "long" : case "java.lang.Long" : 
-                    System.arraycopy(Bytes.toBytes((long)val), 0, bytes, s, 8);
-                return;
-                case "float" : case "java.lang.Float" : 
-                    System.arraycopy(Bytes.toBytes((float)val), 0, bytes, s, 4);
-                return;
-                case "double" : case "java.lang.Double" : 
-                    System.arraycopy(Bytes.toBytes((double)val), 0, bytes, s, 8);
-                return;
-                default : 
-                    throw new IllegalArgumentException("type ["+type+"] does not support");
+                case "byte" : case "java.lang.Byte" : bytes[s] = (byte)val; return;
+                case "short" : case "java.lang.Short" : System.arraycopy(Bytes.toBytes((short)val), 0, bytes, s, 2); return;
+                case "int" : case "java.lang.Integer" : System.arraycopy(Bytes.toBytes((int)val), 0, bytes, s, 4); return;
+                case "long" : case "java.lang.Long" : System.arraycopy(Bytes.toBytes((long)val), 0, bytes, s, 8); return;
+                case "float" : case "java.lang.Float" : System.arraycopy(Bytes.toBytes((float)val), 0, bytes, s, 4); return;
+                case "double" : case "java.lang.Double" : System.arraycopy(Bytes.toBytes((double)val), 0, bytes, s, 8); return;
+                
+                // array
+                case "byte[]" : System.arraycopy(val, 0, bytes, s, arrayLength); return;
+                case "java.lang.Byte[]" : System.arraycopy(Converter.toPrimitive((Byte[])val), 0, bytes, s, arrayLength); return;
+                
+                case "short[]" : System.arraycopy(Bytes.toBytes((short[])val), 0, bytes, s, arrayLength * 2); return;
+                case "java.lang.Short[]" : System.arraycopy(Bytes.toBytes(Converter.toPrimitive((Short[])val)), 0, bytes, s, arrayLength * 2); return;
+                case "java.util.List<java.lang.Short>" : System.arraycopy(Bytes.toBytes(Converter.toShortArray((List<Short>)val)), 0, bytes, s, arrayLength * 2); return;
+                
+                case "int[]" : System.arraycopy(Bytes.toBytes((int[])val), 0, bytes, s, arrayLength * 4); return;
+                case "java.lang.Integer[]" : System.arraycopy(Bytes.toBytes(Converter.toPrimitive((Integer[])val)), 0, bytes, s, arrayLength * 4); return;
+                case "java.util.List<java.lang.Integer>" : System.arraycopy(Bytes.toBytes(Converter.toIntArray((List<Integer>)val)), 0, bytes, s, arrayLength * 4); return;
+                
+                case "long[]" : System.arraycopy(Bytes.toBytes((long[])val), 0, bytes, s, arrayLength * 8); return;
+                case "java.lang.Long[]" : System.arraycopy(Bytes.toBytes(Converter.toPrimitive((Long[])val)), 0, bytes, s, arrayLength * 8); return;
+                case "java.util.List<java.lang.Long>" : System.arraycopy(Bytes.toBytes(Converter.toLongArray((List<Long>)val)), 0, bytes, s, arrayLength * 8); return;
+                
+                case "float[]" : System.arraycopy(Bytes.toBytes((float[])val), 0, bytes, s, arrayLength * 4); return;
+                case "java.lang.Float[]" : System.arraycopy(Bytes.toBytes(Converter.toPrimitive((Float[])val)), 0, bytes, s, arrayLength * 4); return;
+                case "java.util.List<java.lang.Float>" : System.arraycopy(Bytes.toBytes(Converter.toFloatArray((List<Float>)val)), 0, bytes, s, arrayLength * 4); return;
+                
+                case "double[]" : System.arraycopy(Bytes.toBytes((double[])val), 0, bytes, s, arrayLength * 8); return;
+                case "java.lang.Double[]" : System.arraycopy(Bytes.toBytes(Converter.toPrimitive((Double[])val)), 0, bytes, s, arrayLength * 8); return;
+                case "java.util.List<java.lang.Double>" : System.arraycopy(Bytes.toBytes(Converter.toDoubleArray((List<Double>)val)), 0, bytes, s, arrayLength * 8); return;
+                
+                default : throw new IllegalArgumentException("does not support return type of "+type+" " + method.getName() + "()");
             }
         });
     }
@@ -340,10 +304,10 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
     private void bindToClassOrder(Method method, FixedBinary da) {
         int dfOffset = da.offset();
         int arrayLength = da.arrayLength();
-        String type = method.getParameterTypes()[0].getName();
+        String type = method.getGenericParameterTypes()[0].getTypeName();
         
-        if (type.startsWith("[") && arrayLength < 1) {
-            throw new IllegalArgumentException("arrayLength must over then 1");
+        if ((type.indexOf("[]") != -1 || type.indexOf("java.util.List<") != -1) && arrayLength < 1) {
+            throw new IllegalArgumentException("arrayLength in @FixedBinary void " + method.getName() + "() must much more then 1");
         }
         
         toClassOrders.add((obj, bytes, offset) -> {
@@ -351,83 +315,41 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
             
             switch (type) {
                 // object
-                case "byte" : case "java.lang.Byte" :
-                    method.invoke(obj, bytes[s]);
-                return;
-                case "short" : case "java.lang.Short" :
-                    method.invoke(obj, Bytes.toShort(bytes, s));
-                return;
-                case "int" : case "java.lang.Integer" :
-                    method.invoke(obj, Bytes.toInt(bytes, s));
-                return;
-                case "long" : case "java.lang.Long" : 
-                    method.invoke(obj, Bytes.toLong(bytes, s));
-                return;
-                case "float" : case "java.lang.Float" : 
-                    method.invoke(obj, Bytes.toFloat(bytes, s));
-                return;
-                case "double" : case "java.lang.Double" : 
-                    method.invoke(obj, Bytes.toDouble(bytes, s));
-                return;
+                case "byte" : case "java.lang.Byte" : method.invoke(obj, bytes[s]); return;
+                case "short" : case "java.lang.Short" : method.invoke(obj, Bytes.toShort(bytes, s)); return;
+                case "int" : case "java.lang.Integer" : method.invoke(obj, Bytes.toInt(bytes, s)); return;
+                case "long" : case "java.lang.Long" : method.invoke(obj, Bytes.toLong(bytes, s)); return;
+                case "float" : case "java.lang.Float" : method.invoke(obj, Bytes.toFloat(bytes, s)); return;
+                case "double" : case "java.lang.Double" : method.invoke(obj, Bytes.toDouble(bytes, s)); return;
                 
                 // array
-                case "[B" : case "[Ljava.lang.Byte;" :
-                    method.invoke(obj, Arrays.copyOfRange(bytes, s, s + arrayLength));
-                return;
-                case "[S" : case "[Ljava.lang.Short;" :
-                    method.invoke(obj, Bytes.toShortArray(bytes, s, arrayLength));
-                return;
-                case "[I" : case "[Ljava.lang.Integer;" :
-                    method.invoke(obj, Bytes.toIntArray(bytes, s, arrayLength));
-                return;
-                case "[J" : case "[Ljava.lang.Long;" : 
-                    method.invoke(obj, Bytes.toLongArray(bytes, s, arrayLength));
-                return;
-                case "[F" : case "[Ljava.lang.Float;" : 
-                    method.invoke(obj, Bytes.toFloatArray(bytes, s, arrayLength));
-                return;
-                case "[D" : case "[Ljava.lang.Double;" : 
-                    method.invoke(obj, Bytes.toDoubleArray(bytes, s, arrayLength));
-                return;
+                case "byte[]" : method.invoke(obj, Arrays.copyOfRange(bytes, s, s + arrayLength)); return;
+                case "java.lang.Byte[]" : method.invoke(obj, (Object)Converter.toUnPrimitive(Arrays.copyOfRange(bytes, s, s + arrayLength))); return;
                 
-                case "java.util.List" : {
-                    Type[] types = method.getGenericParameterTypes();
-                    if (types.length == 1) {
-                        switch (types[0].getTypeName()) {
-                            case "java.util.List<java.lang.Short>" : 
-                                method.invoke(obj, Bytes.toShortList(bytes, s, arrayLength));
-                                return;
-                            case "java.util.List<java.lang.Integer>" : 
-                                method.invoke(obj, Bytes.toIntegerList(bytes, s, arrayLength));
-                                return;
-                            case "java.util.List<java.lang.Long>" : 
-                                method.invoke(obj, Bytes.toLongList(bytes, s, arrayLength));
-                                return;
-                            case "java.util.List<java.lang.Float>" : 
-                                method.invoke(obj, Bytes.toFloatList(bytes, s, arrayLength));
-                                return;
-                            case "java.util.List<java.lang.Double>" : 
-                                method.invoke(obj, Bytes.toDoubleList(bytes, s, arrayLength));
-                                return;
-                        }
-                    }
-                }
-                default : 
-                    throw new IllegalArgumentException("type ["+type+"] does not support");
+                case "short[]" : method.invoke(obj, Bytes.toShortArray(bytes, s, arrayLength)); return;
+                case "java.lang.Short[]" : method.invoke(obj, (Object)Converter.toUnPrimitive(Bytes.toShortArray(bytes, s, arrayLength))); return;
+                case "java.util.List<java.lang.Short>" : method.invoke(obj, Bytes.toShortList(bytes, s, arrayLength)); return;
+                
+                case "int[]" : method.invoke(obj, Bytes.toIntArray(bytes, s, arrayLength)); return;
+                case "java.lang.Integer[]" : method.invoke(obj, (Object)Converter.toUnPrimitive(Bytes.toIntArray(bytes, s, arrayLength))); return;
+                case "java.util.List<java.lang.Integer>" : method.invoke(obj, Bytes.toIntegerList(bytes, s, arrayLength)); return;
+                    
+                case "long[]" : method.invoke(obj, Bytes.toLongArray(bytes, s, arrayLength)); return;
+                case "java.lang.Long[]" : method.invoke(obj, (Object)Converter.toUnPrimitive(Bytes.toLongArray(bytes, s, arrayLength))); return;
+                case "java.util.List<java.lang.Long>" : method.invoke(obj, Bytes.toLongList(bytes, s, arrayLength)); return;
+                
+                case "float[]" : method.invoke(obj, Bytes.toFloatArray(bytes, s, arrayLength)); return;
+                case "java.lang.Float[]" : method.invoke(obj, (Object)Converter.toUnPrimitive(Bytes.toFloatArray(bytes, s, arrayLength))); return; 
+                case "java.util.List<java.lang.Float>" : method.invoke(obj, Bytes.toFloatList(bytes, s, arrayLength)); return;
+                
+                case "double[]" : method.invoke(obj, Bytes.toDoubleArray(bytes, s, arrayLength)); return;
+                case "java.lang.Double[]" : method.invoke(obj, (Object)Converter.toUnPrimitive(Bytes.toDoubleArray(bytes, s, arrayLength))); return;
+                case "java.util.List<java.lang.Double>" : method.invoke(obj, Bytes.toDoubleList(bytes, s, arrayLength)); return;
+                
+                default : throw new IllegalArgumentException("does not support parameter type of void " + method.getName() + "("+type+")");
             }
         });
     }
-    
-//    public static void main(String...strings) {
-//        List<String> list = null;
-//        Class clazz = list.getClass();
-//        System.out.println(clazz.getName());
-//        Collections.list
-//        System.out.println(clazz.getTypeName());
-//        
-//        
-//        
-//    }
     
     /**
      * to class by text data
