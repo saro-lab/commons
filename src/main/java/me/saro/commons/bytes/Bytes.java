@@ -1,9 +1,11 @@
 package me.saro.commons.bytes;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.Base64.Encoder;
+import java.util.List;
 import java.util.stream.IntStream;
 
 import lombok.SneakyThrows;
@@ -276,8 +278,23 @@ public class Bytes {
      */
     public static short[] toShortArray(byte[] val, int offset, int arrayLength) {
         short[] rv = new short[arrayLength];
-        for (int i = 0 ; i < rv.length ; i++) {
+        for (int i = offset ; i < arrayLength ; i++) {
             rv[i] = ByteBuffer.wrap(val, offset + (2 * i), 2).getShort();
+        }
+        return rv;
+    }
+    
+    /**
+     * bytes to short list
+     * @param val
+     * @param offset
+     * @param arrayLength
+     * @return
+     */
+    public static List<Short> toShortList(byte[] val, int offset, int arrayLength) {
+        List<Short> rv = new ArrayList<>();
+        for (int i = offset ; i < arrayLength ; i++) {
+            rv.add(ByteBuffer.wrap(val, offset + (2 * i), 2).getShort());
         }
         return rv;
     }
@@ -310,8 +327,23 @@ public class Bytes {
      */
     public static int[] toIntArray(byte[] val, int offset, int arrayLength) {
         int[] rv = new int[arrayLength];
-        for (int i = 0 ; i < rv.length ; i++) {
+        for (int i = offset ; i < arrayLength ; i++) {
             rv[i] = ByteBuffer.wrap(val, offset + (4 * i), 4).getInt();
+        }
+        return rv;
+    }
+    
+    /**
+     * bytes to integer list
+     * @param val
+     * @param offset
+     * @param arrayLength
+     * @return
+     */
+    public static List<Integer> toIntegerList(byte[] val, int offset, int arrayLength) {
+        List<Integer> rv = new ArrayList<>();
+        for (int i = offset ; i < arrayLength ; i++) {
+            rv.add(ByteBuffer.wrap(val, offset + (4 * i), 4).getInt());
         }
         return rv;
     }
@@ -344,8 +376,23 @@ public class Bytes {
      */
     public static long[] toLongArray(byte[] val, int offset, int arrayLength) {
         long[] rv = new long[arrayLength];
-        for (int i = 0 ; i < rv.length ; i++) {
+        for (int i = offset ; i < arrayLength ; i++) {
             rv[i] = ByteBuffer.wrap(val, offset + (8 * i), 8).getLong();
+        }
+        return rv;
+    }
+    
+    /**
+     * bytes to long list
+     * @param val
+     * @param offset
+     * @param arrayLength
+     * @return
+     */
+    public static List<Long> toLongList(byte[] val, int offset, int arrayLength) {
+        List<Long> rv = new ArrayList<>();
+        for (int i = offset ; i < arrayLength ; i++) {
+            rv.add(ByteBuffer.wrap(val, offset + (8 * i), 8).getLong());
         }
         return rv;
     }
@@ -378,8 +425,23 @@ public class Bytes {
      */
     public static float[] toFloatArray(byte[] val, int offset, int arrayLength) {
         float[] rv = new float[arrayLength];
-        for (int i = 0 ; i < rv.length ; i++) {
+        for (int i = offset ; i < arrayLength ; i++) {
             rv[i] = ByteBuffer.wrap(val, offset + (4 * i), 4).getFloat();
+        }
+        return rv;
+    }
+    
+    /**
+     * bytes to float list
+     * @param val
+     * @param offset
+     * @param arrayLength
+     * @return
+     */
+    public static List<Float> toFloatList(byte[] val, int offset, int arrayLength) {
+        List<Float> rv = new ArrayList<>();
+        for (int i = offset ; i < arrayLength ; i++) {
+            rv.add(ByteBuffer.wrap(val, offset + (4 * i), 4).getFloat());
         }
         return rv;
     }
@@ -412,8 +474,23 @@ public class Bytes {
      */
     public static double[] toDoubleArray(byte[] val, int offset, int arrayLength) {
         double[] rv = new double[arrayLength];
-        for (int i = 0 ; i < rv.length ; i++) {
+        for (int i = offset ; i < arrayLength ; i++) {
             rv[i] = ByteBuffer.wrap(val, offset + (8 * i), 8).getDouble();
+        }
+        return rv;
+    }
+    
+    /**
+     * bytes to double list
+     * @param val
+     * @param offset
+     * @param length
+     * @return
+     */
+    public static List<Double> toDoubleList(byte[] val, int offset, int arrayLength) {
+        List<Double> rv = new ArrayList<>();
+        for (int i = offset ; i < arrayLength ; i++) {
+            rv.add(ByteBuffer.wrap(val, offset + (8 * i), 8).getDouble());
         }
         return rv;
     }
