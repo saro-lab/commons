@@ -12,10 +12,9 @@ import me.saro.commons.bytes.Bytes;
 import me.saro.commons.bytes.FixedDataFormat;
 import me.saro.commons.crypt.Crypt;
 import me.saro.commons.excel.Excel;
-import me.saro.commons.excel.ExcelCell;
-import me.saro.commons.excel.ExcelRow;
 import me.saro.commons.ftp.FTP;
 import me.saro.commons.json.JsonReader;
+import me.saro.commons.shell.Shell;
 import me.saro.commons.ssh.SSHExecutor;
 import me.saro.commons.ssh.SSHShell;
 import me.saro.commons.web.BasicWeb;
@@ -34,11 +33,9 @@ public class ReadmeTest {
         outClassInfo(Files.class);
         outClassInfo(Maps.class);
         outClassInfo(Zips.class);
-        outClassInfo(Crypt.class);
-        outClassInfo(ByteData.class);
-        outClassInfo(Web.class);
         outClassInfo(Valids.class);
         outClassInfo(Naming.class);
+        outClassInfo(Shell.class);
         
         System.out.println("# INSTANCE");
         System.out.println();
@@ -46,13 +43,14 @@ public class ReadmeTest {
         outClassInfo(FixedDataFormat.class);
         outClassInfo(BasicWeb.class);
         outClassInfo(FTP.class);
+        outClassInfo(Crypt.class);
         outClassInfo(SSHShell.class);
         outClassInfo(SSHExecutor.class);
         outClassInfo(DateFormat.class);
         outClassInfo(Excel.class);
-        outClassInfo(ExcelRow.class);
-        outClassInfo(ExcelCell.class);
         outClassInfo(JsonReader.class);
+        outClassInfo(ByteData.class);
+        outClassInfo(Web.class);
         outClassInfo(NullOutputStream.class);
 
         System.out.println("# FUNCTION INTERFACE");
