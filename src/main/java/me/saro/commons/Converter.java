@@ -136,6 +136,71 @@ public class Converter {
         }
         return list;
     }
+    
+    /**
+     * toArray
+     * @param list
+     * @return
+     */
+    public static short[] toShortArray(List<Short> list) {
+        short[] rv = new short[list.size()];
+        for (int i = 0 ; i < rv.length ; i++) {
+            rv[i] = list.get(i);
+        }
+        return rv;
+    }
+    
+    /**
+     * toArray
+     * @param list
+     * @return
+     */
+    public static int[] toIntArray(List<Integer> list) {
+        int[] rv = new int[list.size()];
+        for (int i = 0 ; i < rv.length ; i++) {
+            rv[i] = list.get(i);
+        }
+        return rv;
+    }
+    
+    /**
+     * toArray
+     * @param list
+     * @return
+     */
+    public static long[] toLongArray(List<Long> list) {
+        long[] rv = new long[list.size()];
+        for (int i = 0 ; i < rv.length ; i++) {
+            rv[i] = list.get(i);
+        }
+        return rv;
+    }
+    
+    /**
+     * toArray
+     * @param list
+     * @return
+     */
+    public static float[] toFloatArray(List<Float> list) {
+        float[] rv = new float[list.size()];
+        for (int i = 0 ; i < rv.length ; i++) {
+            rv[i] = list.get(i);
+        }
+        return rv;
+    }
+    
+    /**
+     * toArray
+     * @param list
+     * @return
+     */
+    public static double[] toDoubleArray(List<Double> list) {
+        double[] rv = new double[list.size()];
+        for (int i = 0 ; i < rv.length ; i++) {
+            rv[i] = list.get(i);
+        }
+        return rv;
+    }
 
     /**
      * InputStream to ByteArrayOutputStream
