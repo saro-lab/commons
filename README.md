@@ -11,14 +11,14 @@
 <dependency>
   <groupId>me.saro</groupId>
   <artifactId>commons</artifactId>
-  <version>3.0.1</version>
+  <version>3.0.2</version>
 </dependency>
 ```
 
 ## gradle
 
 ```
-compile 'me.saro:commons:3.0.1'
+compile 'me.saro:commons:3.0.2'
 ```
 
 ## repository
@@ -47,19 +47,30 @@ Converter.splitCsvLine(String) : String[]
 Converter.toByteArrayOutputStream(InputStream, int) : ByteArrayOutputStream
 Converter.toBytes(InputStream, int) : byte[]
 Converter.toClassByJson(String, TypeReference<T>) : T
+Converter.toDoubleArray(List<Double>) : double[]
+Converter.toFloatArray(List<Float>) : float[]
 Converter.toHash(HashAlgorithm, String) : byte[]
 Converter.toHash(HashAlgorithm, String, String) : byte[]
 Converter.toHash(HashAlgorithm, byte[]) : byte[]
 Converter.toHashHex(HashAlgorithm, String) : String
 Converter.toHashHex(HashAlgorithm, String, String) : String
+Converter.toIntArray(List<Integer>) : int[]
 Converter.toJson(Object) : String
 Converter.toList(Enumeration<T>) : List<T>
 Converter.toList(Iterable<T>) : List<T>
+Converter.toLongArray(List<Long>) : long[]
 Converter.toMap(Object[]) : Map<K, V>
 Converter.toMapByClass(Object) : Map<String, T>
 Converter.toMapByJsonObject(String) : Map<String, Object>
 Converter.toMapListByClassList(Object) : List<Map<String, T>>
 Converter.toMapListByJsonArray(String) : List<Map<String, Object>>
+Converter.toPrimitive(Byte[]) : byte[]
+Converter.toPrimitive(Double[]) : double[]
+Converter.toPrimitive(Float[]) : float[]
+Converter.toPrimitive(Integer[]) : int[]
+Converter.toPrimitive(Long[]) : long[]
+Converter.toPrimitive(Short[]) : short[]
+Converter.toShortArray(List<Short>) : short[]
 Converter.toStream(Enumeration<T>) : Stream<T>
 Converter.toStream(Enumeration<T>, boolean) : Stream<T>
 Converter.toStream(Iterable<T>) : Stream<T>
@@ -72,6 +83,12 @@ Converter.toString(File, String) : String
 Converter.toString(InputStream, String) : String
 Converter.toString(URL, String) : String
 Converter.toStringNotClose(InputStream, String) : String
+Converter.toUnPrimitive(byte[]) : Byte[]
+Converter.toUnPrimitive(double[]) : Double[]
+Converter.toUnPrimitive(float[]) : Float[]
+Converter.toUnPrimitive(int[]) : Integer[]
+Converter.toUnPrimitive(long[]) : Long[]
+Converter.toUnPrimitive(short[]) : Short[]
 ```
 
 
@@ -85,22 +102,42 @@ Bytes.decodeBase64(String, String) : String
 Bytes.encodeBase64String(String, String) : String
 Bytes.encodeBase64String(byte[]) : String
 Bytes.toBytes(double) : byte[]
+Bytes.toBytes(double[]) : byte[]
+Bytes.toBytes(double[], int, int) : byte[]
 Bytes.toBytes(float) : byte[]
+Bytes.toBytes(float[]) : byte[]
+Bytes.toBytes(float[], int, int) : byte[]
 Bytes.toBytes(int) : byte[]
+Bytes.toBytes(int[]) : byte[]
+Bytes.toBytes(int[], int, int) : byte[]
 Bytes.toBytes(long) : byte[]
+Bytes.toBytes(long[]) : byte[]
+Bytes.toBytes(long[], int, int) : byte[]
 Bytes.toBytes(short) : byte[]
+Bytes.toBytes(short[]) : byte[]
+Bytes.toBytes(short[], int, int) : byte[]
 Bytes.toBytesByHex(String) : byte[]
 Bytes.toDouble(byte[]) : double
 Bytes.toDouble(byte[], int) : double
+Bytes.toDoubleArray(byte[], int, int) : double[]
+Bytes.toDoubleList(byte[], int, int) : List<Double>
 Bytes.toFloat(byte[]) : float
 Bytes.toFloat(byte[], int) : float
+Bytes.toFloatArray(byte[], int, int) : float[]
+Bytes.toFloatList(byte[], int, int) : List<Float>
 Bytes.toHex(byte[]) : String
 Bytes.toInt(byte[]) : int
 Bytes.toInt(byte[], int) : int
+Bytes.toIntArray(byte[], int, int) : int[]
+Bytes.toIntegerList(byte[], int, int) : List<Integer>
 Bytes.toLong(byte[]) : long
 Bytes.toLong(byte[], int) : long
+Bytes.toLongArray(byte[], int, int) : long[]
+Bytes.toLongList(byte[], int, int) : List<Long>
 Bytes.toShort(byte[]) : short
 Bytes.toShort(byte[], int) : short
+Bytes.toShortArray(byte[], int, int) : short[]
+Bytes.toShortList(byte[], int, int) : List<Short>
 ```
 
 
@@ -147,6 +184,7 @@ Files.lineReader(File, String, ThrowableFunction<Stream<String>, T>) : T
 Files.lineReader(String, String, ThrowableFunction<Stream<String>, T>) : T
 Files.listFilesStream(File) : Stream<File>
 Files.listFilesStream(String) : Stream<File>
+Files.move(File, File, boolean) : boolean
 Files.toBasicFileAttributes(File) : BasicFileAttributes
 Files.toFileExt(File) : String
 Files.toFileExt(String) : String
@@ -178,119 +216,6 @@ Zips.openStreamNotClose(InputStream, ThrowableTriConsumer<String, ZipEntry, Inpu
 ```
 
 
-## Crypt
-
-#### me.saro.commons.crypt.Crypt
-
-```
-Crypt.decrypt(String, byte[], byte[]) : Crypt
-Crypt.encrypt(String, byte[], byte[]) : Crypt
-to(File, File, boolean) 
-to(InputStream, OutputStream) 
-toBase64(byte[]) : String
-toBase64(byte[], int, int) : String
-toBase64ByBase64(String) : String
-toBase64ByHex(String) : String
-toBytes(byte[]) : byte[]
-toBytes(byte[], int, int) : byte[]
-toBytesByBase64(String) : byte[]
-toBytesByHex(String) : byte[]
-toHex(byte[]) : String
-toHex(byte[], int, int) : String
-toHexByBase64(String) : String
-toHexByHex(String) : String
-```
-
-
-## ByteData
-
-#### me.saro.commons.bytes.ByteData
-
-```
-ByteData.create() : ByteData
-ByteData.create(String) : ByteData
-ByteData.create(int, String) : ByteData
-bind(OutputStream) : ByteData
-bind(OutputStream, int) : ByteData
-fillSpace() : ByteData
-insert(String, int) : ByteData
-insert(byte[], int) : ByteData
-insert(byte[], int, int, int) : ByteData
-insertFill(byte, int, int) : ByteData
-insertFillSpace(int, int) : ByteData
-insertFixed(String, int, byte, int) : ByteData
-insertFixedAlignRight(String, int, byte, int) : ByteData
-moveWritePointer(int) : ByteData
-newByteData(int, int) : ByteData
-read(int) : byte[]
-readIgnore(int) : ByteData
-readIgnoreCurrentLine() : ByteData
-readIgnoreMatch(byte) : ByteData
-readText(int, boolean) : String
-readTextAlignRight(int, boolean) : String
-readTextInt(int, int) : int
-readTextLong(int, long) : long
-rectifyWritePointer() : ByteData
-size() : int
-toBytes() : byte[]
-toBytes(int, int) : byte[]
-toString() : String
-write(File) : ByteData
-write(File, String) : ByteData
-write(InputStream) : ByteData
-write(InputStream, int) : ByteData
-write(String) : ByteData
-write(byte[]) : ByteData
-write(byte[], int, int) : ByteData
-writeFill(byte, int) : ByteData
-writeFillSpace(int) : ByteData
-writeFixed(String, int, byte) : ByteData
-writeFixed(int, int, byte) : ByteData
-writeFixedAlignRight(String, int, byte) : ByteData
-writeFixedAlignRight(int, int, byte) : ByteData
-writeLine1() : ByteData
-writeLine2() : ByteData
-```
-
-
-## Web
-
-#### me.saro.commons.web.Web
-
-```
-Web.custom(String, String) : Web
-Web.delete(String) : Web
-Web.get(String) : Web
-Web.patch(String) : Web
-Web.post(String) : Web
-Web.put(String) : Web
-addUrlParameter(String, String) : Web
-getRequestCharset() : String
-getResponseCharset() : String
-readRawResultStream(ThrowableConsumer<InputStream>) : WebResult<String>
-saveFile(File, boolean) : WebResult<File>
-setConnectTimeout(int) : Web
-setContentType(String) : Web
-setContentTypeApplicationJson() : Web
-setHeader(String, String) : Web
-setIgnoreCertificate(boolean) : Web
-setReadTimeout(int) : Web
-setRequestCharset(String) : Web
-setResponseCharset(String) : Web
-toCustom(ThrowableFunction<InputStream, R>) : WebResult<R>
-toCustom(WebResult<R>, ThrowableFunction<InputStream, R>) : WebResult<R>
-toJsonReader() : WebResult<JsonReader>
-toJsonTypeReference(TypeReference<T>) : WebResult<T>
-toMapByJsonObject() : WebResult<Map<String, Object>>
-toMapListByJsonArray() : WebResult<List<Map<String, Object>>>
-toPlainText() : WebResult<String>
-writeBody(String) : Web
-writeBody(byte[]) : Web
-writeBodyParameter(String, String) : Web
-writeJsonByClass(Object) : Web
-```
-
-
 ## Valids
 
 #### me.saro.commons.Valids
@@ -316,6 +241,15 @@ Naming.toWordsByCamelCase(String) : List<String>
 Naming.toWordsByDashes(String) : List<String>
 Naming.toWordsByPascalCase(String) : List<String>
 Naming.toWordsByUnderscores(String) : List<String>
+```
+
+
+## Shell
+
+#### me.saro.commons.shell.Shell
+
+```
+Shell.execute(String[]) : ShellResult
 ```
 
 # INSTANCE
@@ -386,6 +320,30 @@ recv(List<String>, File)
 recv(String, File) : boolean
 send(File) : boolean
 send(String, File) : boolean
+```
+
+
+## Crypt
+
+#### me.saro.commons.crypt.Crypt
+
+```
+Crypt.decrypt(String, byte[], byte[]) : Crypt
+Crypt.encrypt(String, byte[], byte[]) : Crypt
+to(File, File, boolean) 
+to(InputStream, OutputStream) 
+toBase64(byte[]) : String
+toBase64(byte[], int, int) : String
+toBase64ByBase64(String) : String
+toBase64ByHex(String) : String
+toBytes(byte[]) : byte[]
+toBytes(byte[], int, int) : byte[]
+toBytesByBase64(String) : byte[]
+toBytesByHex(String) : byte[]
+toHex(byte[]) : String
+toHex(byte[], int, int) : String
+toHexByBase64(String) : String
+toHexByHex(String) : String
 ```
 
 
@@ -493,55 +451,6 @@ writeVerticalList(String, Collection<Object>) : Excel
 ```
 
 
-## ExcelRow
-
-#### me.saro.commons.excel.ExcelRow
-
-```
-ExcelRow.toColumnNameByRowIndex(int) : String
-ExcelRow.toRowIndex(String) : int
-getCell() : ExcelCell
-getCell(int) : ExcelCell
-getNextRow() : ExcelRow
-getPoiRow(boolean) : Row
-isEmpty() : boolean
-moveNextCell() : ExcelRow
-```
-
-
-## ExcelCell
-
-#### me.saro.commons.excel.ExcelCell
-
-```
-ExcelCell.toCellIndex(String) : int
-ExcelCell.toColumnName(int, int) : String
-ExcelCell.toColumnNameByCellIndex(int) : String
-ExcelCell.toDate(Cell, Date) : Date
-ExcelCell.toDouble(Cell) : double
-ExcelCell.toDouble(Cell, double) : double
-ExcelCell.toRowCellIndex(String) : int[]
-ExcelCell.toString(Cell, String) : String
-getDateValue(Date) : Date
-getDoubleValue() : double
-getDoubleValue(double) : double
-getFloatValue() : float
-getFloatValue(float) : float
-getIntValue() : int
-getIntValue(int) : int
-getIntegerStringValue(long) : String
-getLongValue() : long
-getLongValue(long) : long
-getNextCell() : ExcelCell
-getNextRowCell() : ExcelCell
-getPoiCell(boolean) : Cell
-getStringValue() : String
-getStringValue(String) : String
-isEmpty() : boolean
-set(Object) : ExcelCell
-```
-
-
 ## JsonReader
 
 #### me.saro.commons.json.JsonReader
@@ -558,6 +467,95 @@ isObject() : boolean
 length() : int
 toList() : List<JsonReader>
 toString() : String
+```
+
+
+## ByteData
+
+#### me.saro.commons.bytes.ByteData
+
+```
+ByteData.create() : ByteData
+ByteData.create(String) : ByteData
+ByteData.create(int, String) : ByteData
+bind(OutputStream) : ByteData
+bind(OutputStream, int) : ByteData
+fillSpace() : ByteData
+insert(String, int) : ByteData
+insert(byte[], int) : ByteData
+insert(byte[], int, int, int) : ByteData
+insertFill(byte, int, int) : ByteData
+insertFillSpace(int, int) : ByteData
+insertFixed(String, int, byte, int) : ByteData
+insertFixedAlignRight(String, int, byte, int) : ByteData
+moveWritePointer(int) : ByteData
+newByteData(int, int) : ByteData
+read(int) : byte[]
+readIgnore(int) : ByteData
+readIgnoreCurrentLine() : ByteData
+readIgnoreMatch(byte) : ByteData
+readText(int, boolean) : String
+readTextAlignRight(int, boolean) : String
+readTextInt(int, int) : int
+readTextLong(int, long) : long
+rectifyWritePointer() : ByteData
+size() : int
+toBytes() : byte[]
+toBytes(int, int) : byte[]
+toString() : String
+write(File) : ByteData
+write(File, String) : ByteData
+write(InputStream) : ByteData
+write(InputStream, int) : ByteData
+write(String) : ByteData
+write(byte[]) : ByteData
+write(byte[], int, int) : ByteData
+writeFill(byte, int) : ByteData
+writeFillSpace(int) : ByteData
+writeFixed(String, int, byte) : ByteData
+writeFixed(int, int, byte) : ByteData
+writeFixedAlignRight(String, int, byte) : ByteData
+writeFixedAlignRight(int, int, byte) : ByteData
+writeLine1() : ByteData
+writeLine2() : ByteData
+```
+
+
+## Web
+
+#### me.saro.commons.web.Web
+
+```
+Web.custom(String, String) : Web
+Web.delete(String) : Web
+Web.get(String) : Web
+Web.patch(String) : Web
+Web.post(String) : Web
+Web.put(String) : Web
+addUrlParameter(String, String) : Web
+getRequestCharset() : String
+getResponseCharset() : String
+readRawResultStream(ThrowableConsumer<InputStream>) : WebResult<String>
+saveFile(File, boolean) : WebResult<File>
+setConnectTimeout(int) : Web
+setContentType(String) : Web
+setContentTypeApplicationJson() : Web
+setHeader(String, String) : Web
+setIgnoreCertificate(boolean) : Web
+setReadTimeout(int) : Web
+setRequestCharset(String) : Web
+setResponseCharset(String) : Web
+toCustom(ThrowableFunction<InputStream, R>) : WebResult<R>
+toCustom(WebResult<R>, ThrowableFunction<InputStream, R>) : WebResult<R>
+toJsonReader() : WebResult<JsonReader>
+toJsonTypeReference(TypeReference<T>) : WebResult<T>
+toMapByJsonObject() : WebResult<Map<String, Object>>
+toMapListByJsonArray() : WebResult<List<Map<String, Object>>>
+toPlainText() : WebResult<String>
+writeBody(String) : Web
+writeBody(byte[]) : Web
+writeBodyParameter(String, String) : Web
+writeJsonByClass(Object) : Web
 ```
 
 
@@ -581,5 +579,4 @@ ThrowableTriConsumer<T, U, V>
 ThrowableFunction<T, R>
 ThrowableBiFunction<T, U, R>
 ThrowableTriFunction<T, U, V, R>
-```
 ```
