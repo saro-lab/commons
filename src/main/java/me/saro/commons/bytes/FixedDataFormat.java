@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,6 +13,8 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import me.saro.commons.Converter;
+import me.saro.commons.Utils;
 import me.saro.commons.bytes.annotations.FixedBinary;
 import me.saro.commons.bytes.annotations.FixedData;
 import me.saro.commons.bytes.annotations.FixedText;
@@ -170,6 +173,7 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
      * @param field
      * @param da
      */
+    @SuppressWarnings("unchecked")
     private void bindToBytesOrder(Method method, FixedBinary da) {
         int dfOffset = da.offset();
         int arrayLength = da.arrayLength();
@@ -179,15 +183,59 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
             
             int s = offset + dfOffset;
             Object val = method.invoke(clazz);
+            String retype = null;
             
             if (val == null) {
                 return;
             }
             
-            switch (type) {
+            if (type.equals("java.util.List")) {
+                switch (method.getGenericReturnType().getTypeName()) {
+                    case "java.util.List<java.lang.Short>" : 
+                        val = Converter.toShortArray((List<Short>)val);
+                        retype = "[S";
+                        break;
+                    case "java.util.List<java.lang.Integer>" : 
+                        val = Converter.toIntArray((List<Integer>)val);
+                        retype = "[I";
+                        break;
+                    case "java.util.List<java.lang.Long>" : 
+                        val = Converter.toLongArray((List<Long>)val);
+                        retype = "[J";
+                        break;
+                    case "java.util.List<java.lang.Float>" : 
+                        val = Converter.toFloatArray((List<Float>)val);
+                        retype = "[F";
+                        break;
+                    case "java.util.List<java.lang.Double>" : 
+                        val = Converter.toDoubleArray((List<Double>)val);
+                        retype = "[D";
+                        break;
+                }
+            }
+            
+            switch (Utils.nvl(retype, type)) {
+                // array
                 case "[B" : case "[Ljava.lang.Byte;" :
                     System.arraycopy(val, 0, bytes, s, arrayLength);
+                return;  
+                case "[S" : case "[Ljava.lang.Short;" :
+                    System.arraycopy(Bytes.toBytes((short[])val), 0, bytes, s, arrayLength * 2);
                 return;
+                case "[I" : case "[Ljava.lang.Integer;" :
+                    System.arraycopy(Bytes.toBytes((int[])val), 0, bytes, s, arrayLength * 4);
+                return;
+                case "[J" : case "[Ljava.lang.Long;" : 
+                    System.arraycopy(Bytes.toBytes((long[])val), 0, bytes, s, arrayLength * 8);
+                return;
+                case "[F" : case "[Ljava.lang.Float;" : 
+                    System.arraycopy(Bytes.toBytes((float[])val), 0, bytes, s, arrayLength * 4);
+                return;
+                case "[D" : case "[Ljava.lang.Double;" : 
+                    System.arraycopy(Bytes.toBytes((double[])val), 0, bytes, s, arrayLength * 8);
+                return;
+                
+                // object
                 case "byte" : case "java.lang.Byte" :
                     bytes[s] = (byte)val;
                 return;
@@ -302,9 +350,7 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
             int s = offset + dfOffset;
             
             switch (type) {
-                case "[B" : case "[Ljava.lang.Byte;" :
-                    method.invoke(obj, Arrays.copyOfRange(bytes, s, s + arrayLength));
-                return;
+                // object
                 case "byte" : case "java.lang.Byte" :
                     method.invoke(obj, bytes[s]);
                 return;
@@ -323,11 +369,65 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
                 case "double" : case "java.lang.Double" : 
                     method.invoke(obj, Bytes.toDouble(bytes, s));
                 return;
+                
+                // array
+                case "[B" : case "[Ljava.lang.Byte;" :
+                    method.invoke(obj, Arrays.copyOfRange(bytes, s, s + arrayLength));
+                return;
+                case "[S" : case "[Ljava.lang.Short;" :
+                    method.invoke(obj, Bytes.toShortArray(bytes, s, arrayLength));
+                return;
+                case "[I" : case "[Ljava.lang.Integer;" :
+                    method.invoke(obj, Bytes.toIntArray(bytes, s, arrayLength));
+                return;
+                case "[J" : case "[Ljava.lang.Long;" : 
+                    method.invoke(obj, Bytes.toLongArray(bytes, s, arrayLength));
+                return;
+                case "[F" : case "[Ljava.lang.Float;" : 
+                    method.invoke(obj, Bytes.toFloatArray(bytes, s, arrayLength));
+                return;
+                case "[D" : case "[Ljava.lang.Double;" : 
+                    method.invoke(obj, Bytes.toDoubleArray(bytes, s, arrayLength));
+                return;
+                
+                case "java.util.List" : {
+                    Type[] types = method.getGenericParameterTypes();
+                    if (types.length == 1) {
+                        switch (types[0].getTypeName()) {
+                            case "java.util.List<java.lang.Short>" : 
+                                method.invoke(obj, Bytes.toShortList(bytes, s, arrayLength));
+                                return;
+                            case "java.util.List<java.lang.Integer>" : 
+                                method.invoke(obj, Bytes.toIntegerList(bytes, s, arrayLength));
+                                return;
+                            case "java.util.List<java.lang.Long>" : 
+                                method.invoke(obj, Bytes.toLongList(bytes, s, arrayLength));
+                                return;
+                            case "java.util.List<java.lang.Float>" : 
+                                method.invoke(obj, Bytes.toFloatList(bytes, s, arrayLength));
+                                return;
+                            case "java.util.List<java.lang.Double>" : 
+                                method.invoke(obj, Bytes.toDoubleList(bytes, s, arrayLength));
+                                return;
+                        }
+                    }
+                }
                 default : 
                     throw new IllegalArgumentException("type ["+type+"] does not support");
             }
         });
     }
+    
+//    public static void main(String...strings) {
+//        List<String> list = null;
+//        Class clazz = list.getClass();
+//        System.out.println(clazz.getName());
+//        Collections.list
+//        System.out.println(clazz.getTypeName());
+//        
+//        
+//        
+//    }
     
     /**
      * to class by text data
@@ -383,6 +483,8 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
             } else {
                 try {
                     switch (type) {
+                        
+                    
                         case "byte" : case "java.lang.Byte" :
                             method.invoke(obj, (byte)Integer.parseInt(val, radix));
                         return;
