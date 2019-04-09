@@ -76,23 +76,28 @@ public class FixedDataTest {
         assertEquals(Bytes.toHex(bytes), "596f6e672053656f202020202020205041524b202020202020202020202000000001");
         
         assertEquals(ms, format.toClass(bytes, 0));
+        
+        System.out.println(ms);
+        System.out.println(format.toClass(bytes, 0));
     }
     
     @Test
     public void array() {
         FixedDataFormat<ArrayStruct> format = FixedDataFormat.create(ArrayStruct.class, ArrayStruct::new);
-        ArrayStruct ms = new ArrayStruct(1, new int[] {2,3,4,5}, Arrays.asList(1L, -2L));
-        //ArrayStruct ms = new ArrayStruct(1, new int[] {2,3,214,335});
+        ArrayStruct ms = new ArrayStruct(1, new int[] {2,3,4,5}, Arrays.asList(1L, -2L), new Short[] {21, 72});
         
         byte[] bytes = format.toBytes(ms);
         
-        assertEquals(bytes.length, 36);
+        assertEquals(bytes.length, 40);
         
         System.out.println(Bytes.toHex(bytes));
         
-        assertEquals(Bytes.toHex(bytes), "00000001000000020000000300000004000000050000000000000001fffffffffffffffe");
+        assertEquals(Bytes.toHex(bytes), "00000001000000020000000300000004000000050000000000000001fffffffffffffffe00150048");
         
         assertEquals(ms, format.toClass(bytes, 0));
+        
+        System.out.println(ms);
+        System.out.println(format.toClass(bytes, 0));
     }
     
     @Data
@@ -171,16 +176,21 @@ public class FixedDataTest {
     }
     
     @Data
-    @FixedData(size=36)
+    @FixedData(size=40)
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ArrayStruct {
         
         @FixedBinary(offset=0)
         int member1;
+        
         @FixedBinary(offset=4, arrayLength=4)
         int[] member2;
+        
         @FixedBinary(offset=20, arrayLength=2)
         List<Long> member3;
+        
+        @FixedBinary(offset=36, arrayLength=2)
+        Short[] member4;
     }
 }
