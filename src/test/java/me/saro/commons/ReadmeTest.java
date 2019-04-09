@@ -41,7 +41,6 @@ public class ReadmeTest {
         System.out.println();
 
         outClassInfo(FixedDataFormat.class);
-        outClassInfo(BasicWeb.class);
         outClassInfo(FTP.class);
         outClassInfo(Crypt.class);
         outClassInfo(SSHShell.class);
