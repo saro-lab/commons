@@ -273,26 +273,6 @@ toClassWithCheckSize(byte[]) : T
 ```
 
 
-## BasicWeb
-
-#### me.saro.commons.web.BasicWeb
-
-```
-addUrlParameter(String, String) : Web
-getRequestCharset() : String
-getResponseCharset() : String
-setConnectTimeout(int) : Web
-setHeader(String, String) : Web
-setIgnoreCertificate(boolean) : Web
-setReadTimeout(int) : Web
-setRequestCharset(String) : Web
-setResponseCharset(String) : Web
-toCustom(WebResult<R>, ThrowableFunction<InputStream, R>) : WebResult<R>
-writeBody(byte[]) : Web
-writeBodyParameter(String, String) : Web
-```
-
-
 ## FTP
 
 #### me.saro.commons.ftp.FTP
