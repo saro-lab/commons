@@ -201,6 +201,84 @@ public class Converter {
         }
         return rv;
     }
+    
+    /**
+     * toPrimitive
+     * @param array
+     * @return
+     */
+    public static byte[] toPrimitive(Byte[] array) {
+        byte[] rv = new byte[array.length];
+        for (int i = 0 ; i < rv.length ; i++) {
+            rv[i] = array[i];
+        }
+        return rv;
+    }
+    
+    /**
+     * toPrimitive
+     * @param array
+     * @return
+     */
+    public static short[] toPrimitive(Short[] array) {
+        short[] rv = new short[array.length];
+        for (int i = 0 ; i < rv.length ; i++) {
+            rv[i] = array[i];
+        }
+        return rv;
+    }
+    
+    /**
+     * toPrimitive
+     * @param array
+     * @return
+     */
+    public static int[] toPrimitive(Integer[] array) {
+        int[] rv = new int[array.length];
+        for (int i = 0 ; i < rv.length ; i++) {
+            rv[i] = array[i];
+        }
+        return rv;
+    }
+    
+    /**
+     * toPrimitive
+     * @param array
+     * @return
+     */
+    public static long[] toPrimitive(Long[] array) {
+        long[] rv = new long[array.length];
+        for (int i = 0 ; i < rv.length ; i++) {
+            rv[i] = array[i];
+        }
+        return rv;
+    }
+    
+    /**
+     * toPrimitive
+     * @param array
+     * @return
+     */
+    public static float[] toPrimitive(Float[] array) {
+        float[] rv = new float[array.length];
+        for (int i = 0 ; i < rv.length ; i++) {
+            rv[i] = array[i];
+        }
+        return rv;
+    }
+
+    /**
+     * toPrimitive
+     * @param array
+     * @return
+     */
+    public static double[] toPrimitive(Double[] array) {
+        double[] rv = new double[array.length];
+        for (int i = 0 ; i < rv.length ; i++) {
+            rv[i] = array[i];
+        }
+        return rv;
+    }
 
     /**
      * InputStream to ByteArrayOutputStream
