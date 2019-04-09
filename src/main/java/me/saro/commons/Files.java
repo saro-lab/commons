@@ -110,6 +110,25 @@ public class Files {
     }
     
     /**
+     * move the file
+     * @param src
+     * @param dest
+     * @param overwrite
+     * @return success
+     * @throws IOException
+     */
+    public static boolean move(File src, File dest, boolean overwrite) throws IOException {
+        if (dest.exists()) {
+            if (overwrite) {
+                dest.delete();
+            } else {
+                throw new IOException("create file error : already exists file : " + dest.getAbsolutePath());
+            }
+        }
+        return src.renameTo(dest);
+    }
+    
+    /**
      * to File ext (only lowercase)
      * @param filename
      * @return ex) "gif", "png", "jpg", "zip", "exe", ""
