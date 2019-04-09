@@ -102,12 +102,60 @@ public class Bytes {
     }
     
     /**
+     * short[] to bytes
+     * @param val
+     * @return
+     */
+    public static byte[] toBytes(short[] val) {
+        return toBytes(val, 0, val.length);
+    }
+    
+    /**
+     * short[] to bytes
+     * @param val
+     * @param offset
+     * @param length
+     * @return
+     */
+    public static byte[] toBytes(short[] val, int offset, int length) {
+        ByteBuffer bb = ByteBuffer.allocate(2 * (length - offset));
+        for (int i = offset ; i < (offset + length) ; i++) {
+            bb.putShort(val[i]);
+        }
+        return bb.array();
+    }
+    
+    /**
      * int to bytes
      * @param val
      * @return
      */
     public static byte[] toBytes(int val) {
         return ByteBuffer.allocate(4).putInt(val).array();
+    }
+    
+    /**
+     * int[] to bytes
+     * @param val
+     * @return
+     */
+    public static byte[] toBytes(int[] val) {
+        return toBytes(val, 0, val.length);
+    }
+    
+    /**
+     * int[] to bytes
+     * @param val
+     * @param offset
+     * @param length
+     * @return
+     */
+    public static byte[] toBytes(int[] val, int offset, int length) {
+        ByteBuffer bb = ByteBuffer.allocate(4 * (length - offset));
+        for (int i = offset ; i < (offset + length) ; i++) {
+            bb.putInt(val[i]);
+        }
+        return bb.array();
     }
     
     /**
@@ -120,12 +168,60 @@ public class Bytes {
     }
     
     /**
+     * long[] to bytes
+     * @param val
+     * @return
+     */
+    public static byte[] toBytes(long[] val) {
+        return toBytes(val, 0, val.length);
+    }
+    
+    /**
+     * long[] to bytes
+     * @param val
+     * @param offset
+     * @param length
+     * @return
+     */
+    public static byte[] toBytes(long[] val, int offset, int length) {
+        ByteBuffer bb = ByteBuffer.allocate(8 * (length - offset));
+        for (int i = offset ; i < (offset + length) ; i++) {
+            bb.putLong(val[i]);
+        }
+        return bb.array();
+    }
+    
+    /**
      * float to bytes
      * @param val
      * @return
      */
     public static byte[] toBytes(float val) {
         return ByteBuffer.allocate(4).putFloat(val).array();
+    }
+    
+    /**
+     * float[] to bytes
+     * @param val
+     * @return
+     */
+    public static byte[] toBytes(float[] val) {
+        return toBytes(val, 0, val.length);
+    }
+    
+    /**
+     * float[] to bytes
+     * @param val
+     * @param offset
+     * @param length
+     * @return
+     */
+    public static byte[] toBytes(float[] val, int offset, int length) {
+        ByteBuffer bb = ByteBuffer.allocate(4 * (length - offset));
+        for (int i = offset ; i < (offset + length) ; i++) {
+            bb.putFloat(val[i]);
+        }
+        return bb.array();
     }
     
     /**
@@ -138,6 +234,30 @@ public class Bytes {
     }
     
     /**
+     * double[] to bytes
+     * @param val
+     * @return
+     */
+    public static byte[] toBytes(double[] val) {
+        return toBytes(val, 0, val.length);
+    }
+    
+    /**
+     * double[] to bytes
+     * @param val
+     * @param offset
+     * @param length
+     * @return
+     */
+    public static byte[] toBytes(double[] val, int offset, int length) {
+        ByteBuffer bb = ByteBuffer.allocate(8 * (length - offset));
+        for (int i = offset ; i < (offset + length) ; i++) {
+            bb.putDouble(val[i]);
+        }
+        return bb.array();
+    }
+    
+    /**
      * bytes to short
      * @param val
      * @param offset
@@ -145,6 +265,21 @@ public class Bytes {
      */
     public static short toShort(byte[] val, int offset) {
         return ByteBuffer.wrap(val, offset, 2).getShort();
+    }
+    
+    /**
+     * bytes to short[]
+     * @param val
+     * @param offset
+     * @param arrayLength
+     * @return
+     */
+    public static short[] toShortArray(byte[] val, int offset, int arrayLength) {
+        short[] rv = new short[arrayLength];
+        for (int i = 0 ; i < rv.length ; i++) {
+            rv[i] = ByteBuffer.wrap(val, offset + (2 * i), 2).getShort();
+        }
+        return rv;
     }
     
     /**
@@ -167,6 +302,21 @@ public class Bytes {
     }
     
     /**
+     * bytes to int[]
+     * @param val
+     * @param offset
+     * @param arrayLength
+     * @return
+     */
+    public static int[] toIntArray(byte[] val, int offset, int arrayLength) {
+        int[] rv = new int[arrayLength];
+        for (int i = 0 ; i < rv.length ; i++) {
+            rv[i] = ByteBuffer.wrap(val, offset + (4 * i), 4).getInt();
+        }
+        return rv;
+    }
+    
+    /**
      * bytes to int
      * @param val
      * @return
@@ -183,6 +333,21 @@ public class Bytes {
      */
     public static long toLong(byte[] val, int offset) {
         return ByteBuffer.wrap(val, offset, 8).getLong();
+    }
+    
+    /**
+     * bytes to long[]
+     * @param val
+     * @param offset
+     * @param arrayLength
+     * @return
+     */
+    public static long[] toLongArray(byte[] val, int offset, int arrayLength) {
+        long[] rv = new long[arrayLength];
+        for (int i = 0 ; i < rv.length ; i++) {
+            rv[i] = ByteBuffer.wrap(val, offset + (8 * i), 8).getLong();
+        }
+        return rv;
     }
     
     /**
@@ -205,6 +370,21 @@ public class Bytes {
     }
     
     /**
+     * bytes to float[]
+     * @param val
+     * @param offset
+     * @param arrayLength
+     * @return
+     */
+    public static float[] toFloatArray(byte[] val, int offset, int arrayLength) {
+        float[] rv = new float[arrayLength];
+        for (int i = 0 ; i < rv.length ; i++) {
+            rv[i] = ByteBuffer.wrap(val, offset + (4 * i), 4).getFloat();
+        }
+        return rv;
+    }
+    
+    /**
      * bytes to float
      * @param val
      * @return
@@ -221,6 +401,21 @@ public class Bytes {
      */
     public static double toDouble(byte[] val, int offset) {
         return ByteBuffer.wrap(val, offset, 8).getDouble();
+    }
+    
+    /**
+     * bytes to double[]
+     * @param val
+     * @param offset
+     * @param length
+     * @return
+     */
+    public static double[] toDoubleArray(byte[] val, int offset, int arrayLength) {
+        double[] rv = new double[arrayLength];
+        for (int i = 0 ; i < rv.length ; i++) {
+            rv[i] = ByteBuffer.wrap(val, offset + (8 * i), 8).getDouble();
+        }
+        return rv;
     }
     
     /**
