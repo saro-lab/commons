@@ -276,10 +276,10 @@ public class Bytes {
      * @param arrayLength
      * @return
      */
-    public static short[] toShortArray(byte[] val, int offset, int arrayLength) {
+    public static short[] toShortArray(byte[] bytes, int bytesOffset, int arrayLength) {
         short[] rv = new short[arrayLength];
-        for (int i = offset ; i < arrayLength ; i++) {
-            rv[i] = ByteBuffer.wrap(val, offset + (2 * i), 2).getShort();
+        for (int i = 0 ; i < arrayLength ; i++) {
+            rv[i] = ByteBuffer.wrap(bytes, bytesOffset + (2 * i), 2).getShort();
         }
         return rv;
     }
@@ -291,10 +291,10 @@ public class Bytes {
      * @param arrayLength
      * @return
      */
-    public static List<Short> toShortList(byte[] val, int offset, int arrayLength) {
+    public static List<Short> toShortList(byte[] bytes, int bytesOffset, int arrayLength) {
         List<Short> rv = new ArrayList<>();
-        for (int i = offset ; i < arrayLength ; i++) {
-            rv.add(ByteBuffer.wrap(val, offset + (2 * i), 2).getShort());
+        for (int i = 0 ; i < arrayLength ; i++) {
+            rv.add(ByteBuffer.wrap(bytes, bytesOffset + (2 * i), 2).getShort());
         }
         return rv;
     }
@@ -325,10 +325,10 @@ public class Bytes {
      * @param arrayLength
      * @return
      */
-    public static int[] toIntArray(byte[] val, int offset, int arrayLength) {
+    public static int[] toIntArray(byte[] bytes, int bytesOffset, int arrayLength) {
         int[] rv = new int[arrayLength];
-        for (int i = offset ; i < arrayLength ; i++) {
-            rv[i] = ByteBuffer.wrap(val, offset + (4 * i), 4).getInt();
+        for (int i = 0 ; i < arrayLength ; i++) {
+            rv[i] = ByteBuffer.wrap(bytes, bytesOffset + (4 * i), 4).getInt();
         }
         return rv;
     }
@@ -340,10 +340,10 @@ public class Bytes {
      * @param arrayLength
      * @return
      */
-    public static List<Integer> toIntegerList(byte[] val, int offset, int arrayLength) {
+    public static List<Integer> toIntegerList(byte[] bytes, int bytesOffset, int arrayLength) {
         List<Integer> rv = new ArrayList<>();
-        for (int i = offset ; i < arrayLength ; i++) {
-            rv.add(ByteBuffer.wrap(val, offset + (4 * i), 4).getInt());
+        for (int i = 0 ; i < arrayLength ; i++) {
+            rv.add(ByteBuffer.wrap(bytes, bytesOffset + (4 * i), 4).getInt());
         }
         return rv;
     }
@@ -374,10 +374,10 @@ public class Bytes {
      * @param arrayLength
      * @return
      */
-    public static long[] toLongArray(byte[] val, int offset, int arrayLength) {
+    public static long[] toLongArray(byte[] bytes, int bytesOffset, int arrayLength) {
         long[] rv = new long[arrayLength];
-        for (int i = offset ; i < arrayLength ; i++) {
-            rv[i] = ByteBuffer.wrap(val, offset + (8 * i), 8).getLong();
+        for (int i = 0 ; i < arrayLength ; i++) {
+            rv[i] = ByteBuffer.wrap(bytes, bytesOffset + (8 * i), 8).getLong();
         }
         return rv;
     }
@@ -389,10 +389,10 @@ public class Bytes {
      * @param arrayLength
      * @return
      */
-    public static List<Long> toLongList(byte[] val, int offset, int arrayLength) {
+    public static List<Long> toLongList(byte[] bytes, int bytesOffset, int arrayLength) {
         List<Long> rv = new ArrayList<>();
-        for (int i = offset ; i < arrayLength ; i++) {
-            rv.add(ByteBuffer.wrap(val, offset + (8 * i), 8).getLong());
+        for (int i = 0 ; i < arrayLength ; i++) {
+            rv.add(ByteBuffer.wrap(bytes, bytesOffset + (8 * i), 8).getLong());
         }
         return rv;
     }
@@ -423,10 +423,10 @@ public class Bytes {
      * @param arrayLength
      * @return
      */
-    public static float[] toFloatArray(byte[] val, int offset, int arrayLength) {
+    public static float[] toFloatArray(byte[] bytes, int bytesOffset, int arrayLength) {
         float[] rv = new float[arrayLength];
-        for (int i = offset ; i < arrayLength ; i++) {
-            rv[i] = ByteBuffer.wrap(val, offset + (4 * i), 4).getFloat();
+        for (int i = 0 ; i < arrayLength ; i++) {
+            rv[i] = ByteBuffer.wrap(bytes, bytesOffset + (4 * i), 4).getFloat();
         }
         return rv;
     }
@@ -438,10 +438,10 @@ public class Bytes {
      * @param arrayLength
      * @return
      */
-    public static List<Float> toFloatList(byte[] val, int offset, int arrayLength) {
+    public static List<Float> toFloatList(byte[] bytes, int bytesOffset, int arrayLength) {
         List<Float> rv = new ArrayList<>();
-        for (int i = offset ; i < arrayLength ; i++) {
-            rv.add(ByteBuffer.wrap(val, offset + (4 * i), 4).getFloat());
+        for (int i = 0 ; i < arrayLength ; i++) {
+            rv.add(ByteBuffer.wrap(bytes, bytesOffset + (4 * i), 4).getFloat());
         }
         return rv;
     }
@@ -472,10 +472,10 @@ public class Bytes {
      * @param length
      * @return
      */
-    public static double[] toDoubleArray(byte[] val, int offset, int arrayLength) {
+    public static double[] toDoubleArray(byte[] bytes, int bytesOffset, int arrayLength) {
         double[] rv = new double[arrayLength];
-        for (int i = offset ; i < arrayLength ; i++) {
-            rv[i] = ByteBuffer.wrap(val, offset + (8 * i), 8).getDouble();
+        for (int i = 0 ; i < arrayLength ; i++) {
+            rv[i] = ByteBuffer.wrap(bytes, bytesOffset + (8 * i), 8).getDouble();
         }
         return rv;
     }
@@ -487,10 +487,10 @@ public class Bytes {
      * @param length
      * @return
      */
-    public static List<Double> toDoubleList(byte[] val, int offset, int arrayLength) {
+    public static List<Double> toDoubleList(byte[] bytes, int bytesOffset, int arrayLength) {
         List<Double> rv = new ArrayList<>();
-        for (int i = offset ; i < arrayLength ; i++) {
-            rv.add(ByteBuffer.wrap(val, offset + (8 * i), 8).getDouble());
+        for (int i = 0 ; i < arrayLength ; i++) {
+            rv.add(ByteBuffer.wrap(bytes, bytesOffset + (8 * i), 8).getDouble());
         }
         return rv;
     }
