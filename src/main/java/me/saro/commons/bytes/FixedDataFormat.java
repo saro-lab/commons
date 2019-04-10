@@ -7,11 +7,15 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import lombok.SneakyThrows;
 import me.saro.commons.Converter;
 import me.saro.commons.bytes.annotations.FixedBinary;
 import me.saro.commons.bytes.annotations.FixedData;
@@ -27,21 +31,33 @@ import me.saro.commons.function.ThrowableSupplier;
  */
 public class FixedDataFormat<T> extends AbstractDataFormat {
     
+    final static Map<String, FixedDataFormat<?>> STORE = new ConcurrentHashMap<>();
+    
     final Class<T> clazz;
     final FixedData fixedData;
     final Supplier<T> newInstance;
     final List<FixedDataBytesToClass> toClassOrders = Collections.synchronizedList(new ArrayList<>());
     final List<FixedDataClassToBytes> toBytesOrders = Collections.synchronizedList(new ArrayList<>());
     
+    @SuppressWarnings("unchecked")
     FixedDataFormat(Class<T> clazz, Supplier<T> newInstance) {
         this.clazz = clazz;
         fixedData = clazz.getDeclaredAnnotation(FixedData.class);
+        if (newInstance == null) {
+            newInstance = ThrowableSupplier.runtime(() -> 
+                (T)Arrays.asList(clazz.getDeclaredConstructors()).stream()
+                    .filter(e -> e.getParameterCount() == 0).findFirst()
+                    .orElseThrow(() -> new RuntimeException("need to new " + clazz.getName() + "() : default constructor"))
+                    .newInstance());
+        }
         this.newInstance = newInstance;
         init();
     }
     
     /**
-     * create DataFormat
+     * create DataFormat<br>
+     * this method is not cached<br>
+     * recommend using getInstance 
      * @param clazz
      * @param newInstance
      * @return
@@ -53,12 +69,16 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
     /**
      * create DataFormat<br>
      * user defualt constructor
+     * @deprecated using getInstance 
      * @param clazz
      * @return
      */
-    @SuppressWarnings("unchecked")
     public static <T> FixedDataFormat<T> create(Class<T> clazz) {
-        return create(clazz, ThrowableSupplier.runtime(() -> (T)clazz.getDeclaredConstructors()[0].newInstance()));
+        return create(clazz, null);
+    }
+    
+    public static <T> FixedDataFormat<T> getInstance(Class<T> clazz) {
+        return create(clazz, null);
     }
     
     public T toClass(byte[] bytes, int offset) {
