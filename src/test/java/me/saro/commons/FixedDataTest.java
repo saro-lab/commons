@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +24,7 @@ public class FixedDataTest {
 
     @Test
     public void binary() {
-        FixedDataFormat<BinaryStruct> format = FixedDataFormat.create(BinaryStruct.class, BinaryStruct::new);
+        FixedDataFormat<BinaryStruct> format = FixedDataFormat.getInstance(BinaryStruct.class);
         
         BinaryStruct bs = new BinaryStruct((byte)-1, (short)321, 1234, 76543L, 2.1F, 3.6D, new byte[] {0x1f, 0x3b, 0x33});
         
@@ -47,7 +49,7 @@ public class FixedDataTest {
     
     @Test
     public void text() throws UnsupportedEncodingException {
-        FixedDataFormat<TextStruct> format = FixedDataFormat.create(TextStruct.class, TextStruct::new);
+        FixedDataFormat<TextStruct> format = FixedDataFormat.getInstance(TextStruct.class);
         
         TextStruct ts = new TextStruct((byte)-1/* -1 == 255 */, (short)-321, 32123, -21L, 12.3F, -342.5D, "가나다", "abc");
         
@@ -65,7 +67,7 @@ public class FixedDataTest {
     
     @Test
     public void mixed() {
-        FixedDataFormat<MixedStruct> format = FixedDataFormat.create(MixedStruct.class, MixedStruct::new);
+        FixedDataFormat<MixedStruct> format = FixedDataFormat.getInstance(MixedStruct.class);
         MixedStruct ms = new MixedStruct("Yong Seo", "PARK", 1);
         
         byte[] bytes = format.toBytes(ms);
@@ -83,7 +85,10 @@ public class FixedDataTest {
     
     @Test
     public void array() {
-        FixedDataFormat<ArrayStruct> format = FixedDataFormat.create(ArrayStruct.class, ArrayStruct::new);
+        
+        System.out.println("execute array");
+        
+        FixedDataFormat<ArrayStruct> format = FixedDataFormat.getInstance(ArrayStruct.class);
         ArrayStruct ms = new ArrayStruct(1, new int[] {2,3,4,5}, Arrays.asList(1L, -2L), new Short[] {21, 72});
         
         byte[] bytes = format.toBytes(ms);
@@ -98,6 +103,15 @@ public class FixedDataTest {
         
         System.out.println(ms);
         System.out.println(format.toClass(bytes, 0));
+    }
+    
+    @Test
+    public void mutipleThreadStored() {
+        Utils.executeAllThreads(5, IntStream.range(0, 10).boxed().collect(Collectors.toList()), i -> {
+           System.out.println("exec : " + i);
+           array();
+           return i;
+        });
     }
     
     @Data

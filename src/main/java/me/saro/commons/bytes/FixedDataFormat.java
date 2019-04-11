@@ -8,7 +8,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -27,46 +29,86 @@ import me.saro.commons.function.ThrowableSupplier;
  */
 public class FixedDataFormat<T> extends AbstractDataFormat {
     
+    final static Map<String, FixedDataFormat<?>> STORE = new HashMap<>();
+    
     final Class<T> clazz;
     final FixedData fixedData;
     final Supplier<T> newInstance;
     final List<FixedDataBytesToClass> toClassOrders = Collections.synchronizedList(new ArrayList<>());
     final List<FixedDataClassToBytes> toBytesOrders = Collections.synchronizedList(new ArrayList<>());
     
+    @SuppressWarnings("unchecked")
     FixedDataFormat(Class<T> clazz, Supplier<T> newInstance) {
         this.clazz = clazz;
         fixedData = clazz.getDeclaredAnnotation(FixedData.class);
+        if (newInstance == null) {
+            newInstance = ThrowableSupplier.runtime(() -> 
+                (T)Arrays.asList(clazz.getDeclaredConstructors()).stream()
+                    .filter(e -> e.getParameterCount() == 0).findFirst()
+                    .orElseThrow(() -> new RuntimeException("need to new " + clazz.getName() + "() : default constructor"))
+                    .newInstance());
+        }
         this.newInstance = newInstance;
         init();
     }
     
     /**
-     * create DataFormat
+     * create DataFormat<br>
+     * this method is not cached<br>
+     * recommend using getInstance 
      * @param clazz
      * @param newInstance
      * @return
      */
     public static <T> FixedDataFormat<T> create(Class<T> clazz, Supplier<T> newInstance) {
+        if (newInstance == null) {
+            throw new IllegalArgumentException("must need to newInstance, do you want to just default constructor using FixedDataFormat.getInstance(...)");
+        }
         return new FixedDataFormat<>(clazz, newInstance);
     }
     
     /**
      * create DataFormat<br>
      * user defualt constructor
+     * @deprecated using getInstance 
      * @param clazz
      * @return
      */
-    @SuppressWarnings("unchecked")
+    @Deprecated
     public static <T> FixedDataFormat<T> create(Class<T> clazz) {
-        return create(clazz, ThrowableSupplier.runtime(() -> (T)clazz.getDeclaredConstructors()[0].newInstance()));
+        throw new RuntimeException("Deprecated this method, use FixedDataFormat.getInstance(...)");
     }
     
+    @SuppressWarnings("unchecked")
+    public static <T> FixedDataFormat<T> getInstance(Class<T> clazz) {
+        FixedDataFormat<?> format;
+        synchronized (STORE) {
+            format = STORE.get(clazz.getName());
+            if (format == null) {
+                STORE.put(clazz.getName(), format = new FixedDataFormat<>(clazz, null));
+            }
+        }
+        return (FixedDataFormat<T>) format;
+        
+    }
+    
+    /**
+     * to class
+     * @param bytes
+     * @param offset
+     * @return
+     */
     public T toClass(byte[] bytes, int offset) {
         T t = newInstance.get();
         toClassOrders.parallelStream().forEach(ThrowableConsumer.runtime(e -> e.order(t, bytes, offset)));
         return t;
     }
     
+    /**
+     * to class
+     * @param bytes
+     * @return
+     */
     public T toClass(byte[] bytes) {
         return toClass(bytes, 0);
     }
