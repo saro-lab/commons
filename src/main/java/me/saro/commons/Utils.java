@@ -7,11 +7,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -411,5 +414,26 @@ public class Utils {
         ts = System.currentTimeMillis() - ts;
         System.out.println("timestamp : " + ts);
         return ts;
+    }
+    
+    /**
+     * just sort and return
+     * @param list
+     * @param comparator
+     * @return
+     */
+    public static <T> List<T> sort(List<T> list, Comparator<T> comparator) {
+        list.sort(comparator);
+        return list;
+    }
+    
+    /**
+     * group by to list
+     * @param list
+     * @param classifier
+     * @return
+     */
+    public static <T, K> Collection<List<T>> groupBy(List<T> list, Function<? super T, ? extends K> classifier) {
+        return list.parallelStream().collect(Collectors.groupingBy(classifier)).values();
     }
 }
