@@ -7,15 +7,13 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import lombok.SneakyThrows;
 import me.saro.commons.Converter;
 import me.saro.commons.bytes.annotations.FixedBinary;
 import me.saro.commons.bytes.annotations.FixedData;
@@ -31,7 +29,7 @@ import me.saro.commons.function.ThrowableSupplier;
  */
 public class FixedDataFormat<T> extends AbstractDataFormat {
     
-    final static Map<String, FixedDataFormat<?>> STORE = new ConcurrentHashMap<>();
+    final static Map<String, FixedDataFormat<?>> STORE = new HashMap<>();
     
     final Class<T> clazz;
     final FixedData fixedData;
@@ -63,6 +61,9 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
      * @return
      */
     public static <T> FixedDataFormat<T> create(Class<T> clazz, Supplier<T> newInstance) {
+        if (newInstance == null) {
+            throw new IllegalArgumentException("must need to newInstance, do you want to just default constructor using FixedDataFormat.getInstance(...)");
+        }
         return new FixedDataFormat<>(clazz, newInstance);
     }
     
@@ -73,20 +74,41 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
      * @param clazz
      * @return
      */
+    @Deprecated
     public static <T> FixedDataFormat<T> create(Class<T> clazz) {
-        return create(clazz, null);
+        throw new RuntimeException("Deprecated this method, use FixedDataFormat.getInstance(...)");
     }
     
+    @SuppressWarnings("unchecked")
     public static <T> FixedDataFormat<T> getInstance(Class<T> clazz) {
-        return create(clazz, null);
+        FixedDataFormat<?> format;
+        synchronized (STORE) {
+            format = STORE.get(clazz.getName());
+            if (format == null) {
+                STORE.put(clazz.getName(), format = new FixedDataFormat<>(clazz, null));
+            }
+        }
+        return (FixedDataFormat<T>) format;
+        
     }
     
+    /**
+     * to class
+     * @param bytes
+     * @param offset
+     * @return
+     */
     public T toClass(byte[] bytes, int offset) {
         T t = newInstance.get();
         toClassOrders.parallelStream().forEach(ThrowableConsumer.runtime(e -> e.order(t, bytes, offset)));
         return t;
     }
     
+    /**
+     * to class
+     * @param bytes
+     * @return
+     */
     public T toClass(byte[] bytes) {
         return toClass(bytes, 0);
     }

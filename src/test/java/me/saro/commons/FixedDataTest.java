@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
 
@@ -83,7 +85,10 @@ public class FixedDataTest {
     
     @Test
     public void array() {
-        FixedDataFormat<ArrayStruct> format = FixedDataFormat.create(ArrayStruct.class);
+        
+        System.out.println("execute array");
+        
+        FixedDataFormat<ArrayStruct> format = FixedDataFormat.getInstance(ArrayStruct.class);
         ArrayStruct ms = new ArrayStruct(1, new int[] {2,3,4,5}, Arrays.asList(1L, -2L), new Short[] {21, 72});
         
         byte[] bytes = format.toBytes(ms);
@@ -98,6 +103,15 @@ public class FixedDataTest {
         
         System.out.println(ms);
         System.out.println(format.toClass(bytes, 0));
+    }
+    
+    @Test
+    public void mutipleThreadStored() {
+        Utils.executeAllThreads(5, IntStream.range(0, 10).boxed().collect(Collectors.toList()), i -> {
+           System.out.println("exec : " + i);
+           array();
+           return i;
+        });
     }
     
     @Data
