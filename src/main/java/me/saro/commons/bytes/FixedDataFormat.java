@@ -42,7 +42,7 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
     @SuppressWarnings("unchecked")
     FixedDataFormat(Class<T> clazz, Supplier<T> newInstance) {
         this.clazz = clazz;
-        System.out.println("클래스 이름 : " + clazz);
+        
         fixedData = clazz.getDeclaredAnnotation(FixedData.class);
         if (newInstance == null) {
             newInstance = ThrowableSupplier.runtime(() -> 
@@ -207,6 +207,14 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
     }
     
     /**
+     * fixed data size
+     * @return
+     */
+    public int getFixedDataSize() {
+        return fixedData.size();
+    }
+    
+    /**
      * init fixed data format
      * @return
      */
@@ -249,6 +257,10 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
         toBytesOrders.add((obj, bytes, offset) -> {
             
             int s = offset + dfOffset;
+            
+            if (obj == null) {
+                return;
+            }
             Object val = method.invoke(obj);
             
             if (val == null) {
@@ -293,15 +305,18 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
                     byte[] buf;
                     
                     if (type.endsWith("[]")) { // array
-                        int pos = s;
-                        Object arr = Array.newInstance(val.getClass().getComponentType(), arrayLength);
-                        for (int i = 0 ; i < arrayLength ; i++) {
-                            buf = FixedDataFormat.getInstance(clazz).toBytes(clazz.cast(Array.get(arr, i)));
-                            System.arraycopy(buf, 0, bytes, pos, buf.length);
-                            pos += buf.length;
+                        @SuppressWarnings("rawtypes") final Class clazz = val.getClass().getComponentType();
+                        if (clazz.getDeclaredAnnotation(FixedData.class) != null) {
+                            int pos = s;
+                            for (int i = 0 ; i < arrayLength ; i++) {
+                                buf = FixedDataFormat.getInstance(clazz).toBytes(Array.get(val, i));
+                                System.arraycopy(buf, 0, bytes, pos, buf.length);
+                                pos += buf.length;
+                            }
+                            return;
                         }
                     } else if (type.startsWith("java.util.List<")) { // list
-    
+                        // not support yet
                     } else { // object
                         @SuppressWarnings("rawtypes") final Class clazz = val.getClass();
                         buf = FixedDataFormat.getInstance(clazz).toBytes(clazz.cast(val));
@@ -331,6 +346,11 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
         toBytesOrders.add((clazz, bytes, offset) -> {
             int s = offset + dfOffset;
             byte fill = da.fill();
+
+            if (clazz == null) {
+                return;
+            }
+            
             Object val = method.invoke(clazz);
             byte[] vbytes;
             
@@ -391,6 +411,7 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
      * @param field
      * @param da
      */
+    @SuppressWarnings("unchecked")
     private void bindToClassOrder(Method method, FixedBinary da) {
         int dfOffset = da.offset();
         int arrayLength = da.arrayLength();
@@ -439,9 +460,20 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
                 default : 
                     
                     if (type.endsWith("[]")) { // array
-                        
+                        @SuppressWarnings("rawtypes")
+                        Class clazz = method.getParameterTypes()[0].getComponentType();
+                        if (clazz.getDeclaredAnnotation(FixedData.class) != null) {
+                            Object arr = Array.newInstance(clazz, arrayLength);
+                            @SuppressWarnings({ "rawtypes" })
+                            FixedDataFormat fdf = FixedDataFormat.getInstance(clazz);
+                            for (int i = 0 ; i < arrayLength ; i++) {
+                                Array.set(arr, i, fdf.toClass(bytes, s + (fdf.getFixedDataSize() * i)));
+                            }
+                            method.invoke(obj, arr);
+                        }
+                        return;
                     } else if (type.startsWith("java.util.List<")) {
-                        
+                        // not support yet
                     } else {
                         method.invoke(obj, FixedDataFormat.getInstance(method.getParameterTypes()[0]).toClass(bytes, s));
                         return;
