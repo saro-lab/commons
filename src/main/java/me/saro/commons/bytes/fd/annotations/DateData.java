@@ -1,4 +1,4 @@
-package me.saro.commons.bytes.annotations;
+package me.saro.commons.bytes.fd.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -12,13 +12,13 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface FixedDate {
+public @interface DateData {
     
     /**
      * FixedDateType
      * @return
      */
-    FixedDateType type() default FixedDateType.textFormat;
+    DateDataType type() default DateDataType.textFormat;
     
     /**
      * offset

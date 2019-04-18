@@ -5,7 +5,7 @@ package me.saro.commons.bytes;
  * @author      PARK Yong Seo
  * @since       3.0.3
  */
-public interface FixedDataConverter {
+public interface _FixedDataConverter {
     byte[] toBytes();
     void bindBytes(byte[] bytes);
 }

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import me.saro.commons.bytes.ByteData;
 import me.saro.commons.bytes.Bytes;
-import me.saro.commons.bytes.FixedDataFormat;
+import me.saro.commons.bytes._FixedDataFormat;
 import me.saro.commons.crypt.Crypt;
 import me.saro.commons.excel.Excel;
 import me.saro.commons.ftp.FTP;
@@ -39,7 +39,7 @@ public class ReadmeTest {
         System.out.println("# INSTANCE");
         System.out.println();
 
-        outClassInfo(FixedDataFormat.class);
+        outClassInfo(_FixedDataFormat.class);
         outClassInfo(FTP.class);
         outClassInfo(Crypt.class);
         outClassInfo(SSHShell.class);
