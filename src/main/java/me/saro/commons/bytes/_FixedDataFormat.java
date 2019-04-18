@@ -17,10 +17,10 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import me.saro.commons.Converter;
-import me.saro.commons.bytes.annotations.FixedBinary;
-import me.saro.commons.bytes.annotations.FixedData;
-import me.saro.commons.bytes.annotations.FixedText;
-import me.saro.commons.bytes.annotations.FixedTextAlign;
+import me.saro.commons.bytes.fd.annotations.BinaryData;
+import me.saro.commons.bytes.fd.annotations.FixedDataClass;
+import me.saro.commons.bytes.fd.annotations.TextData;
+import me.saro.commons.bytes.fd.annotations.TextDataAlign;
 import me.saro.commons.function.ThrowableConsumer;
 import me.saro.commons.function.ThrowableSupplier;
 
@@ -34,7 +34,7 @@ public class _FixedDataFormat<T> extends _AbstractDataFormat {
     final static Map<String, _FixedDataFormat<?>> STORE = new HashMap<>();
     
     final Class<T> clazz;
-    final FixedData fixedData;
+    final FixedDataClass fixedData;
     final Supplier<T> newInstance;
     final List<FixedDataBytesToClass> toClassOrders = Collections.synchronizedList(new ArrayList<>());
     final List<FixedDataClassToBytes> toBytesOrders = Collections.synchronizedList(new ArrayList<>());
@@ -43,7 +43,7 @@ public class _FixedDataFormat<T> extends _AbstractDataFormat {
     _FixedDataFormat(Class<T> clazz, Supplier<T> newInstance) {
         this.clazz = clazz;
         
-        fixedData = clazz.getDeclaredAnnotation(FixedData.class);
+        fixedData = clazz.getDeclaredAnnotation(FixedDataClass.class);
         if (newInstance == null) {
             newInstance = ThrowableSupplier.runtime(() -> 
                 (T)Arrays.asList(clazz.getDeclaredConstructors()).stream()
@@ -230,8 +230,8 @@ public class _FixedDataFormat<T> extends _AbstractDataFormat {
         boolean infSetter = fixedData.ignoreNotFoundSetter();
         
         Stream.of(clazz.getDeclaredFields()).parallel().forEach(ThrowableConsumer.runtime(field -> {
-            FixedBinary binary = field.getDeclaredAnnotation(FixedBinary.class);
-            FixedText text = field.getDeclaredAnnotation(FixedText.class);
+            BinaryData binary = field.getDeclaredAnnotation(BinaryData.class);
+            TextData text = field.getDeclaredAnnotation(TextData.class);
             if (binary != null) {
                 setter(clazz, field.getName(), infSetter).ifPresent(e -> bindToClassOrder(e, binary));
                 getter(clazz, field.getName(), infGetter).ifPresent(e -> bindToBytesOrder(e, binary));
@@ -248,7 +248,7 @@ public class _FixedDataFormat<T> extends _AbstractDataFormat {
      * @param da
      */
     @SuppressWarnings("unchecked")
-    private void bindToBytesOrder(Method method, FixedBinary da) {
+    private void bindToBytesOrder(Method method, BinaryData da) {
         int dfOffset = da.offset();
         int arrayLength = da.arrayLength();
         Type typeClass = method.getGenericReturnType();
@@ -306,7 +306,7 @@ public class _FixedDataFormat<T> extends _AbstractDataFormat {
                     
                     if (type.endsWith("[]")) { // array
                         @SuppressWarnings("rawtypes") final Class clazz = val.getClass().getComponentType();
-                        if (clazz.getDeclaredAnnotation(FixedData.class) != null) {
+                        if (clazz.getDeclaredAnnotation(FixedDataClass.class) != null) {
                             int pos = s;
                             for (int i = 0 ; i < arrayLength ; i++) {
                                 buf = _FixedDataFormat.getInstance(clazz).toBytes(Array.get(val, i));
@@ -334,10 +334,10 @@ public class _FixedDataFormat<T> extends _AbstractDataFormat {
      * @param field
      * @param da
      */
-    private void bindToBytesOrder(Method method, FixedText da) {
+    private void bindToBytesOrder(Method method, TextData da) {
         int dfOffset = da.offset();
         int dfLength = da.length();
-        boolean isLeft = da.align() == FixedTextAlign.left;
+        boolean isLeft = da.align() == TextDataAlign.left;
         String type = method.getReturnType().getName();
         boolean unsigned = da.unsigned();
         String charset = "".equals(da.charset()) ? fixedData.charset() : da.charset();
@@ -412,7 +412,7 @@ public class _FixedDataFormat<T> extends _AbstractDataFormat {
      * @param da
      */
     @SuppressWarnings("unchecked")
-    private void bindToClassOrder(Method method, FixedBinary da) {
+    private void bindToClassOrder(Method method, BinaryData da) {
         int dfOffset = da.offset();
         int arrayLength = da.arrayLength();
         String type = method.getGenericParameterTypes()[0].getTypeName();
@@ -462,7 +462,7 @@ public class _FixedDataFormat<T> extends _AbstractDataFormat {
                     if (type.endsWith("[]")) { // array
                         @SuppressWarnings("rawtypes")
                         Class clazz = method.getParameterTypes()[0].getComponentType();
-                        if (clazz.getDeclaredAnnotation(FixedData.class) != null) {
+                        if (clazz.getDeclaredAnnotation(FixedDataClass.class) != null) {
                             Object arr = Array.newInstance(clazz, arrayLength);
                             @SuppressWarnings({ "rawtypes" })
                             _FixedDataFormat fdf = _FixedDataFormat.getInstance(clazz);
@@ -489,7 +489,7 @@ public class _FixedDataFormat<T> extends _AbstractDataFormat {
      * @param field
      * @param da
      */
-    private void bindToClassOrder(Method method, FixedText da) {
+    private void bindToClassOrder(Method method, TextData da) {
         
         // it is not setter method
         if (method.getParameterCount() != 1) {
@@ -499,7 +499,7 @@ public class _FixedDataFormat<T> extends _AbstractDataFormat {
         int dfOffset = da.offset();
         int dfLength = da.length();
         byte dfFill = da.fill();
-        boolean isLeft = da.align() == FixedTextAlign.left;
+        boolean isLeft = da.align() == TextDataAlign.left;
         String type = method.getParameterTypes()[0].getName();
         boolean unsigned = da.unsigned();
         String charset = "".equals(da.charset()) ? fixedData.charset() : da.charset();
