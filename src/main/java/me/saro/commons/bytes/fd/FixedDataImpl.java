@@ -1,5 +1,7 @@
 package me.saro.commons.bytes.fd;
 
+import java.util.Arrays;
+
 import com.sun.xml.internal.txw2.IllegalAnnotationException;
 
 import me.saro.commons.bytes.fd.annotations.FixedDataClass;
@@ -31,7 +33,10 @@ public class FixedDataImpl implements FixedData {
         }
         
         // get field have data annotation
-        
+        Arrays.asList(clazz.getFields())
+            .parallelStream()
+            .map(FixedField::new)
+            .filter(FixedField::hasDataAnnotation);
     }
     
     @Override
