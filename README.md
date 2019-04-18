@@ -18,7 +18,7 @@
 ## gradle
 
 ```
-compile 'me.saro:commons:3.0.2'
+compile 'me.saro:commons:3.0.3'
 ```
 
 ## repository
@@ -154,6 +154,7 @@ Utils.createRandomString(char[], int, int) : String
 Utils.evl(String[]) : String
 Utils.executeAllThreads(ExecutorService, List<T>, ThrowableFunction<T, R>) : List<R>
 Utils.executeAllThreads(int, List<T>, ThrowableFunction<T, R>) : List<R>
+Utils.groupBy(List<T>, Function<? super T, ? extends K>) : Collection<List<T>>
 Utils.inputStreamLineReader(InputStream, String, ThrowableFunction<Stream<String>, T>) : T
 Utils.inputStreamReader(InputStream, StreamReadConsumer) 
 Utils.kill(Closeable) 
@@ -164,6 +165,7 @@ Utils.nvl(T[]) : T
 Utils.parseDouble(String) : double
 Utils.parseLong(String) : long
 Utils.random(long, long) : long
+Utils.sort(List<T>, Comparator<T>) : List<T>
 Utils.timerTask(ThrowableConsumer<TimerTask>) : TimerTask
 Utils.timestamp(ThrowableRunnable) : long
 Utils.zerofill(String, int) : String
@@ -262,8 +264,12 @@ Shell.execute(String[]) : ShellResult
 ```
 FixedDataFormat.create(Class<T>) : FixedDataFormat<T>
 FixedDataFormat.create(Class<T>, Supplier<T>) : FixedDataFormat<T>
+FixedDataFormat.getInstance(Class<T>) : FixedDataFormat<T>
 bindBytes(OutputStream, T) 
 bindBytes(byte[], int, T) 
+bindClass(T, byte[]) 
+bindClass(T, byte[], int) 
+getFixedDataSize() : int
 toBytes(T) : byte[]
 toClass(byte[]) : T
 toClass(byte[], int) : T

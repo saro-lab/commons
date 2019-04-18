@@ -1,11 +1,11 @@
-package me.saro.commons.bytes.annotations;
+package me.saro.commons.bytes.fd.annotations;
 
 /**
  *  Text Align
  * @author      PARK Yong Seo
  * @since       1.4
  */
-public enum FixedTextAlign {
+public enum TextDataAlign {
     /**
      * align left
      * [abc       ] is [abc]

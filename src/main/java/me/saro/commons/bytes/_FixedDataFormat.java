@@ -4,7 +4,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,10 +17,10 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import me.saro.commons.Converter;
-import me.saro.commons.bytes.annotations.FixedBinary;
-import me.saro.commons.bytes.annotations.FixedData;
-import me.saro.commons.bytes.annotations.FixedText;
-import me.saro.commons.bytes.annotations.FixedTextAlign;
+import me.saro.commons.bytes.fd.annotations.BinaryData;
+import me.saro.commons.bytes.fd.annotations.FixedDataClass;
+import me.saro.commons.bytes.fd.annotations.TextData;
+import me.saro.commons.bytes.fd.annotations.TextDataAlign;
 import me.saro.commons.function.ThrowableConsumer;
 import me.saro.commons.function.ThrowableSupplier;
 
@@ -27,20 +29,21 @@ import me.saro.commons.function.ThrowableSupplier;
  * @author      PARK Yong Seo
  * @since       1.0
  */
-public class FixedDataFormat<T> extends AbstractDataFormat {
+public class _FixedDataFormat<T> extends _AbstractDataFormat {
     
-    final static Map<String, FixedDataFormat<?>> STORE = new HashMap<>();
+    final static Map<String, _FixedDataFormat<?>> STORE = new HashMap<>();
     
     final Class<T> clazz;
-    final FixedData fixedData;
+    final FixedDataClass fixedData;
     final Supplier<T> newInstance;
     final List<FixedDataBytesToClass> toClassOrders = Collections.synchronizedList(new ArrayList<>());
     final List<FixedDataClassToBytes> toBytesOrders = Collections.synchronizedList(new ArrayList<>());
     
     @SuppressWarnings("unchecked")
-    FixedDataFormat(Class<T> clazz, Supplier<T> newInstance) {
+    _FixedDataFormat(Class<T> clazz, Supplier<T> newInstance) {
         this.clazz = clazz;
-        fixedData = clazz.getDeclaredAnnotation(FixedData.class);
+        
+        fixedData = clazz.getDeclaredAnnotation(FixedDataClass.class);
         if (newInstance == null) {
             newInstance = ThrowableSupplier.runtime(() -> 
                 (T)Arrays.asList(clazz.getDeclaredConstructors()).stream()
@@ -60,11 +63,11 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
      * @param newInstance
      * @return
      */
-    public static <T> FixedDataFormat<T> create(Class<T> clazz, Supplier<T> newInstance) {
+    public static <T> _FixedDataFormat<T> create(Class<T> clazz, Supplier<T> newInstance) {
         if (newInstance == null) {
             throw new IllegalArgumentException("must need to newInstance, do you want to just default constructor using FixedDataFormat.getInstance(...)");
         }
-        return new FixedDataFormat<>(clazz, newInstance);
+        return new _FixedDataFormat<>(clazz, newInstance);
     }
     
     /**
@@ -75,21 +78,44 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
      * @return
      */
     @Deprecated
-    public static <T> FixedDataFormat<T> create(Class<T> clazz) {
+    public static <T> _FixedDataFormat<T> create(Class<T> clazz) {
         throw new RuntimeException("Deprecated this method, use FixedDataFormat.getInstance(...)");
     }
     
+    /**
+     * getInstance in cache store
+     * @param clazz
+     * @return
+     */
     @SuppressWarnings("unchecked")
-    public static <T> FixedDataFormat<T> getInstance(Class<T> clazz) {
-        FixedDataFormat<?> format;
+    public static <T> _FixedDataFormat<T> getInstance(Class<T> clazz) {
+        _FixedDataFormat<?> format;
         synchronized (STORE) {
             format = STORE.get(clazz.getName());
             if (format == null) {
-                STORE.put(clazz.getName(), format = new FixedDataFormat<>(clazz, null));
+                STORE.put(clazz.getName(), format = new _FixedDataFormat<>(clazz, null));
             }
         }
-        return (FixedDataFormat<T>) format;
-        
+        return (_FixedDataFormat<T>) format;
+    }
+    
+    /**
+     * to class
+     * @param bytes
+     * @param offset
+     * @return
+     */
+    public void bindClass(T clazz, byte[] bytes, int offset) {
+        toClassOrders.parallelStream().forEach(ThrowableConsumer.runtime(e -> e.order(clazz, bytes, offset)));
+    }
+    
+    /**
+     * to class
+     * @param bytes
+     * @return
+     */
+    public void bindClass(T clazz, byte[] bytes) {
+        bindClass(clazz, bytes, 0);
     }
     
     /**
@@ -181,6 +207,14 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
     }
     
     /**
+     * fixed data size
+     * @return
+     */
+    public int getFixedDataSize() {
+        return fixedData.size();
+    }
+    
+    /**
      * init fixed data format
      * @return
      */
@@ -196,8 +230,8 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
         boolean infSetter = fixedData.ignoreNotFoundSetter();
         
         Stream.of(clazz.getDeclaredFields()).parallel().forEach(ThrowableConsumer.runtime(field -> {
-            FixedBinary binary = field.getDeclaredAnnotation(FixedBinary.class);
-            FixedText text = field.getDeclaredAnnotation(FixedText.class);
+            BinaryData binary = field.getDeclaredAnnotation(BinaryData.class);
+            TextData text = field.getDeclaredAnnotation(TextData.class);
             if (binary != null) {
                 setter(clazz, field.getName(), infSetter).ifPresent(e -> bindToClassOrder(e, binary));
                 getter(clazz, field.getName(), infGetter).ifPresent(e -> bindToBytesOrder(e, binary));
@@ -214,15 +248,20 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
      * @param da
      */
     @SuppressWarnings("unchecked")
-    private void bindToBytesOrder(Method method, FixedBinary da) {
+    private void bindToBytesOrder(Method method, BinaryData da) {
         int dfOffset = da.offset();
         int arrayLength = da.arrayLength();
-        String type = method.getGenericReturnType().getTypeName();
+        Type typeClass = method.getGenericReturnType();
+        String type = typeClass.getTypeName();
         
-        toBytesOrders.add((clazz, bytes, offset) -> {
+        toBytesOrders.add((obj, bytes, offset) -> {
             
             int s = offset + dfOffset;
-            Object val = method.invoke(clazz);
+            
+            if (obj == null) {
+                return;
+            }
+            Object val = method.invoke(obj);
             
             if (val == null) {
                 return;
@@ -261,7 +300,31 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
                 case "java.lang.Double[]" : System.arraycopy(Bytes.toBytes(Converter.toPrimitive((Double[])val)), 0, bytes, s, arrayLength * 8); return;
                 case "java.util.List<java.lang.Double>" : System.arraycopy(Bytes.toBytes(Converter.toDoubleArray((List<Double>)val)), 0, bytes, s, arrayLength * 8); return;
                 
-                default : throw new IllegalArgumentException("does not support return type of "+type+" " + method.getName() + "()");
+                default : 
+                    
+                    byte[] buf;
+                    
+                    if (type.endsWith("[]")) { // array
+                        @SuppressWarnings("rawtypes") final Class clazz = val.getClass().getComponentType();
+                        if (clazz.getDeclaredAnnotation(FixedDataClass.class) != null) {
+                            int pos = s;
+                            for (int i = 0 ; i < arrayLength ; i++) {
+                                buf = _FixedDataFormat.getInstance(clazz).toBytes(Array.get(val, i));
+                                System.arraycopy(buf, 0, bytes, pos, buf.length);
+                                pos += buf.length;
+                            }
+                            return;
+                        }
+                    } else if (type.startsWith("java.util.List<")) { // list
+                        // not support yet
+                    } else { // object
+                        @SuppressWarnings("rawtypes") final Class clazz = val.getClass();
+                        buf = _FixedDataFormat.getInstance(clazz).toBytes(clazz.cast(val));
+                        System.arraycopy(buf, 0, bytes, s, buf.length);
+                        return;
+                    }
+                    
+                    throw new IllegalArgumentException("does not support return type of "+type+" " + method.getName() + "()");
             }
         });
     }
@@ -271,10 +334,10 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
      * @param field
      * @param da
      */
-    private void bindToBytesOrder(Method method, FixedText da) {
+    private void bindToBytesOrder(Method method, TextData da) {
         int dfOffset = da.offset();
         int dfLength = da.length();
-        boolean isLeft = da.align() == FixedTextAlign.left;
+        boolean isLeft = da.align() == TextDataAlign.left;
         String type = method.getReturnType().getName();
         boolean unsigned = da.unsigned();
         String charset = "".equals(da.charset()) ? fixedData.charset() : da.charset();
@@ -283,6 +346,11 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
         toBytesOrders.add((clazz, bytes, offset) -> {
             int s = offset + dfOffset;
             byte fill = da.fill();
+
+            if (clazz == null) {
+                return;
+            }
+            
             Object val = method.invoke(clazz);
             byte[] vbytes;
             
@@ -343,7 +411,8 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
      * @param field
      * @param da
      */
-    private void bindToClassOrder(Method method, FixedBinary da) {
+    @SuppressWarnings("unchecked")
+    private void bindToClassOrder(Method method, BinaryData da) {
         int dfOffset = da.offset();
         int arrayLength = da.arrayLength();
         String type = method.getGenericParameterTypes()[0].getTypeName();
@@ -388,7 +457,29 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
                 case "java.lang.Double[]" : method.invoke(obj, (Object)Converter.toUnPrimitive(Bytes.toDoubleArray(bytes, s, arrayLength))); return;
                 case "java.util.List<java.lang.Double>" : method.invoke(obj, Bytes.toDoubleList(bytes, s, arrayLength)); return;
                 
-                default : throw new IllegalArgumentException("does not support parameter type of void " + method.getName() + "("+type+")");
+                default : 
+                    
+                    if (type.endsWith("[]")) { // array
+                        @SuppressWarnings("rawtypes")
+                        Class clazz = method.getParameterTypes()[0].getComponentType();
+                        if (clazz.getDeclaredAnnotation(FixedDataClass.class) != null) {
+                            Object arr = Array.newInstance(clazz, arrayLength);
+                            @SuppressWarnings({ "rawtypes" })
+                            _FixedDataFormat fdf = _FixedDataFormat.getInstance(clazz);
+                            for (int i = 0 ; i < arrayLength ; i++) {
+                                Array.set(arr, i, fdf.toClass(bytes, s + (fdf.getFixedDataSize() * i)));
+                            }
+                            method.invoke(obj, arr);
+                        }
+                        return;
+                    } else if (type.startsWith("java.util.List<")) {
+                        // not support yet
+                    } else {
+                        method.invoke(obj, _FixedDataFormat.getInstance(method.getParameterTypes()[0]).toClass(bytes, s));
+                        return;
+                    }
+                    
+                    throw new IllegalArgumentException("does not support parameter type of void " + method.getName() + "("+type+")");
             }
         });
     }
@@ -398,7 +489,7 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
      * @param field
      * @param da
      */
-    private void bindToClassOrder(Method method, FixedText da) {
+    private void bindToClassOrder(Method method, TextData da) {
         
         // it is not setter method
         if (method.getParameterCount() != 1) {
@@ -408,7 +499,7 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
         int dfOffset = da.offset();
         int dfLength = da.length();
         byte dfFill = da.fill();
-        boolean isLeft = da.align() == FixedTextAlign.left;
+        boolean isLeft = da.align() == TextDataAlign.left;
         String type = method.getParameterTypes()[0].getName();
         boolean unsigned = da.unsigned();
         String charset = "".equals(da.charset()) ? fixedData.charset() : da.charset();
