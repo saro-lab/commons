@@ -11,7 +11,7 @@ import java.util.stream.Stream;
  * @author      PARK Yong Seo
  * @since       1.4
  */
-abstract class AbstractDataFormat {
+abstract class _AbstractDataFormat {
     /**
      * getter
      * @param clazz
