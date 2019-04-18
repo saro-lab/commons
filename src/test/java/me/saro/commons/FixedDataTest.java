@@ -14,7 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import me.saro.commons.bytes.Bytes;
-import me.saro.commons.bytes.FixedDataFormat;
+import me.saro.commons.bytes._FixedDataFormat;
 import me.saro.commons.bytes.annotations.FixedBinary;
 import me.saro.commons.bytes.annotations.FixedData;
 import me.saro.commons.bytes.annotations.FixedText;
@@ -24,7 +24,7 @@ public class FixedDataTest {
 
     @Test
     public void binary() {
-        FixedDataFormat<BinaryStruct> format = FixedDataFormat.getInstance(BinaryStruct.class);
+        _FixedDataFormat<BinaryStruct> format = _FixedDataFormat.getInstance(BinaryStruct.class);
         
         BinaryStruct bs = new BinaryStruct((byte)-1, (short)321, 1234, 76543L, 2.1F, 3.6D, new byte[] {0x1f, 0x3b, 0x33});
         
@@ -49,7 +49,7 @@ public class FixedDataTest {
     
     @Test
     public void text() throws UnsupportedEncodingException {
-        FixedDataFormat<TextStruct> format = FixedDataFormat.getInstance(TextStruct.class);
+        _FixedDataFormat<TextStruct> format = _FixedDataFormat.getInstance(TextStruct.class);
         
         TextStruct ts = new TextStruct((byte)-1/* -1 == 255 */, (short)-321, 32123, -21L, 12.3F, -342.5D, "가나다", "abc");
         
@@ -67,7 +67,7 @@ public class FixedDataTest {
     
     @Test
     public void mixed() {
-        FixedDataFormat<MixedStruct> format = FixedDataFormat.getInstance(MixedStruct.class);
+        _FixedDataFormat<MixedStruct> format = _FixedDataFormat.getInstance(MixedStruct.class);
         MixedStruct ms = new MixedStruct("Yong Seo", "PARK", 1);
         
         byte[] bytes = format.toBytes(ms);
@@ -97,7 +97,7 @@ public class FixedDataTest {
         
         System.out.println("execute array");
         
-        FixedDataFormat<ArrayStruct> format = FixedDataFormat.getInstance(ArrayStruct.class);
+        _FixedDataFormat<ArrayStruct> format = _FixedDataFormat.getInstance(ArrayStruct.class);
         ArrayStruct ms = new ArrayStruct(1, new int[] {2,3,4,5}, Arrays.asList(1L, -2L), new Short[] {21, 72});
         
         byte[] bytes = format.toBytes(ms);
@@ -119,7 +119,7 @@ public class FixedDataTest {
         
         System.out.println("execute array");
         
-        FixedDataFormat<ParentStruct> format = FixedDataFormat.getInstance(ParentStruct.class);
+        _FixedDataFormat<ParentStruct> format = _FixedDataFormat.getInstance(ParentStruct.class);
         ParentStruct ms = new ParentStruct(
                 new ChildStruct(2, "단일"), 
                 new ChildStruct[] {new ChildStruct(32, "배열1"), new ChildStruct(1, "배열2")},

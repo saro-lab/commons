@@ -29,9 +29,9 @@ import me.saro.commons.function.ThrowableSupplier;
  * @author      PARK Yong Seo
  * @since       1.0
  */
-public class FixedDataFormat<T> extends AbstractDataFormat {
+public class _FixedDataFormat<T> extends _AbstractDataFormat {
     
-    final static Map<String, FixedDataFormat<?>> STORE = new HashMap<>();
+    final static Map<String, _FixedDataFormat<?>> STORE = new HashMap<>();
     
     final Class<T> clazz;
     final FixedData fixedData;
@@ -40,7 +40,7 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
     final List<FixedDataClassToBytes> toBytesOrders = Collections.synchronizedList(new ArrayList<>());
     
     @SuppressWarnings("unchecked")
-    FixedDataFormat(Class<T> clazz, Supplier<T> newInstance) {
+    _FixedDataFormat(Class<T> clazz, Supplier<T> newInstance) {
         this.clazz = clazz;
         
         fixedData = clazz.getDeclaredAnnotation(FixedData.class);
@@ -63,11 +63,11 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
      * @param newInstance
      * @return
      */
-    public static <T> FixedDataFormat<T> create(Class<T> clazz, Supplier<T> newInstance) {
+    public static <T> _FixedDataFormat<T> create(Class<T> clazz, Supplier<T> newInstance) {
         if (newInstance == null) {
             throw new IllegalArgumentException("must need to newInstance, do you want to just default constructor using FixedDataFormat.getInstance(...)");
         }
-        return new FixedDataFormat<>(clazz, newInstance);
+        return new _FixedDataFormat<>(clazz, newInstance);
     }
     
     /**
@@ -78,7 +78,7 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
      * @return
      */
     @Deprecated
-    public static <T> FixedDataFormat<T> create(Class<T> clazz) {
+    public static <T> _FixedDataFormat<T> create(Class<T> clazz) {
         throw new RuntimeException("Deprecated this method, use FixedDataFormat.getInstance(...)");
     }
     
@@ -88,15 +88,15 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static <T> FixedDataFormat<T> getInstance(Class<T> clazz) {
-        FixedDataFormat<?> format;
+    public static <T> _FixedDataFormat<T> getInstance(Class<T> clazz) {
+        _FixedDataFormat<?> format;
         synchronized (STORE) {
             format = STORE.get(clazz.getName());
             if (format == null) {
-                STORE.put(clazz.getName(), format = new FixedDataFormat<>(clazz, null));
+                STORE.put(clazz.getName(), format = new _FixedDataFormat<>(clazz, null));
             }
         }
-        return (FixedDataFormat<T>) format;
+        return (_FixedDataFormat<T>) format;
     }
     
     /**
@@ -309,7 +309,7 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
                         if (clazz.getDeclaredAnnotation(FixedData.class) != null) {
                             int pos = s;
                             for (int i = 0 ; i < arrayLength ; i++) {
-                                buf = FixedDataFormat.getInstance(clazz).toBytes(Array.get(val, i));
+                                buf = _FixedDataFormat.getInstance(clazz).toBytes(Array.get(val, i));
                                 System.arraycopy(buf, 0, bytes, pos, buf.length);
                                 pos += buf.length;
                             }
@@ -319,7 +319,7 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
                         // not support yet
                     } else { // object
                         @SuppressWarnings("rawtypes") final Class clazz = val.getClass();
-                        buf = FixedDataFormat.getInstance(clazz).toBytes(clazz.cast(val));
+                        buf = _FixedDataFormat.getInstance(clazz).toBytes(clazz.cast(val));
                         System.arraycopy(buf, 0, bytes, s, buf.length);
                         return;
                     }
@@ -465,7 +465,7 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
                         if (clazz.getDeclaredAnnotation(FixedData.class) != null) {
                             Object arr = Array.newInstance(clazz, arrayLength);
                             @SuppressWarnings({ "rawtypes" })
-                            FixedDataFormat fdf = FixedDataFormat.getInstance(clazz);
+                            _FixedDataFormat fdf = _FixedDataFormat.getInstance(clazz);
                             for (int i = 0 ; i < arrayLength ; i++) {
                                 Array.set(arr, i, fdf.toClass(bytes, s + (fdf.getFixedDataSize() * i)));
                             }
@@ -475,7 +475,7 @@ public class FixedDataFormat<T> extends AbstractDataFormat {
                     } else if (type.startsWith("java.util.List<")) {
                         // not support yet
                     } else {
-                        method.invoke(obj, FixedDataFormat.getInstance(method.getParameterTypes()[0]).toClass(bytes, s));
+                        method.invoke(obj, _FixedDataFormat.getInstance(method.getParameterTypes()[0]).toClass(bytes, s));
                         return;
                     }
                     
