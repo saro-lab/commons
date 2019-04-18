@@ -1,11 +1,11 @@
-package me.saro.commons.bytes.annotations;
+package me.saro.commons.bytes.fd.annotations;
 
 /**
  *  Date Type
  * @author      PARK Yong Seo
  * @since       1.4
  */
-public enum FixedDateType {
+public enum DateDataType {
     
     /**
      * time millis 8byte binary

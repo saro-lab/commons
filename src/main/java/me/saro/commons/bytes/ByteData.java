@@ -666,7 +666,6 @@ public class ByteData {
 
     /**
      * allocate
-     * 
      * @param totalSize
      */
     private void allocate(int totalSize) {
