@@ -1,8 +1,6 @@
 package me.saro.commons.bytes.fd;
 
-import java.util.Arrays;
-
-import com.sun.xml.internal.txw2.IllegalAnnotationException;
+import java.util.stream.Stream;
 
 import me.saro.commons.bytes.fd.annotations.FixedDataClass;
 
@@ -29,14 +27,16 @@ public class FixedDataImpl implements FixedData {
     
     private void init() {
         if (fixedDataClassInfo == null) {
-            throw new IllegalAnnotationException(clazz.getName() + " is not defined @FixedDataClass");
+            throw new IllegalArgumentException(clazz.getName() + " is not defined @FixedDataClass");
         }
         
         // get field have data annotation
-        Arrays.asList(clazz.getFields())
-            .parallelStream()
-            .map(FixedField::new)
-            .filter(FixedField::hasDataAnnotation);
+        Stream.of(clazz.getFields()).parallel()
+            .map(field -> new FixedField(clazz, field))
+            .filter(FixedField::isReflectionTarget)
+            .forEach(e -> {
+                
+            });
     }
     
     @Override
