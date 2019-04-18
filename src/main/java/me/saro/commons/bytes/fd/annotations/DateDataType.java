@@ -5,7 +5,7 @@ package me.saro.commons.bytes.fd.annotations;
  * @author      PARK Yong Seo
  * @since       1.4
  */
-public enum DateType {
+public enum DateDataType {
     
     /**
      * time millis 8byte binary

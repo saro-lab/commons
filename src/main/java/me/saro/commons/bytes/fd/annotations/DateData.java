@@ -12,13 +12,13 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Date {
+public @interface DateData {
     
     /**
      * FixedDateType
      * @return
      */
-    DateType type() default DateType.textFormat;
+    DateDataType type() default DateDataType.textFormat;
     
     /**
      * offset

@@ -15,10 +15,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import me.saro.commons.bytes.Bytes;
 import me.saro.commons.bytes._FixedDataFormat;
-import me.saro.commons.bytes.annotations.FixedBinary;
-import me.saro.commons.bytes.annotations.FixedData;
-import me.saro.commons.bytes.annotations.FixedText;
-import me.saro.commons.bytes.annotations.FixedTextAlign;
+import me.saro.commons.bytes.fd.annotations.BinaryData;
+import me.saro.commons.bytes.fd.annotations.FixedDataClass;
+import me.saro.commons.bytes.fd.annotations.TextData;
+import me.saro.commons.bytes.fd.annotations.TextDataAlign;
 
 public class FixedDataTest {
 
@@ -141,128 +141,128 @@ public class FixedDataTest {
     }
     
     @Data
-    @FixedData(size=30, fill=0)
+    @FixedDataClass(size=30, fill=0)
     @NoArgsConstructor
     @AllArgsConstructor
     public static class BinaryStruct {
         
-        @FixedBinary(offset=0)
+        @BinaryData(offset=0)
         byte byteData;
         
-        @FixedBinary(offset=1)
+        @BinaryData(offset=1)
         short shortData;
         
-        @FixedBinary(offset=3)
+        @BinaryData(offset=3)
         int intData;
         
-        @FixedBinary(offset=7)
+        @BinaryData(offset=7)
         Long longData; // test long -> Long
         
-        @FixedBinary(offset=15)
+        @BinaryData(offset=15)
         float floatData;
         
-        @FixedBinary(offset=19)
+        @BinaryData(offset=19)
         double doubleData;
         
-        @FixedBinary(offset=27, arrayLength=3)
+        @BinaryData(offset=27, arrayLength=3)
         byte[] bytesData;
     }
     
     @Data
-    @FixedData(size=100, fill=0, charset="UTF-8")
+    @FixedDataClass(size=100, fill=0, charset="UTF-8")
     @NoArgsConstructor
     @AllArgsConstructor
     public static class TextStruct {
         
-        @FixedText(offset=0, length=3, unsigned=true)
+        @TextData(offset=0, length=3, unsigned=true)
         byte byteData;
         
-        @FixedText(offset=3, length=7)
+        @TextData(offset=3, length=7)
         Short shortData;
         
-        @FixedText(offset=10, length=10, radix=16, fill='0', align=FixedTextAlign.right)
+        @TextData(offset=10, length=10, radix=16, fill='0', align=TextDataAlign.right)
         int intData;
         
-        @FixedText(offset=20, length=20)
+        @TextData(offset=20, length=20)
         long longData;
         
-        @FixedText(offset=40, length=20)
+        @TextData(offset=40, length=20)
         float floatData;
         
-        @FixedText(offset=60, length=20)
+        @TextData(offset=60, length=20)
         double doubleData;
         
-        @FixedText(offset=80, length=10)
+        @TextData(offset=80, length=10)
         String leftText;
         
-        @FixedText(offset=90, length=10, align=FixedTextAlign.right)
+        @TextData(offset=90, length=10, align=TextDataAlign.right)
         String rightText;
     }
     
     @Data
-    @FixedData(size=34, charset="UTF-8")
+    @FixedDataClass(size=34, charset="UTF-8")
     @NoArgsConstructor
     @AllArgsConstructor
     public static class MixedStruct {
         
-        @FixedText(offset=0, length=15)
+        @TextData(offset=0, length=15)
         String firstName;
         
-        @FixedText(offset=15, length=15)
+        @TextData(offset=15, length=15)
         String lastName;
         
-        @FixedBinary(offset=30)
+        @BinaryData(offset=30)
         int memberId;
     }
     
     @Data
-    @FixedData(size=40)
+    @FixedDataClass(size=40)
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ArrayStruct {
         
-        @FixedBinary(offset=0)
+        @BinaryData(offset=0)
         int member1;
         
-        @FixedBinary(offset=4, arrayLength=4)
+        @BinaryData(offset=4, arrayLength=4)
         int[] member2;
         
-        @FixedBinary(offset=20, arrayLength=2)
+        @BinaryData(offset=20, arrayLength=2)
         List<Long> member3;
         
-        @FixedBinary(offset=36, arrayLength=2)
+        @BinaryData(offset=36, arrayLength=2)
         Short[] member4;
     }
     
     @Data
-    @FixedData(size=74)
+    @FixedDataClass(size=74)
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ParentStruct {
         
-        @FixedBinary(offset=0)
+        @BinaryData(offset=0)
         ChildStruct ch;
         
-        @FixedBinary(offset=14, arrayLength=2)
+        @BinaryData(offset=14, arrayLength=2)
         ChildStruct[] chArr;
         
-        @FixedBinary(offset=42, arrayLength=2)
+        @BinaryData(offset=42, arrayLength=2)
         ChildStruct[] chList;
         
-        @FixedBinary(offset=70)
+        @BinaryData(offset=70)
         int main;
     }
     
     @Data
-    @FixedData(size=14)
+    @FixedDataClass(size=14)
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ChildStruct {
         
-        @FixedBinary(offset=0)
+        @BinaryData(offset=0)
         int no;
         
-        @FixedText(offset=4, length=10)
+        @TextData(offset=4, length=10)
         String text;
     }
 }

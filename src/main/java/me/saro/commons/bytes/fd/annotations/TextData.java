@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Text {
+public @interface TextData {
     
     /**
      * offset
@@ -56,7 +56,7 @@ public @interface Text {
      * align
      * @return
      * @see
-     * TextAlign
+     * TextDataAlign
      */
-    TextAlign align() default TextAlign.left;
+    TextDataAlign align() default TextDataAlign.left;
 }
