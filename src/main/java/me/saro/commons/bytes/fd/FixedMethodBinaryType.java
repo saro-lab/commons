@@ -29,10 +29,11 @@ public class FixedMethodBinaryType implements FixedMethod {
 
     @SuppressWarnings("unchecked")
     @Override
-    public FixedMethodConsumer toBytes(Type genericReturnType, Method method) {
+    public FixedMethodConsumer toBytes(Method method) {
         
         int arrayLength = meta.arrayLength();
         int offset = meta.offset();
+        Type genericReturnType = method.getGenericReturnType();
         String genericReturnTypeName = genericReturnType.getTypeName();
         Class<?> returnTypeClass = method.getReturnType();
         
@@ -144,10 +145,11 @@ public class FixedMethodBinaryType implements FixedMethod {
     }
 
     @Override
-    public FixedMethodConsumer toClass(Type genericParameterType, Method method) {
+    public FixedMethodConsumer toClass(Method method) {
         
         int arrayLength = meta.arrayLength();
         int offset = meta.offset();
+        Type genericParameterType = method.getGenericParameterTypes()[0];
         String genericParameterTypeName = genericParameterType.getTypeName();
         Class<?> parameterTypeClass = method.getParameterTypes()[0];
         
