@@ -131,7 +131,9 @@ public class FixedMethodBinaryType implements FixedMethod {
                                 }
                             };
                         }
-                    } catch (ClassNotFoundException e) {}
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
                     
                 } else if (returnTypeClass.getDeclaredAnnotation(FixedDataClass.class) != null) {
                     
@@ -244,21 +246,22 @@ public class FixedMethodBinaryType implements FixedMethod {
                             FixedData fd = FixedData.getInstance(clazz);
                             int size = fd.size();
                             return (bytes, idx, val) -> {
-                                @SuppressWarnings("unchecked")
-                                List<?> list = new ArrayList<>(List.class.cast(val));
-                                for (int i = 0 ; i < list.size() ; i++) {
+                                List<?> list = new ArrayList<>();
+                                for (int i = 0 ; i < arrayLength ; i++) {
                                     list.add(fd.toClass(bytes, idx + offset + (size * i)));
                                 }
                                 method.invoke(val, list);
                             };
                         }
-                    } catch (ClassNotFoundException e) {}
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
                     
                 } else if (parameterTypeClass.getDeclaredAnnotation(FixedDataClass.class) != null) {
                     
                     // -- @FixedDataClass
                     FixedData fd = FixedData.getInstance(parameterTypeClass);
-                    return (bytes, idx, val) -> method.invoke(val, fd.toClass(bytes, idx + offset));
+                    return (bytes, idx, val) -> method.invoke(val, fd.<Object>toClass(bytes, idx + offset));
                     
                 }
         }
