@@ -3,19 +3,14 @@ package me.saro.commons.bytes.fd;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 import me.saro.commons.Converter;
 import me.saro.commons.bytes.Bytes;
-import me.saro.commons.bytes._FixedDataFormat;
 import me.saro.commons.bytes.fd.annotations.BinaryData;
 import me.saro.commons.bytes.fd.annotations.FixedDataClass;
-import me.saro.commons.bytes.fd.annotations.TextData;
-import me.saro.commons.function.ThrowableTriConsumer;
 
 /**
  * FixedMethodBinaryType
@@ -34,7 +29,7 @@ public class FixedMethodBinaryType implements FixedMethod {
 
     @SuppressWarnings("unchecked")
     @Override
-    public FixedMethodConsumer toByte(Class<?> parameterType, String genericParameterType) {
+    public FixedMethodConsumer toByte(Class<?> parameterType, String genericParameterType, String methodName) {
         
         final int arrayLength = meta.arrayLength();
         final int offset = meta.offset();
@@ -104,8 +99,46 @@ public class FixedMethodBinaryType implements FixedMethod {
             default : 
                 
                 
+                if (genericParameterType.endsWith("[]")) {
+                    
+                    // -- @FixedDataClass[]
+                    Class<?> componentType = parameterType.getComponentType();
+                    if (componentType.getDeclaredAnnotation(FixedDataClass.class) != null) {
+                        FixedData fd = FixedData.getInstance(componentType);
+                        int size = fd.size();
+                        return (bytes, idx, val) -> {
+                            for (int i = 0 ; i < arrayLength ; i++) {
+                                fd.bindBytes(Array.get(val, i), bytes, offset + idx + (size * i));
+                            }
+                        };
+                    }
+                    
+                } else if (genericParameterType.startsWith("java.util.List<")) {
+                    
+                    // -- List<@FixedDataClass>
+                    try {
+                        Class<?> clazz = Class.forName(genericParameterType.substring(genericParameterType.indexOf('<'), genericParameterType.lastIndexOf('>'))).getClass();
+                        if (clazz.getDeclaredAnnotation(FixedDataClass.class) != null) {
+                            FixedData fd = FixedData.getInstance(clazz);
+                            int size = fd.size();
+                            return (bytes, idx, val) -> {
+                                List<?> list = List.class.cast(val);
+                                for (int i = 0 ; i < list.size() ; i++) {
+                                    fd.bindBytes(list.get(i), bytes, offset + idx + (size * i));
+                                }
+                            };
+                        }
+                    } catch (ClassNotFoundException e) {}
+                    
+                } else if (parameterType.getDeclaredAnnotation(FixedDataClass.class) != null) {
+                    
+                    // -- @FixedDataClass
+                    FixedData fd = FixedData.getInstance(parameterType);
+                    return (bytes, idx, val) -> fd.bindBytes(val, bytes, offset + idx);
+                    
+                }
         }
-        throw new IllegalArgumentException("does not support return type of "+type+" " + method.getName() + "()");
+        throw new IllegalArgumentException("does not support return type of "+genericParameterType+" " + methodName + "() in " + parentClassName);
     }
 
     @Override
@@ -201,16 +234,19 @@ public class FixedMethodBinaryType implements FixedMethod {
                     // -- List<@FixedDataClass>
                     try {
                         Class<?> clazz = Class.forName(genericReturnType.substring(genericReturnType.indexOf('<'), genericReturnType.lastIndexOf('>'))).getClass();
-                        FixedData fd = FixedData.getInstance(clazz);
-                        int size = fd.size();
-                        return (bytes, idx, val) -> {
-                            List<?> list = List.class.cast(val);
-                            for (int i = 0 ; i < list.size() ; i++) {
-                                method.invoke(val, fd.toClass(bytes, idx + offset + (size * i)));
-                            }
-                        };
+                        if (clazz.getDeclaredAnnotation(FixedDataClass.class) != null) {
+                            FixedData fd = FixedData.getInstance(clazz);
+                            int size = fd.size();
+                            return (bytes, idx, val) -> {
+                                @SuppressWarnings("unchecked")
+                                List<?> list = new ArrayList<>(List.class.cast(val));
+                                for (int i = 0 ; i < list.size() ; i++) {
+                                    list.add(fd.toClass(bytes, idx + offset + (size * i)));
+                                }
+                                method.invoke(val, list);
+                            };
+                        }
                     } catch (ClassNotFoundException e) {}
-                    // not support yet
                     
                 } else if (returnType.getDeclaredAnnotation(FixedDataClass.class) != null) {
                     
