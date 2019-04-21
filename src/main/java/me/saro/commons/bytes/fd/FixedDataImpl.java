@@ -1,5 +1,6 @@
 package me.saro.commons.bytes.fd;
 
+import java.lang.reflect.Field;
 import java.util.stream.Stream;
 
 import me.saro.commons.bytes.fd.annotations.FixedDataClass;
@@ -31,7 +32,8 @@ public class FixedDataImpl implements FixedData {
         }
         
         // get field have data annotation
-        Stream.of(clazz.getFields()).parallel()
+        Field[] fields = clazz.getFields();
+        Stream.of(fields).parallel()
             .map(field -> new FixedField(clazz, field))
             .filter(FixedField::isReflectionTarget)
             .forEach(e -> {
