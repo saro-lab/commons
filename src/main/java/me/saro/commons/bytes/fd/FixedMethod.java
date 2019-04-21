@@ -1,6 +1,5 @@
 package me.saro.commons.bytes.fd;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
@@ -10,6 +9,6 @@ import java.lang.reflect.Type;
  * @since       4.0.0
  */
 public interface FixedMethod {
-    FixedMethodConsumer toByte(Type genericParameterType, Method method);
-    FixedMethodConsumer toClass(Type genericReturnType, Method method) throws InvocationTargetException, IllegalAccessException;
+    FixedMethodConsumer toBytes(Type genericReturnType, Method method);
+    FixedMethodConsumer toClass(Type genericParameterType, Method method);
 }
