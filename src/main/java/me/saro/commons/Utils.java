@@ -96,6 +96,32 @@ public class Utils {
     }
     
     /**
+     * Null Execute Logic
+     * @param val
+     * @param isNotNull
+     * @param isNull
+     */
+    @SneakyThrows
+    public static void nel(Object val, ThrowableRunnable isNotNull, ThrowableRunnable isNull) {
+        if (val != null) {
+            if (isNotNull != null) {
+                isNotNull.run();
+            }
+        } else if (isNull != null) {
+            isNull.run();
+        }
+    }
+    
+    /**
+     * Null Execute Logic
+     * @param val
+     * @param isNotNull
+     */
+    public static void nel(Object val, ThrowableRunnable isNotNull) {
+        nel(val, isNotNull, null);
+    }
+    
+    /**
      * is blank
      * @param val
      * @return
