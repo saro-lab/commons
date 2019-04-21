@@ -3,6 +3,7 @@ package me.saro.commons.bytes.fd;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,11 +30,13 @@ public class FixedMethodBinaryType implements FixedMethod {
 
     @SuppressWarnings("unchecked")
     @Override
-    public FixedMethodConsumer toByte(Class<?> genericParameterType, Method method) {
+    public FixedMethodConsumer toByte(Type genericParameterType, Method method) {
         
-        final int arrayLength = meta.arrayLength();
-        final int offset = meta.offset();
-        final String genericParameterTypeName = genericParameterType.getTypeName();
+        int arrayLength = meta.arrayLength();
+        int offset = meta.offset();
+        String genericParameterTypeName = genericParameterType.getTypeName();
+        Class<?> genericParameterTypeClass = genericParameterType.getClass();
+        
         
         switch (genericParameterTypeName) {
             // object
@@ -103,7 +106,7 @@ public class FixedMethodBinaryType implements FixedMethod {
                 if (genericParameterTypeName.endsWith("[]")) {
                     
                     // -- @FixedDataClass[]
-                    Class<?> componentType = genericParameterType.getComponentType();
+                    Class<?> componentType = genericParameterTypeClass.getComponentType();
                     if (componentType.getDeclaredAnnotation(FixedDataClass.class) != null) {
                         FixedData fd = FixedData.getInstance(componentType);
                         int size = fd.size();
@@ -131,10 +134,10 @@ public class FixedMethodBinaryType implements FixedMethod {
                         }
                     } catch (ClassNotFoundException e) {}
                     
-                } else if (genericParameterType.getDeclaredAnnotation(FixedDataClass.class) != null) {
+                } else if (genericParameterTypeClass.getDeclaredAnnotation(FixedDataClass.class) != null) {
                     
                     // -- @FixedDataClass
-                    FixedData fd = FixedData.getInstance(genericParameterType);
+                    FixedData fd = FixedData.getInstance(genericParameterTypeClass);
                     return (bytes, idx, val) -> fd.bindBytes(val, bytes, offset + idx);
                     
                 }
@@ -143,11 +146,12 @@ public class FixedMethodBinaryType implements FixedMethod {
     }
 
     @Override
-    public FixedMethodConsumer toClass(Class<?> genericReturnType, Method method) throws InvocationTargetException {
+    public FixedMethodConsumer toClass(Type genericReturnType, Method method) throws InvocationTargetException {
         
-        final int arrayLength = meta.arrayLength();
-        final int offset = meta.offset();
+        int arrayLength = meta.arrayLength();
+        int offset = meta.offset();
         String genericReturnTypeName = genericReturnType.getTypeName();
+        Class<?> genericReturnTypeClass = genericReturnType.getClass();
         
         switch (genericReturnTypeName) {
             
@@ -217,7 +221,7 @@ public class FixedMethodBinaryType implements FixedMethod {
                 if (genericReturnTypeName.endsWith("[]")) {
                     
                     // -- @FixedDataClass[]
-                    Class<?> componentType = genericReturnType.getComponentType();
+                    Class<?> componentType = genericReturnTypeClass.getComponentType();
                     // type check : support only the FixedDataClass
                     if (componentType.getDeclaredAnnotation(FixedDataClass.class) != null) {
                         FixedData fd = FixedData.getInstance(componentType);
@@ -250,10 +254,10 @@ public class FixedMethodBinaryType implements FixedMethod {
                         }
                     } catch (ClassNotFoundException e) {}
                     
-                } else if (genericReturnType.getDeclaredAnnotation(FixedDataClass.class) != null) {
+                } else if (genericReturnTypeClass.getDeclaredAnnotation(FixedDataClass.class) != null) {
                     
                     // -- @FixedDataClass
-                    FixedData fd = FixedData.getInstance(genericReturnType);
+                    FixedData fd = FixedData.getInstance(genericReturnTypeClass);
                     return (bytes, idx, val) -> method.invoke(val, fd.toClass(bytes, idx + offset));
                     
                 }
