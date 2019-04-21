@@ -49,8 +49,8 @@ public class FixedDataImpl implements FixedData {
         
         // get field have data annotation
         Field[] fields = clazz.getDeclaredFields();
-        toBytesConsumers = FixedMethodUtils.toBytesConsumers(clazz, fields);
-        toClassConsumers = FixedMethodUtils.toClassConsumers(clazz, fields);
+        toBytesConsumers = FixedMethodUtils.toBytesConsumers(fixedDataClassInfo, clazz, fields);
+        toClassConsumers = FixedMethodUtils.toClassConsumers(fixedDataClassInfo, clazz, fields);
     }
     
     @Override
