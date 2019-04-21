@@ -1,8 +1,8 @@
 package me.saro.commons.bytes.fd;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,125 +29,133 @@ public class FixedMethodBinaryType implements FixedMethod {
 
     @SuppressWarnings("unchecked")
     @Override
-    public FixedMethodConsumer toByte(Class<?> parameterType, String genericParameterType, String methodName) {
+    public FixedMethodConsumer toBytes(Method method) {
         
-        final int arrayLength = meta.arrayLength();
-        final int offset = meta.offset();
+        int arrayLength = meta.arrayLength();
+        int offset = meta.offset();
+        Type genericReturnType = method.getGenericReturnType();
+        String genericReturnTypeName = genericReturnType.getTypeName();
+        Class<?> returnTypeClass = method.getReturnType();
         
-        switch (genericParameterType) {
+        switch (genericReturnTypeName) {
             // object
             case "byte" : case "java.lang.Byte" :
-                return (bytes, idx, val) -> bytes[offset + idx] = (byte)val;
+                return (bytes, idx, val) -> bytes[offset + idx] = (byte)method.invoke(val);
                 
             case "short" : case "java.lang.Short" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((short)val), 0, bytes, offset + idx, 2);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((short)method.invoke(val)), 0, bytes, offset + idx, 2);
                 
             case "int" : case "java.lang.Integer" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((int)val), 0, bytes, offset + idx, 4);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((int)method.invoke(val)), 0, bytes, offset + idx, 4);
                 
             case "long" : case "java.lang.Long" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((long)val), 0, bytes, offset + idx, 8);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((long)method.invoke(val)), 0, bytes, offset + idx, 8);
                 
             case "float" : case "java.lang.Float" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((float)val), 0, bytes, offset + idx, 4);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((float)method.invoke(val)), 0, bytes, offset + idx, 4);
                 
             case "double" : case "java.lang.Double" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((double)val), 0, bytes, offset + idx, 8);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((double)method.invoke(val)), 0, bytes, offset + idx, 8);
             
             // basic array and list
             case "byte[]" : 
-                return (bytes, idx, val) -> System.arraycopy(val, 0, bytes, offset + idx, arrayLength);
+                return (bytes, idx, val) -> System.arraycopy(method.invoke(val), 0, bytes, offset + idx, arrayLength);
             case "java.lang.Byte[]" : 
-                return (bytes, idx, val) -> System.arraycopy(Converter.toPrimitive((Byte[])val), 0, bytes, offset + idx, arrayLength);
+                return (bytes, idx, val) -> System.arraycopy(Converter.toPrimitive((Byte[])method.invoke(val)), 0, bytes, offset + idx, arrayLength);
             
             case "short[]" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((short[])val), 0, bytes, offset + idx, arrayLength * 2);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((short[])method.invoke(val)), 0, bytes, offset + idx, arrayLength * 2);
             case "java.lang.Short[]" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toPrimitive((Short[])val)), 0, bytes, offset + idx, arrayLength * 2);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toPrimitive((Short[])method.invoke(val))), 0, bytes, offset + idx, arrayLength * 2);
             case "java.util.List<java.lang.Short>" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toShortArray((List<Short>)val)), 0, bytes, offset + idx, arrayLength * 2);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toShortArray((List<Short>)method.invoke(val))), 0, bytes, offset + idx, arrayLength * 2);
             
             case "int[]" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((int[])val), 0, bytes, offset + idx, arrayLength * 4);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((int[])method.invoke(val)), 0, bytes, offset + idx, arrayLength * 4);
             case "java.lang.Integer[]" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toPrimitive((Integer[])val)), 0, bytes, offset + idx, arrayLength * 4);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toPrimitive((Integer[])method.invoke(val))), 0, bytes, offset + idx, arrayLength * 4);
             case "java.util.List<java.lang.Integer>" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toIntArray((List<Integer>)val)), 0, bytes, offset + idx, arrayLength * 4);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toIntArray((List<Integer>)method.invoke(val))), 0, bytes, offset + idx, arrayLength * 4);
             
             case "long[]" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((long[])val), 0, bytes, offset + idx, arrayLength * 8);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((long[])method.invoke(val)), 0, bytes, offset + idx, arrayLength * 8);
             case "java.lang.Long[]" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toPrimitive((Long[])val)), 0, bytes, offset + idx, arrayLength * 8);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toPrimitive((Long[])method.invoke(val))), 0, bytes, offset + idx, arrayLength * 8);
             case "java.util.List<java.lang.Long>" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toLongArray((List<Long>)val)), 0, bytes, offset + idx, arrayLength * 8);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toLongArray((List<Long>)method.invoke(val))), 0, bytes, offset + idx, arrayLength * 8);
             
             case "float[]" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((float[])val), 0, bytes, offset + idx, arrayLength * 4);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((float[])method.invoke(val)), 0, bytes, offset + idx, arrayLength * 4);
             case "java.lang.Float[]" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toPrimitive((Float[])val)), 0, bytes, offset + idx, arrayLength * 4);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toPrimitive((Float[])method.invoke(val))), 0, bytes, offset + idx, arrayLength * 4);
             case "java.util.List<java.lang.Float>" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toFloatArray((List<Float>)val)), 0, bytes, offset + idx, arrayLength * 4);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toFloatArray((List<Float>)method.invoke(val))), 0, bytes, offset + idx, arrayLength * 4);
             
             case "double[]" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((double[])val), 0, bytes, offset + idx, arrayLength * 8);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((double[])method.invoke(val)), 0, bytes, offset + idx, arrayLength * 8);
             case "java.lang.Double[]" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toPrimitive((Double[])val)), 0, bytes, offset + idx, arrayLength * 8);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toPrimitive((Double[])method.invoke(val))), 0, bytes, offset + idx, arrayLength * 8);
             case "java.util.List<java.lang.Double>" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toDoubleArray((List<Double>)val)), 0, bytes, offset + idx, arrayLength * 8);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toDoubleArray((List<Double>)method.invoke(val))), 0, bytes, offset + idx, arrayLength * 8);
             
             // there is not contained a basic types 
             default : 
                 
                 
-                if (genericParameterType.endsWith("[]")) {
+                if (genericReturnTypeName.endsWith("[]")) {
                     
                     // -- @FixedDataClass[]
-                    Class<?> componentType = parameterType.getComponentType();
+                    Class<?> componentType = returnTypeClass.getComponentType();
                     if (componentType.getDeclaredAnnotation(FixedDataClass.class) != null) {
                         FixedData fd = FixedData.getInstance(componentType);
                         int size = fd.size();
                         return (bytes, idx, val) -> {
                             for (int i = 0 ; i < arrayLength ; i++) {
-                                fd.bindBytes(Array.get(val, i), bytes, offset + idx + (size * i));
+                                fd.bindBytes(Array.get(method.invoke(val), i), bytes, offset + idx + (size * i));
                             }
                         };
                     }
                     
-                } else if (genericParameterType.startsWith("java.util.List<")) {
+                } else if (genericReturnTypeName.startsWith("java.util.List<")) {
                     
                     // -- List<@FixedDataClass>
                     try {
-                        Class<?> clazz = Class.forName(genericParameterType.substring(genericParameterType.indexOf('<'), genericParameterType.lastIndexOf('>'))).getClass();
+                        Class<?> clazz = ClassLoader.getSystemClassLoader().loadClass(genericReturnTypeName.substring(genericReturnTypeName.indexOf('<') + 1, genericReturnTypeName.lastIndexOf('>')));
                         if (clazz.getDeclaredAnnotation(FixedDataClass.class) != null) {
                             FixedData fd = FixedData.getInstance(clazz);
                             int size = fd.size();
                             return (bytes, idx, val) -> {
-                                List<?> list = List.class.cast(val);
+                                List<?> list = List.class.cast(method.invoke(val));
                                 for (int i = 0 ; i < list.size() ; i++) {
                                     fd.bindBytes(list.get(i), bytes, offset + idx + (size * i));
                                 }
                             };
                         }
-                    } catch (ClassNotFoundException e) {}
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
                     
-                } else if (parameterType.getDeclaredAnnotation(FixedDataClass.class) != null) {
+                } else if (returnTypeClass.getDeclaredAnnotation(FixedDataClass.class) != null) {
                     
                     // -- @FixedDataClass
-                    FixedData fd = FixedData.getInstance(parameterType);
-                    return (bytes, idx, val) -> fd.bindBytes(val, bytes, offset + idx);
+                    FixedData fd = FixedData.getInstance(returnTypeClass);
+                    return (bytes, idx, val) -> fd.bindBytes(method.invoke(val), bytes, offset + idx);
                     
                 }
         }
-        throw new IllegalArgumentException("does not support return type of "+genericParameterType+" " + methodName + "() in " + parentClassName);
+        throw new IllegalArgumentException("does not support return type of "+genericReturnTypeName+" " + method.getName() + "() in " + parentClassName);
     }
 
     @Override
-    public FixedMethodConsumer toClass(Class<?> returnType, String genericReturnType, Method method) throws InvocationTargetException {
+    public FixedMethodConsumer toClass(Method method) {
         
-        final int arrayLength = meta.arrayLength();
-        final int offset = meta.offset();
+        int arrayLength = meta.arrayLength();
+        int offset = meta.offset();
+        Type genericParameterType = method.getGenericParameterTypes()[0];
+        String genericParameterTypeName = genericParameterType.getTypeName();
+        Class<?> parameterTypeClass = method.getParameterTypes()[0];
         
-        switch (genericReturnType) {
+        switch (genericParameterTypeName) {
             
             // object
             case "byte" : case "java.lang.Byte" : 
@@ -212,10 +220,10 @@ public class FixedMethodBinaryType implements FixedMethod {
             // there is not contained a basic types 
             default :
                 
-                if (genericReturnType.endsWith("[]")) {
+                if (genericParameterTypeName.endsWith("[]")) {
                     
                     // -- @FixedDataClass[]
-                    Class<?> componentType = returnType.getComponentType();
+                    Class<?> componentType = parameterTypeClass.getComponentType();
                     // type check : support only the FixedDataClass
                     if (componentType.getDeclaredAnnotation(FixedDataClass.class) != null) {
                         FixedData fd = FixedData.getInstance(componentType);
@@ -229,34 +237,35 @@ public class FixedMethodBinaryType implements FixedMethod {
                         };
                     }
                     
-                } else if (genericReturnType.startsWith("java.util.List<")) {
+                } else if (genericParameterTypeName.startsWith("java.util.List<")) {
                     
                     // -- List<@FixedDataClass>
                     try {
-                        Class<?> clazz = Class.forName(genericReturnType.substring(genericReturnType.indexOf('<'), genericReturnType.lastIndexOf('>'))).getClass();
+                        Class<?> clazz = ClassLoader.getSystemClassLoader().loadClass(genericParameterTypeName.substring(genericParameterTypeName.indexOf('<') + 1, genericParameterTypeName.lastIndexOf('>')));
                         if (clazz.getDeclaredAnnotation(FixedDataClass.class) != null) {
                             FixedData fd = FixedData.getInstance(clazz);
                             int size = fd.size();
                             return (bytes, idx, val) -> {
-                                @SuppressWarnings("unchecked")
-                                List<?> list = new ArrayList<>(List.class.cast(val));
-                                for (int i = 0 ; i < list.size() ; i++) {
+                                List<?> list = new ArrayList<>();
+                                for (int i = 0 ; i < arrayLength ; i++) {
                                     list.add(fd.toClass(bytes, idx + offset + (size * i)));
                                 }
                                 method.invoke(val, list);
                             };
                         }
-                    } catch (ClassNotFoundException e) {}
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
                     
-                } else if (returnType.getDeclaredAnnotation(FixedDataClass.class) != null) {
+                } else if (parameterTypeClass.getDeclaredAnnotation(FixedDataClass.class) != null) {
                     
                     // -- @FixedDataClass
-                    FixedData fd = FixedData.getInstance(returnType);
-                    return (bytes, idx, val) -> method.invoke(val, fd.toClass(bytes, idx + offset));
+                    FixedData fd = FixedData.getInstance(parameterTypeClass);
+                    return (bytes, idx, val) -> method.invoke(val, fd.<Object>toClass(bytes, idx + offset));
                     
                 }
         }
-        throw new IllegalArgumentException("does not support parameter type of void " + method.getName() + "("+genericReturnType+") in the " + parentClassName);
+        throw new IllegalArgumentException("does not support parameter type of void " + method.getName() + "("+genericParameterTypeName+") in the " + parentClassName);
     }
 
 }

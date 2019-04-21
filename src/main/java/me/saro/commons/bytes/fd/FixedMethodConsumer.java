@@ -9,5 +9,5 @@ import java.lang.reflect.InvocationTargetException;
  */
 @FunctionalInterface
 public interface FixedMethodConsumer {
-    void toClass(byte[] bytes, int idx, Object val) throws InvocationTargetException, IllegalAccessException;
+    void to(byte[] bytes, int idx, Object val) throws InvocationTargetException, IllegalAccessException;
 }

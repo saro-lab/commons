@@ -53,6 +53,12 @@ public @interface TextData {
     String charset() default "";
     
     /**
+     * emptyIsNull
+     * @return
+     */
+    boolean emptyIsNull() default true;
+    
+    /**
      * align
      * @return
      * @see
