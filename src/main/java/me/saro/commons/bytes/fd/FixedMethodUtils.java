@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 import lombok.SneakyThrows;
 import me.saro.commons.bytes.fd.annotations.BinaryData;
 import me.saro.commons.bytes.fd.annotations.DateData;
+import me.saro.commons.bytes.fd.annotations.FixedDataClass;
 import me.saro.commons.bytes.fd.annotations.TextData;
 
 /**
@@ -21,22 +22,13 @@ import me.saro.commons.bytes.fd.annotations.TextData;
  */
 public class FixedMethodUtils {
     
-    public static List<FixedMethodConsumer> toBytesConsumers(final Class<?> clazz, final Field[] fields) {
+    public static List<FixedMethodConsumer> toBytesConsumers(FixedDataClass fixedDataClassInfo, final Class<?> clazz, final Field[] fields) {
         List<FixedMethodConsumer> list = new ArrayList<FixedMethodConsumer>();
         for (Field field : fields) {
-            Annotation type = getType(clazz, field);
+            FixedMethod fixedMethod = getFixedMethod(fixedDataClassInfo, clazz, field);
             Method method;
-            if (type != null && (method = getMethod(clazz, field, "get")) != null) {
-                switch (type.annotationType().getSimpleName()) {
-                    case "BinaryData" :
-                        list.add(new FixedMethodBinaryType(clazz.getName(), (BinaryData)type).toBytes(method.getGenericReturnType(), method));
-                        break;
-                    case "TextData" :
-                            
-                        
-                    case "DateData" :
-                            
-                }
+            if (fixedMethod != null && (method = getMethod(clazz, field, "get")) != null) {
+                list.add(fixedMethod.toBytes(method));
             }
             
         }
@@ -44,47 +36,47 @@ public class FixedMethodUtils {
     }
     
     @SneakyThrows
-    public static List<FixedMethodConsumer> toClassConsumers(final Class<?> clazz, final Field[] fields) {
+    public static List<FixedMethodConsumer> toClassConsumers(FixedDataClass fixedDataClassInfo, final Class<?> clazz, final Field[] fields) {        
         List<FixedMethodConsumer> list = new ArrayList<FixedMethodConsumer>();
         for (Field field : fields) {
-            Annotation type = getType(clazz, field);
+            FixedMethod fixedMethod = getFixedMethod(fixedDataClassInfo, clazz, field);
             Method method;
-            if (type != null && (method = getMethod(clazz, field, "set")) != null) {
-                switch (type.annotationType().getSimpleName()) {
-                    case "BinaryData" :
-                        list.add(new FixedMethodBinaryType(clazz.getName(), (BinaryData)type).toClass(method.getGenericParameterTypes()[0], method));
-                        break;
-                    case "TextData" :
-                            
-                        
-                    case "DateData" :
-                            
-                }
+            if (fixedMethod != null && (method = getMethod(clazz, field, "set")) != null) {
+                list.add(fixedMethod.toClass(method));
             }
             
         }
         return list;
     }
     
-    private static Annotation getType(final Class<?> clazz, final Field field) {
+    private static FixedMethod getFixedMethod(FixedDataClass fixedDataClassInfo, final Class<?> clazz, final Field field) {
         int cnt = 0;
         List<Annotation> annotations = 
                 Arrays.asList(field.getDeclaredAnnotation(TextData.class), field.getDeclaredAnnotation(BinaryData.class), field.getDeclaredAnnotation(DateData.class));
-        Annotation rv = null;
+        Annotation dataType = null;
         for (Annotation annotation : annotations) {
             if (annotation != null) {
                 cnt++;
-                rv = annotation;
+                dataType = annotation;
             }
         }
-        if (cnt > 1) {
+        if (cnt == 1) {
+            switch (dataType.annotationType().getSimpleName()) {
+                case "BinaryData" :
+                    return new FixedMethodBinaryType(clazz.getName(), (BinaryData)dataType);
+                case "TextData" :
+                    return new FixedMethodTextType(fixedDataClassInfo, clazz.getName(), (TextData)dataType);
+                case "DateData" :
+                    return new FixedMethodDateType(clazz.getName(), (DateData)dataType);
+            }
+        } else if (cnt > 1) {
             throw new IllegalArgumentException(
                 "one data field must have one data field annotation but " + clazz.getName() + "." + field.getName() +
                 " have many annotations : " +
                 annotations.stream().map(e -> "@" + e.annotationType().getName()).collect(Collectors.joining(", "))
             );
         }
-        return rv;
+        return null;
     }
     
     private static Method getMethod(final Class<?> clazz, final Field field, String type) {
