@@ -1,12 +1,15 @@
 package me.saro.commons.bytes.fd;
 
-import java.util.stream.Stream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.util.List;
 
+import lombok.SneakyThrows;
 import me.saro.commons.bytes.fd.annotations.FixedDataClass;
+import me.saro.commons.function.ThrowableConsumer;
 
 /**
- * Fixed Data Mapper Impl<br>
- * thead-safe
+ * Fixed Data Mapper Impl
  * @author      PARK Yong Seo
  * @since       3.1.0
  */
@@ -14,6 +17,10 @@ public class FixedDataImpl implements FixedData {
 
     final Class<?> clazz;
     final FixedDataClass fixedDataClassInfo;
+    
+    Constructor<?> constructor;
+    List<FixedMethodConsumer> toBytesConsumers;
+    List<FixedMethodConsumer> toClassConsumers;
     
     FixedDataImpl(Class<?> clazz) {
         if (clazz == null) {
@@ -30,13 +37,20 @@ public class FixedDataImpl implements FixedData {
             throw new IllegalArgumentException(clazz.getName() + " is not defined @FixedDataClass");
         }
         
+        for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
+            if (constructor.getParameterCount() == 0) {
+                this.constructor = constructor;
+                break;
+            }
+        }
+        if (this.constructor == null) {
+            throw new IllegalArgumentException(clazz.getName() + " does not have default Constructor");
+        }
+        
         // get field have data annotation
-        Stream.of(clazz.getFields()).parallel()
-            .map(field -> new FixedField(clazz, field))
-            .filter(FixedField::isReflectionTarget)
-            .forEach(e -> {
-                
-            });
+        Field[] fields = clazz.getDeclaredFields();
+        toBytesConsumers = FixedMethodUtils.toBytesConsumers(fixedDataClassInfo, clazz, fields);
+        toClassConsumers = FixedMethodUtils.toClassConsumers(fixedDataClassInfo, clazz, fields);
     }
     
     @Override
@@ -46,13 +60,15 @@ public class FixedDataImpl implements FixedData {
 
     @Override
     public byte[] bindBytes(Object data, byte[] out, int offset) {
-        // TODO Auto-generated method stub
-        return null;
+        toBytesConsumers.parallelStream().forEach(ThrowableConsumer.runtime(e -> e.to(out, offset, data)));
+        return out;
     }
 
-    @Override
+    @Override @SneakyThrows
     public <T> T toClass(byte[] bytes, int offset) {
-        // TODO Auto-generated method stub
-        return null;
+        @SuppressWarnings("unchecked")
+        T t = (T) constructor.newInstance();
+        toClassConsumers.parallelStream().forEach(ThrowableConsumer.runtime(e -> e.to(bytes, offset, t)));
+        return t;
     }
 }
