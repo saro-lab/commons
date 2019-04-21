@@ -1,7 +1,6 @@
 package me.saro.commons.bytes.fd;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 
 /**
  * FixedField
@@ -9,6 +8,6 @@ import java.lang.reflect.Type;
  * @since       4.0.0
  */
 public interface FixedMethod {
-    FixedMethodConsumer toBytes(Type genericReturnType, Method method);
-    FixedMethodConsumer toClass(Type genericParameterType, Method method);
+    FixedMethodConsumer toBytes(Method method);
+    FixedMethodConsumer toClass(Method method);
 }
