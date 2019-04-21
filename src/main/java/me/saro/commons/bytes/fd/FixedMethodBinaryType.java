@@ -29,12 +29,13 @@ public class FixedMethodBinaryType implements FixedMethod {
 
     @SuppressWarnings("unchecked")
     @Override
-    public FixedMethodConsumer toByte(Class<?> parameterType, String genericParameterType, String methodName) {
+    public FixedMethodConsumer toByte(Class<?> genericParameterType, Method method) {
         
         final int arrayLength = meta.arrayLength();
         final int offset = meta.offset();
+        final String genericParameterTypeName = genericParameterType.getTypeName();
         
-        switch (genericParameterType) {
+        switch (genericParameterTypeName) {
             // object
             case "byte" : case "java.lang.Byte" :
                 return (bytes, idx, val) -> bytes[offset + idx] = (byte)val;
@@ -99,10 +100,10 @@ public class FixedMethodBinaryType implements FixedMethod {
             default : 
                 
                 
-                if (genericParameterType.endsWith("[]")) {
+                if (genericParameterTypeName.endsWith("[]")) {
                     
                     // -- @FixedDataClass[]
-                    Class<?> componentType = parameterType.getComponentType();
+                    Class<?> componentType = genericParameterType.getComponentType();
                     if (componentType.getDeclaredAnnotation(FixedDataClass.class) != null) {
                         FixedData fd = FixedData.getInstance(componentType);
                         int size = fd.size();
@@ -113,11 +114,11 @@ public class FixedMethodBinaryType implements FixedMethod {
                         };
                     }
                     
-                } else if (genericParameterType.startsWith("java.util.List<")) {
+                } else if (genericParameterTypeName.startsWith("java.util.List<")) {
                     
                     // -- List<@FixedDataClass>
                     try {
-                        Class<?> clazz = Class.forName(genericParameterType.substring(genericParameterType.indexOf('<'), genericParameterType.lastIndexOf('>'))).getClass();
+                        Class<?> clazz = Class.forName(genericParameterTypeName.substring(genericParameterTypeName.indexOf('<'), genericParameterTypeName.lastIndexOf('>'))).getClass();
                         if (clazz.getDeclaredAnnotation(FixedDataClass.class) != null) {
                             FixedData fd = FixedData.getInstance(clazz);
                             int size = fd.size();
@@ -130,24 +131,25 @@ public class FixedMethodBinaryType implements FixedMethod {
                         }
                     } catch (ClassNotFoundException e) {}
                     
-                } else if (parameterType.getDeclaredAnnotation(FixedDataClass.class) != null) {
+                } else if (genericParameterType.getDeclaredAnnotation(FixedDataClass.class) != null) {
                     
                     // -- @FixedDataClass
-                    FixedData fd = FixedData.getInstance(parameterType);
+                    FixedData fd = FixedData.getInstance(genericParameterType);
                     return (bytes, idx, val) -> fd.bindBytes(val, bytes, offset + idx);
                     
                 }
         }
-        throw new IllegalArgumentException("does not support return type of "+genericParameterType+" " + methodName + "() in " + parentClassName);
+        throw new IllegalArgumentException("does not support return type of "+genericParameterTypeName+" " + method.getName() + "() in " + parentClassName);
     }
 
     @Override
-    public FixedMethodConsumer toClass(Class<?> returnType, String genericReturnType, Method method) throws InvocationTargetException {
+    public FixedMethodConsumer toClass(Class<?> genericReturnType, Method method) throws InvocationTargetException {
         
         final int arrayLength = meta.arrayLength();
         final int offset = meta.offset();
+        String genericReturnTypeName = genericReturnType.getTypeName();
         
-        switch (genericReturnType) {
+        switch (genericReturnTypeName) {
             
             // object
             case "byte" : case "java.lang.Byte" : 
@@ -212,10 +214,10 @@ public class FixedMethodBinaryType implements FixedMethod {
             // there is not contained a basic types 
             default :
                 
-                if (genericReturnType.endsWith("[]")) {
+                if (genericReturnTypeName.endsWith("[]")) {
                     
                     // -- @FixedDataClass[]
-                    Class<?> componentType = returnType.getComponentType();
+                    Class<?> componentType = genericReturnType.getComponentType();
                     // type check : support only the FixedDataClass
                     if (componentType.getDeclaredAnnotation(FixedDataClass.class) != null) {
                         FixedData fd = FixedData.getInstance(componentType);
@@ -229,11 +231,11 @@ public class FixedMethodBinaryType implements FixedMethod {
                         };
                     }
                     
-                } else if (genericReturnType.startsWith("java.util.List<")) {
+                } else if (genericReturnTypeName.startsWith("java.util.List<")) {
                     
                     // -- List<@FixedDataClass>
                     try {
-                        Class<?> clazz = Class.forName(genericReturnType.substring(genericReturnType.indexOf('<'), genericReturnType.lastIndexOf('>'))).getClass();
+                        Class<?> clazz = Class.forName(genericReturnTypeName.substring(genericReturnTypeName.indexOf('<'), genericReturnTypeName.lastIndexOf('>'))).getClass();
                         if (clazz.getDeclaredAnnotation(FixedDataClass.class) != null) {
                             FixedData fd = FixedData.getInstance(clazz);
                             int size = fd.size();
@@ -248,15 +250,15 @@ public class FixedMethodBinaryType implements FixedMethod {
                         }
                     } catch (ClassNotFoundException e) {}
                     
-                } else if (returnType.getDeclaredAnnotation(FixedDataClass.class) != null) {
+                } else if (genericReturnType.getDeclaredAnnotation(FixedDataClass.class) != null) {
                     
                     // -- @FixedDataClass
-                    FixedData fd = FixedData.getInstance(returnType);
+                    FixedData fd = FixedData.getInstance(genericReturnType);
                     return (bytes, idx, val) -> method.invoke(val, fd.toClass(bytes, idx + offset));
                     
                 }
         }
-        throw new IllegalArgumentException("does not support parameter type of void " + method.getName() + "("+genericReturnType+") in the " + parentClassName);
+        throw new IllegalArgumentException("does not support parameter type of void " + method.getName() + "("+genericReturnTypeName+") in the " + parentClassName);
     }
 
 }

@@ -9,6 +9,6 @@ import java.lang.reflect.Method;
  * @since       4.0.0
  */
 public interface FixedMethod {
-    FixedMethodConsumer toByte(Class<?> parameterType, final String genericParameterType, String methodName);
-    FixedMethodConsumer toClass(Class<?> returnType, final String genericReturnType, Method method) throws InvocationTargetException, IllegalAccessException;
+    FixedMethodConsumer toByte(Class<?> genericParameterType, Method method);
+    FixedMethodConsumer toClass(Class<?> genericReturnType, Method method) throws InvocationTargetException, IllegalAccessException;
 }
