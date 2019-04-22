@@ -35,7 +35,7 @@ public class FixedMethodDateType implements FixedMethod {
                 switch (type) {
                     case millis8 :return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(((Date)method.invoke(val)).getTime()), 0, bytes, offset + idx, 8);
                     case unix8 : return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((((Date)method.invoke(val))).getTime() / 1000), 0, bytes, offset + idx, 8);
-                    case unix4 : return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((int)((((Date)method.invoke(val))).getTime() / 1000)), 0, bytes, offset + idx, 4);
+                    case unix4 : return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((int)((((Date)method.invoke(val))).getTime() / 1000L)), 0, bytes, offset + idx, 4);
                 }
                 break;
             case "java.util.Calendar" : 
