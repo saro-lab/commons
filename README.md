@@ -160,6 +160,8 @@ Utils.inputStreamReader(InputStream, StreamReadConsumer)
 Utils.kill(Closeable) 
 Utils.kill(Thread) 
 Utils.linkStream(InputStream, OutputStream) 
+Utils.nel(Object, ThrowableRunnable) 
+Utils.nel(Object, ThrowableRunnable, ThrowableRunnable) 
 Utils.norNumber(String) : String
 Utils.nvl(T[]) : T
 Utils.parseDouble(String) : double
@@ -257,25 +259,19 @@ Shell.execute(String[]) : ShellResult
 # INSTANCE
 
 
-## FixedDataFormat
+## FixedData
 
-#### me.saro.commons.bytes.FixedDataFormat
+#### me.saro.commons.bytes.fd.FixedData
 
 ```
-FixedDataFormat.create(Class<T>) : FixedDataFormat<T>
-FixedDataFormat.create(Class<T>, Supplier<T>) : FixedDataFormat<T>
-FixedDataFormat.getInstance(Class<T>) : FixedDataFormat<T>
-bindBytes(OutputStream, T) 
-bindBytes(byte[], int, T) 
-bindClass(T, byte[]) 
-bindClass(T, byte[], int) 
-getFixedDataSize() : int
-toBytes(T) : byte[]
+FixedData.getInstance(Class<?>) : FixedData
+bindBytes(Object, OutputStream) : OutputStream
+bindBytes(Object, byte[]) : byte[]
+bindBytes(Object, byte[], int) : byte[]
+size() : int
+toBytes(Object) : byte[]
 toClass(byte[]) : T
 toClass(byte[], int) : T
-toClassWithCheckSize(String) : T
-toClassWithCheckSize(String, String) : T
-toClassWithCheckSize(byte[]) : T
 ```
 
 
@@ -399,6 +395,7 @@ setMonth(int) : DateFormat
 setSeconds(int) : DateFormat
 setTimeInMillis(long) : DateFormat
 setYear(int) : DateFormat
+toCalendar() : Calendar
 toDate() : Date
 toISO8601() : String
 toString() : String

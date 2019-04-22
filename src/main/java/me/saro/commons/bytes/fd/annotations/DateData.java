@@ -18,25 +18,11 @@ public @interface DateData {
      * FixedDateType
      * @return
      */
-    DateDataType type() default DateDataType.textFormat;
+    DateDataType type() default DateDataType.millis8;
     
     /**
      * offset
      * @return
      */
     int offset() default -1;
-    
-    /**
-     * byte length<br>
-     * exclusive use in the FixedDateType.textFormat
-     * @return
-     */
-    int length() default -1;
-    
-    /**
-     * date format<br>
-     * exclusive use in the FixedDateType.textFormat
-     * @return
-     */
-    String format() default "";
 }

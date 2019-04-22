@@ -8,22 +8,17 @@ package me.saro.commons.bytes.fd.annotations;
 public enum DateDataType {
     
     /**
-     * time millis 8byte binary
+     * time millis : 8byte long
      */
     millis8,
     
     /**
-     * unix time 4byte binary
+     * unix time : 4byte int
      */
-    unixTime4,
+    unix4,
     
     /**
-     * unix time 8byte binary
+     * unix time : 8byte long
      */
-    unixTime8,
-    
-    /**
-     * textFormat
-     */
-    textFormat
+    unix8
 }

@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -16,6 +18,8 @@ import lombok.NoArgsConstructor;
 import me.saro.commons.bytes.Bytes;
 import me.saro.commons.bytes.fd.FixedData;
 import me.saro.commons.bytes.fd.annotations.BinaryData;
+import me.saro.commons.bytes.fd.annotations.DateData;
+import me.saro.commons.bytes.fd.annotations.DateDataType;
 import me.saro.commons.bytes.fd.annotations.FixedDataClass;
 import me.saro.commons.bytes.fd.annotations.TextData;
 import me.saro.commons.bytes.fd.annotations.TextDataAlign;
@@ -136,6 +140,26 @@ public class FixedDataTest {
         System.out.println(ms);
         System.out.println(fd.<ParentStruct>toClass(bytes, 0));
     }
+    
+    @Test
+    public void date() {
+        
+        FixedData fd = FixedData.getInstance(DateStruct.class);
+        DateStruct ms = new DateStruct(new Date(1555956870000L), Calendar.getInstance(), DateFormat.now());
+        
+        byte[] bytes = fd.toBytes(ms);
+        
+        assertEquals(bytes.length, 20);
+        
+        System.out.println(Bytes.toHex(bytes));
+        
+        assertEquals(Bytes.toHex(fd.toBytes(ms)), Bytes.toHex(fd.toBytes(fd.toClass(bytes, 0))));
+        
+        System.out.println(ms);
+        System.out.println(fd.<ParentStruct>toClass(bytes, 0));
+    }
+    
+    
     
     @Data
     @FixedDataClass(size=30, fill=0)
@@ -261,6 +285,22 @@ public class FixedDataTest {
         
         @TextData(offset=4, length=10)
         String text;
+    }
+    
+    @Data
+    @FixedDataClass(size=20)
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DateStruct {
+        
+        @DateData(offset=0, type=DateDataType.unix4)
+        Date date;
+        
+        @DateData(offset=4, type=DateDataType.unix8)
+        Calendar calendar;
+        
+        @DateData(offset=12, type=DateDataType.millis8)
+        DateFormat dateFormat;
     }
 }
 
