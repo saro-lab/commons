@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.Getter;
+
 /**
  * Date Format
  * <br>
@@ -418,7 +420,14 @@ public class DateFormat {
      * clone
      */
     public DateFormat clone() {
-        return new DateFormat((Calendar) this.calendar.clone());
+        return new DateFormat((Calendar)this.calendar.clone());
+    }
+    
+    /**
+     * toCalendar
+     */
+    public Calendar toCalendar() {
+        return (Calendar)this.calendar.clone();
     }
 
     /**

@@ -1,11 +1,13 @@
 package me.saro.commons.bytes.fd;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
+import java.util.Calendar;
+import java.util.Date;
 
+import me.saro.commons.DateFormat;
 import me.saro.commons.bytes.Bytes;
 import me.saro.commons.bytes.fd.annotations.DateData;
-import me.saro.commons.bytes.fd.annotations.TextData;
+import me.saro.commons.bytes.fd.annotations.DateDataType;
 
 /**
  * FixedMethodDateType
@@ -22,74 +24,70 @@ public class FixedMethodDateType implements FixedMethod {
         this.parentClassName = parentClassName;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public FixedMethodConsumer toBytes(Method method) {
-        
         int offset = meta.offset();
-        int length = meta.length();
-        Type genericReturnType = method.getGenericReturnType();
-        String genericReturnTypeName = genericReturnType.getTypeName();
-        Class<?> returnTypeClass = method.getReturnType();
+        DateDataType type = meta.type();
+        String genericReturnTypeName = method.getGenericReturnType().getTypeName();
         
         switch (genericReturnTypeName) {
-            case "java.lang.String" :
-            
-            case "byte" : case "java.lang.Byte" :
-                return (bytes, idx, val) -> bytes[offset + idx] = (byte)method.invoke(val);
-                
-            case "short" : case "java.lang.Short" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((short)method.invoke(val)), 0, bytes, offset + idx, 2);
-                
-            case "int" : case "java.lang.Integer" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((int)method.invoke(val)), 0, bytes, offset + idx, 4);
-                
-            case "long" : case "java.lang.Long" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((long)method.invoke(val)), 0, bytes, offset + idx, 8);
-                
-            case "float" : case "java.lang.Float" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((float)method.invoke(val)), 0, bytes, offset + idx, 4);
-                
-            case "double" : case "java.lang.Double" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((double)method.invoke(val)), 0, bytes, offset + idx, 8);
-            
-            
+            case "java.util.Date" : 
+                switch (type) {
+                    case millis8 :return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(((Date)method.invoke(val)).getTime()), 0, bytes, offset + idx, 8);
+                    case unix8 : return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((((Date)method.invoke(val))).getTime() / 1000), 0, bytes, offset + idx, 8);
+                    case unix4 : return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((int)((((Date)method.invoke(val))).getTime() / 1000L)), 0, bytes, offset + idx, 4);
+                }
+                break;
+            case "java.util.Calendar" : 
+                switch (type) {
+                    case millis8 :return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(((Calendar)method.invoke(val)).getTimeInMillis()), 0, bytes, offset + idx, 8);
+                    case unix8 : return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((((Calendar)method.invoke(val)).getTimeInMillis()) / 1000), 0, bytes, offset + idx, 8);
+                    case unix4 : return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((int)((((Calendar)method.invoke(val)).getTimeInMillis()) / 1000)), 0, bytes, offset + idx, 4);
+                }
+                break;
+            case "me.saro.commons.DateFormat" : 
+                switch (type) {
+                    case millis8 :return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(((DateFormat)method.invoke(val)).getTimeInMillis()), 0, bytes, offset + idx, 8);
+                    case unix8 : return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((((DateFormat)method.invoke(val)).getTimeInMillis()) / 1000), 0, bytes, offset + idx, 8);
+                    case unix4 : return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((int)((((DateFormat)method.invoke(val)).getTimeInMillis()) / 1000)), 0, bytes, offset + idx, 4);
+                }
+                break;
         }
-        throw new IllegalArgumentException("does not support return type of "+genericReturnTypeName+" " + method.getName() + "() in " + parentClassName);
+        throw new IllegalArgumentException("does not support type, support type [Date, Calendar, DateFormat] : "+genericReturnTypeName+" " + method.getName() + "() in " + parentClassName);
     }
 
     @Override
     public FixedMethodConsumer toClass(Method method) {
         
         int offset = meta.offset();
-        int length = meta.length();
-        Type genericParameterType = method.getGenericParameterTypes()[0];
-        String genericParameterTypeName = genericParameterType.getTypeName();
-        Class<?> parameterTypeClass = method.getParameterTypes()[0];
+        DateDataType type = meta.type();
+        String genericParameterTypeName = method.getGenericParameterTypes()[0].getTypeName();
+        
         
         switch (genericParameterTypeName) {
-            case "java.lang.String" :
-            // object
-            case "byte" : case "java.lang.Byte" : 
-                return (bytes, idx, val) -> method.invoke(val, bytes[idx + offset]);
-                
-            case "short" : case "java.lang.Short" : 
-                return (bytes, idx, val) -> method.invoke(val, Bytes.toShort(bytes, idx + offset));
-                
-            case "int" : case "java.lang.Integer" : 
-                return (bytes, idx, val) -> method.invoke(val, Bytes.toInt(bytes, idx + offset));
-                
-            case "long" : case "java.lang.Long" : 
-                return (bytes, idx, val) -> method.invoke(val, Bytes.toLong(bytes, idx + offset));
-                
-            case "float" : case "java.lang.Float" : 
-                return (bytes, idx, val) -> method.invoke(val, Bytes.toFloat(bytes, idx + offset));
-                
-            case "double" : case "java.lang.Double" : 
-                return (bytes, idx, val) -> method.invoke(val, Bytes.toDouble(bytes, idx + offset));
-            
-        }
-        throw new IllegalArgumentException("does not support parameter type of void " + method.getName() + "("+genericParameterTypeName+") in the " + parentClassName);
+        case "java.util.Date" : 
+            switch (type) {
+                case millis8 :return (bytes, idx, val) -> method.invoke(val, new Date(Bytes.toLong(bytes, idx + offset)));
+                case unix8 : return (bytes, idx, val) -> method.invoke(val, new Date(Bytes.toLong(bytes, idx + offset) * 1000));
+                case unix4 : return (bytes, idx, val) -> method.invoke(val, new Date(Integer.toUnsignedLong(Bytes.toInt(bytes, idx + offset)) * 1000));
+            }
+            break;
+        case "java.util.Calendar" : 
+            switch (type) {
+                case millis8 :return (bytes, idx, val) -> method.invoke(val, DateFormat.parse(Bytes.toLong(bytes, idx + offset)).toCalendar());
+                case unix8 : return (bytes, idx, val) -> method.invoke(val, DateFormat.parse(Bytes.toLong(bytes, idx + offset) * 1000).toCalendar());
+                case unix4 : return (bytes, idx, val) -> method.invoke(val, DateFormat.parse(Integer.toUnsignedLong(Bytes.toInt(bytes, idx + offset)) * 1000).toCalendar());
+            }
+            break;
+        case "me.saro.commons.DateFormat" :
+            switch (type) {
+                case millis8 :return (bytes, idx, val) -> method.invoke(val, DateFormat.parse(Bytes.toLong(bytes, idx + offset)));
+                case unix8 : return (bytes, idx, val) -> method.invoke(val, DateFormat.parse(Bytes.toLong(bytes, idx + offset) * 1000));
+                case unix4 : return (bytes, idx, val) -> method.invoke(val, DateFormat.parse(Integer.toUnsignedLong(Bytes.toInt(bytes, idx + offset)) * 1000));
+            }
+            break;
+    }
+        throw new IllegalArgumentException("does not support type, support type [Date, Calendar, DateFormat] : " + method.getName() + "("+genericParameterTypeName+") in the " + parentClassName);
     }
 
 }
