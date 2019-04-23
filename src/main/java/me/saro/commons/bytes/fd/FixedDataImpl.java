@@ -54,8 +54,13 @@ class FixedDataImpl implements FixedData {
     }
     
     @Override
-    public int size() {
-        return fixedDataClassInfo.size();
+    public FixedDataClass meta() {
+        return fixedDataClassInfo;
+    }
+    
+    @Override
+    public Class<?> getTargetClass() {
+        return clazz;
     }
 
     @Override

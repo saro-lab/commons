@@ -108,7 +108,7 @@ public class FixedMethodBinaryType implements FixedMethod {
                     Class<?> componentType = returnTypeClass.getComponentType();
                     if (componentType.getDeclaredAnnotation(FixedDataClass.class) != null) {
                         FixedData fd = FixedData.getInstance(componentType);
-                        int size = fd.size();
+                        int size = fd.meta().size();
                         return (bytes, idx, val) -> {
                             for (int i = 0 ; i < arrayLength ; i++) {
                                 fd.bindBytes(Array.get(method.invoke(val), i), bytes, offset + idx + (size * i));
@@ -123,7 +123,7 @@ public class FixedMethodBinaryType implements FixedMethod {
                         Class<?> clazz = ClassLoader.getSystemClassLoader().loadClass(genericReturnTypeName.substring(genericReturnTypeName.indexOf('<') + 1, genericReturnTypeName.lastIndexOf('>')));
                         if (clazz.getDeclaredAnnotation(FixedDataClass.class) != null) {
                             FixedData fd = FixedData.getInstance(clazz);
-                            int size = fd.size();
+                            int size = fd.meta().size();
                             return (bytes, idx, val) -> {
                                 List<?> list = List.class.cast(method.invoke(val));
                                 for (int i = 0 ; i < list.size() ; i++) {
@@ -227,7 +227,7 @@ public class FixedMethodBinaryType implements FixedMethod {
                     // type check : support only the FixedDataClass
                     if (componentType.getDeclaredAnnotation(FixedDataClass.class) != null) {
                         FixedData fd = FixedData.getInstance(componentType);
-                        int size = fd.size();
+                        int size = fd.meta().size();
                         return (bytes, idx, val) -> {
                             Object arr = Array.newInstance(componentType, arrayLength);
                             for (int i = 0 ; i < arrayLength ; i++) {
@@ -244,7 +244,7 @@ public class FixedMethodBinaryType implements FixedMethod {
                         Class<?> clazz = ClassLoader.getSystemClassLoader().loadClass(genericParameterTypeName.substring(genericParameterTypeName.indexOf('<') + 1, genericParameterTypeName.lastIndexOf('>')));
                         if (clazz.getDeclaredAnnotation(FixedDataClass.class) != null) {
                             FixedData fd = FixedData.getInstance(clazz);
-                            int size = fd.size();
+                            int size = fd.meta().size();
                             return (bytes, idx, val) -> {
                                 List<?> list = new ArrayList<>();
                                 for (int i = 0 ; i < arrayLength ; i++) {
