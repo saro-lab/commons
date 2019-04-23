@@ -5,6 +5,9 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.SneakyThrows;
+import me.saro.commons.bytes.fd.annotations.FixedDataClass;
+
 /**
  * Fixed Data Mapper
  * @author      PARK Yong Seo
@@ -31,10 +34,16 @@ public interface FixedData {
     }
     
     /**
-     * get byte size of the "FixedData" class
+     * meta info
      * @return
      */
-    int size();
+    FixedDataClass meta();
+    
+    /**
+     * get class
+     * @return
+     */
+    Class<?> getTargetClass();
     
     /**
      * bytes to class
@@ -63,12 +72,39 @@ public interface FixedData {
     }
     
     /**
+     * String to class
+     * @param bytes
+     * @return
+     */
+    @SneakyThrows
+    default <T> T toClass(String data) {
+        return toClass(data.getBytes(meta().charset()), 0);
+    }
+    
+    /**
+     * String to class<br>
+     * check byte
+     * @param bytes
+     * @return
+     */
+    default <T> T toClassWithCheckByte(String data) throws IOException {
+        byte[] buf = data.getBytes(meta().charset());
+        if (buf.length != meta().size()) {
+            throw new IOException(
+                "size incorrect " + getTargetClass().getName() + " size is " + meta().size() + "byte " +
+                "but data size "+buf.length+", data info [" + meta().charset() + "][" + data + "]"
+            );
+        }
+        return toClass(buf, 0);
+    }
+    
+    /**
      * class to bytes
      * @param data
      * @return
      */
     default byte[] toBytes(Object data) {
-        return bindBytes(data, new byte[size()]);
+        return bindBytes(data, new byte[meta().size()]);
     }
     
     /**
