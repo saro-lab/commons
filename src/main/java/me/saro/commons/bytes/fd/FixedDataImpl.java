@@ -13,7 +13,7 @@ import me.saro.commons.function.ThrowableConsumer;
  * @author      PARK Yong Seo
  * @since       3.1.0
  */
-public class FixedDataImpl implements FixedData {
+class FixedDataImpl implements FixedData {
 
     final Class<?> clazz;
     final FixedDataClass fixedDataClassInfo;
