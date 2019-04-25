@@ -503,4 +503,43 @@ public class Bytes {
     public static double toDouble(byte[] val) {
         return ByteBuffer.wrap(val, 0, 8).getDouble();
     }
+    
+    /**
+     * reverse byte
+     * offset to length
+     * @param data
+     * @param offset
+     * @param length
+     */
+    public static void reverse(byte[] data, int offset, int length) {
+        if (length < 1) {
+            throw new IllegalArgumentException("length must much more then 0");
+        } else if (length == 1) {
+            return;
+        }
+        byte t;
+        int move = length / 2;
+        for (int i = 0, s = offset, e = length - 1 ; i < move ; i++, s++, e--) {
+            t = data[s];
+            data[s] = data[e];
+            data[e] = t;
+        }
+    }
+    
+    /**
+     * reverse byte
+     * offset to (length unit) * arrayLength
+     * @param data
+     * @param offset
+     * @param length
+     * @param arrayLength
+     */
+    public static void reverse(byte[] data, int offset, int length, int arrayLength) {
+        if (arrayLength < 1) {
+            throw new IllegalArgumentException("arrayLength must much more then 0");
+        }
+        for (int i = 0 ; i < arrayLength ; i++) {
+            reverse(data, offset + (i * length), length);
+        }
+    }
 }
