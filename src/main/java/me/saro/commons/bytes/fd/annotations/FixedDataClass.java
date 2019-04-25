@@ -47,5 +47,5 @@ public @interface FixedDataClass {
     /**
      * endian
      */
-    boolean isBigEndian() default true;
+    boolean bigEndian() default true;
 }
