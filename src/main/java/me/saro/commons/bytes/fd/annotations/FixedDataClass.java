@@ -43,4 +43,9 @@ public @interface FixedDataClass {
      * @return
      */
     String charset() default "UTF-8";
+    
+    /**
+     * endian
+     */
+    boolean isBigEndian() default true;
 }
