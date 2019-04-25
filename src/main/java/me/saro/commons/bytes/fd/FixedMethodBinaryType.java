@@ -21,8 +21,10 @@ public class FixedMethodBinaryType implements FixedMethod {
     
     final BinaryData meta;
     final String parentClassName;
+    final FixedDataClass fixedDataClassInfo;
 
-    FixedMethodBinaryType(String parentClassName, BinaryData binaryData) {
+    FixedMethodBinaryType(FixedDataClass fixedDataClassInfo, String parentClassName, BinaryData binaryData) {
+        this.fixedDataClassInfo = fixedDataClassInfo;
         this.meta = binaryData;
         this.parentClassName = parentClassName;
     }
