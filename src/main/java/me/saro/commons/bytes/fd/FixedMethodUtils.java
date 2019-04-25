@@ -63,11 +63,11 @@ public class FixedMethodUtils {
         if (cnt == 1) {
             switch (dataType.annotationType().getSimpleName()) {
                 case "BinaryData" :
-                    return new FixedMethodBinaryType(clazz.getName(), (BinaryData)dataType);
+                    return new FixedMethodBinaryType(fixedDataClassInfo, clazz.getName(), (BinaryData)dataType);
                 case "TextData" :
                     return new FixedMethodTextType(fixedDataClassInfo, clazz.getName(), (TextData)dataType);
                 case "DateData" :
-                    return new FixedMethodDateType(clazz.getName(), (DateData)dataType);
+                    return new FixedMethodDateType(fixedDataClassInfo, clazz.getName(), (DateData)dataType);
             }
         } else if (cnt > 1) {
             throw new IllegalArgumentException(
