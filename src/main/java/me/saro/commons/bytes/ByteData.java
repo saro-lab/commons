@@ -9,6 +9,8 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
+import com.sun.jna.Memory;
+
 import lombok.SneakyThrows;
 
 /**
@@ -646,6 +648,31 @@ public class ByteData {
                     + "], ByteDataSize[" + writePointer + "]");
         }
         return Arrays.copyOfRange(buf, offset, length);
+    }
+    
+    /**
+     * to bytes
+     * @param memory
+     * @return
+     */
+    public byte[] toBytes(Memory memory) {
+        int size = (int)memory.size();
+        byte[] rv = new byte[size];
+        memory.write(0, rv, 0, size);
+        return rv;
+    }
+    
+    /**
+     * to Memory
+     * @param bytes
+     * @param offset
+     * @param length
+     * @return
+     */
+    public Memory toMemory(byte[] bytes) {
+        Memory m = new Memory(bytes.length);
+        m.read(0, bytes, 0, bytes.length);
+        return m;
     }
     
     /**
