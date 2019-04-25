@@ -2,6 +2,7 @@ package me.saro.commons.bytes;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.Base64.Encoder;
@@ -505,17 +506,62 @@ public class Bytes {
     }
     
     /**
+     * reverse
+     * @param data
+     * @param reverse true : do reverse, false : n/a
+     */
+    public static byte[] copy(byte[] data, boolean reverse) {
+        if (reverse) {
+            return reverse(Arrays.copyOf(data, data.length));
+        } else {
+            return Arrays.copyOf(data, data.length);
+        }
+    }
+    
+    /**
+     * reverse
+     * @param data
+     * @param reverse true : do reverse, false : n/a
+     */
+    public static byte[] reverse(byte[] data, boolean reverse) {
+        if (reverse) {
+            return reverse(data);
+        }
+        return data;
+    }
+    
+    /**
+     * reverse
+     * @param data
+     * @param reverse true : do reverse, false : n/a
+     */
+    public static byte[] reverse(byte[] data, int offset, int length, boolean reverse) {
+        if (reverse) {
+            return reverse(data, offset, length);
+        }
+        return data;
+    }
+    
+    /**
+     * reverse byte
+     * @param data
+     */
+    public static byte[] reverse(byte[] data) {
+        return reverse(data, 0, data.length);
+    }
+    
+    /**
      * reverse byte
      * offset to length
      * @param data
      * @param offset
      * @param length
      */
-    public static void reverse(byte[] data, int offset, int length) {
+    public static byte[] reverse(byte[] data, int offset, int length) {
         if (length < 1) {
             throw new IllegalArgumentException("length must much more then 0");
         } else if (length == 1) {
-            return;
+            return data;
         }
         byte t;
         int move = length / 2;
@@ -524,6 +570,7 @@ public class Bytes {
             data[s] = data[e];
             data[e] = t;
         }
+        return data;
     }
     
     /**
@@ -534,12 +581,13 @@ public class Bytes {
      * @param length
      * @param arrayLength
      */
-    public static void reverse(byte[] data, int offset, int length, int arrayLength) {
+    public static byte[] reverse(byte[] data, int offset, int length, int arrayLength) {
         if (arrayLength < 1) {
             throw new IllegalArgumentException("arrayLength must much more then 0");
         }
         for (int i = 0 ; i < arrayLength ; i++) {
             reverse(data, offset + (i * length), length);
         }
+        return data;
     }
 }
