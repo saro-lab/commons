@@ -521,6 +521,19 @@ public class Bytes {
     /**
      * reverse
      * @param data
+     * @param reverse true : do reverse, false : just copy
+     */
+    public static byte[] copy(byte[] data, int offset, int length, boolean reverse) {
+        if (reverse) {
+            return reverse(Arrays.copyOfRange(data, offset, length));
+        } else {
+            return Arrays.copyOfRange(data, offset, length);
+        }
+    }
+    
+    /**
+     * reverse
+     * @param data
      * @param reverse true : do reverse, false : n/a
      */
     public static byte[] reverse(byte[] data, boolean reverse) {
