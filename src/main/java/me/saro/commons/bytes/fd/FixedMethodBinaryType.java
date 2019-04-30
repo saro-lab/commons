@@ -35,6 +35,7 @@ public class FixedMethodBinaryType implements FixedMethod {
         
         int arrayLength = meta.arrayLength();
         int offset = meta.offset();
+        boolean le = !fixedDataClassInfo.bigEndian();
         Type genericReturnType = method.getGenericReturnType();
         String genericReturnTypeName = genericReturnType.getTypeName();
         Class<?> returnTypeClass = method.getReturnType();
@@ -153,6 +154,7 @@ public class FixedMethodBinaryType implements FixedMethod {
         
         int arrayLength = meta.arrayLength();
         int offset = meta.offset();
+        boolean le = !fixedDataClassInfo.bigEndian();
         Type genericParameterType = method.getGenericParameterTypes()[0];
         String genericParameterTypeName = genericParameterType.getTypeName();
         Class<?> parameterTypeClass = method.getParameterTypes()[0];
