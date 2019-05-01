@@ -11,14 +11,14 @@
 <dependency>
   <groupId>me.saro</groupId>
   <artifactId>commons</artifactId>
-  <version>4.0.0</version>
+  <version>4.0.1</version>
 </dependency>
 ```
 
 ## gradle
 
 ```
-compile 'me.saro:commons:4.0.0'
+compile 'me.saro:commons:4.0.1'
 ```
 
 ## repository
@@ -97,10 +97,17 @@ Converter.toUnPrimitive(short[]) : Short[]
 #### me.saro.commons.bytes.Bytes
 
 ```
+Bytes.copy(byte[], boolean) : byte[]
+Bytes.copy(byte[], int, int, boolean) : byte[]
 Bytes.decodeBase64(String) : byte[]
 Bytes.decodeBase64(String, String) : String
 Bytes.encodeBase64String(String, String) : String
 Bytes.encodeBase64String(byte[]) : String
+Bytes.reverse(byte[]) : byte[]
+Bytes.reverse(byte[], boolean) : byte[]
+Bytes.reverse(byte[], int, int) : byte[]
+Bytes.reverse(byte[], int, int, boolean) : byte[]
+Bytes.reverse(byte[], int, int, int) : byte[]
 Bytes.toBytes(double) : byte[]
 Bytes.toBytes(double[]) : byte[]
 Bytes.toBytes(double[], int, int) : byte[]
@@ -156,12 +163,12 @@ Utils.executeAllThreads(ExecutorService, List<T>, ThrowableFunction<T, R>) : Lis
 Utils.executeAllThreads(int, List<T>, ThrowableFunction<T, R>) : List<R>
 Utils.groupBy(List<T>, Function<? super T, ? extends K>) : Collection<List<T>>
 Utils.inputStreamLineReader(InputStream, String, ThrowableFunction<Stream<String>, T>) : T
-Utils.inputStreamReader(InputStream, StreamReadConsumer) 
-Utils.kill(Closeable) 
-Utils.kill(Thread) 
-Utils.linkStream(InputStream, OutputStream) 
-Utils.nel(Object, ThrowableRunnable) 
-Utils.nel(Object, ThrowableRunnable, ThrowableRunnable) 
+Utils.inputStreamReader(InputStream, StreamReadConsumer)
+Utils.kill(Closeable)
+Utils.kill(Thread)
+Utils.linkStream(InputStream, OutputStream)
+Utils.nel(Object, ThrowableRunnable)
+Utils.nel(Object, ThrowableRunnable, ThrowableRunnable)
 Utils.norNumber(String) : String
 Utils.nvl(T[]) : T
 Utils.parseDouble(String) : double
@@ -182,13 +189,14 @@ Utils.zerofill(long, int) : String
 
 ```
 Files.attributesFilter(ThrowablePredicate<BasicFileAttributes>) : Predicate<File>
-Files.createFile(File, boolean, InputStream) 
-Files.createFile(File, boolean, String, String) 
+Files.createFile(File, boolean, InputStream)
+Files.createFile(File, boolean, String, String)
 Files.lineReader(File, String, ThrowableFunction<Stream<String>, T>) : T
 Files.lineReader(String, String, ThrowableFunction<Stream<String>, T>) : T
 Files.listFilesStream(File) : Stream<File>
 Files.listFilesStream(String) : Stream<File>
 Files.move(File, File, boolean) : boolean
+Files.move(List<File>, String, boolean) : int
 Files.toBasicFileAttributes(File) : BasicFileAttributes
 Files.toFileExt(File) : String
 Files.toFileExt(String) : String
@@ -214,9 +222,9 @@ Maps.toMap(Object[]) : Map<K, V>
 #### me.saro.commons.Zips
 
 ```
-Zips.openFromFile(File, ThrowableTriConsumer<String, ZipEntry, InputStream>) 
-Zips.openFromWeb(BasicWeb, ThrowableTriConsumer<String, ZipEntry, InputStream>) 
-Zips.openStreamNotClose(InputStream, ThrowableTriConsumer<String, ZipEntry, InputStream>) 
+Zips.openFromFile(File, ThrowableTriConsumer<String, ZipEntry, InputStream>)
+Zips.openFromWeb(BasicWeb, ThrowableTriConsumer<String, ZipEntry, InputStream>)
+Zips.openStreamNotClose(InputStream, ThrowableTriConsumer<String, ZipEntry, InputStream>)
 ```
 
 
@@ -268,10 +276,13 @@ FixedData.getInstance(Class<?>) : FixedData
 bindBytes(Object, OutputStream) : OutputStream
 bindBytes(Object, byte[]) : byte[]
 bindBytes(Object, byte[], int) : byte[]
-size() : int
+getTargetClass() : Class<?>
+meta() : FixedDataClass
 toBytes(Object) : byte[]
+toClass(String) : T
 toClass(byte[]) : T
 toClass(byte[], int) : T
+toClassWithCheckByte(String) : T
 ```
 
 
@@ -286,7 +297,7 @@ FTP.openFTPS(InetAddress, int, String, String) : FTP
 FTP.openFTPS(String, int, String, String) : FTP
 FTP.openSFTP(String, int, String, String) : FTP
 cd(String) : boolean
-close() 
+close()
 delete(String) : boolean
 hasDirectory(String) : boolean
 hasFile(String) : boolean
@@ -298,7 +309,7 @@ mkdir(String) : boolean
 path() : String
 path(String) : boolean
 pwd() : String
-recv(List<String>, File) 
+recv(List<String>, File)
 recv(String, File) : boolean
 send(File) : boolean
 send(String, File) : boolean
@@ -312,8 +323,8 @@ send(String, File) : boolean
 ```
 Crypt.decrypt(String, byte[], byte[]) : Crypt
 Crypt.encrypt(String, byte[], byte[]) : Crypt
-to(File, File, boolean) 
-to(InputStream, OutputStream) 
+to(File, File, boolean)
+to(InputStream, OutputStream)
 toBase64(byte[]) : String
 toBase64(byte[], int, int) : String
 toBase64ByBase64(String) : String
@@ -335,11 +346,11 @@ toHexByHex(String) : String
 
 ```
 SSHShell.open(String, int, String, String, String, ThrowableConsumer<String>) : SSHShell
-close() 
-cmd(String[]) 
-cmdExitAndJoinEOF() 
+close()
+cmd(String[])
+cmdExitAndJoinEOF()
 isConnected() : boolean
-joinEOF() 
+joinEOF()
 ```
 
 
@@ -350,7 +361,7 @@ joinEOF()
 ```
 SSHExecutor.just(String, int, String, String, String, String[]) : String
 SSHExecutor.open(String, int, String, String, String) : SSHExecutor
-close() 
+close()
 cmd(String[]) : String
 ```
 
@@ -484,7 +495,9 @@ readTextLong(int, long) : long
 rectifyWritePointer() : ByteData
 size() : int
 toBytes() : byte[]
+toBytes(Memory) : byte[]
 toBytes(int, int) : byte[]
+toMemory(byte[]) : Memory
 toString() : String
 write(File) : ByteData
 write(File, String) : ByteData
@@ -547,7 +560,7 @@ writeJsonByClass(Object) : Web
 #### me.saro.commons.NullOutputStream
 
 ```
-write(int) 
+write(int)
 ```
 
 # FUNCTION INTERFACE
