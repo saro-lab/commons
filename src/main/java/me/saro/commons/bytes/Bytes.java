@@ -525,9 +525,9 @@ public class Bytes {
      */
     public static byte[] copy(byte[] data, int offset, int length, boolean reverse) {
         if (reverse) {
-            return reverse(Arrays.copyOfRange(data, offset, length));
+            return reverse(Arrays.copyOfRange(data, offset, offset + length));
         } else {
-            return Arrays.copyOfRange(data, offset, length);
+            return Arrays.copyOfRange(data, offset, offset + length);
         }
     }
     
