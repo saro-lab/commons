@@ -46,19 +46,19 @@ public class FixedMethodBinaryType implements FixedMethod {
                 return (bytes, idx, val) -> bytes[offset + idx] = (byte)method.invoke(val);
                 
             case "short" : case "java.lang.Short" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((short)method.invoke(val)), 0, bytes, offset + idx, 2);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.copy(Bytes.toBytes((short)method.invoke(val)), le), 0, bytes, offset + idx, 2);
                 
             case "int" : case "java.lang.Integer" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((int)method.invoke(val)), 0, bytes, offset + idx, 4);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.copy(Bytes.toBytes((int)method.invoke(val)), le), 0, bytes, offset + idx, 4);
                 
             case "long" : case "java.lang.Long" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((long)method.invoke(val)), 0, bytes, offset + idx, 8);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.copy(Bytes.toBytes((long)method.invoke(val)), le), 0, bytes, offset + idx, 8);
                 
             case "float" : case "java.lang.Float" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((float)method.invoke(val)), 0, bytes, offset + idx, 4);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.copy(Bytes.toBytes((float)method.invoke(val)), le), 0, bytes, offset + idx, 4);
                 
             case "double" : case "java.lang.Double" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((double)method.invoke(val)), 0, bytes, offset + idx, 8);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.copy(Bytes.toBytes((double)method.invoke(val)), le), 0, bytes, offset + idx, 8);
             
             // basic array and list
             case "byte[]" : 
@@ -67,39 +67,39 @@ public class FixedMethodBinaryType implements FixedMethod {
                 return (bytes, idx, val) -> System.arraycopy(Converter.toPrimitive((Byte[])method.invoke(val)), 0, bytes, offset + idx, arrayLength);
             
             case "short[]" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((short[])method.invoke(val)), 0, bytes, offset + idx, arrayLength * 2);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.copy(Bytes.toBytes((short[])method.invoke(val)), le), 0, bytes, offset + idx, arrayLength * 2);
             case "java.lang.Short[]" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toPrimitive((Short[])method.invoke(val))), 0, bytes, offset + idx, arrayLength * 2);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.copy(Bytes.toBytes(Converter.toPrimitive((Short[])method.invoke(val))), le), 0, bytes, offset + idx, arrayLength * 2);
             case "java.util.List<java.lang.Short>" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toShortArray((List<Short>)method.invoke(val))), 0, bytes, offset + idx, arrayLength * 2);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.copy(Bytes.toBytes(Converter.toShortArray((List<Short>)method.invoke(val))), le), 0, bytes, offset + idx, arrayLength * 2);
             
             case "int[]" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((int[])method.invoke(val)), 0, bytes, offset + idx, arrayLength * 4);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.copy(Bytes.toBytes((int[])method.invoke(val)), le), 0, bytes, offset + idx, arrayLength * 4);
             case "java.lang.Integer[]" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toPrimitive((Integer[])method.invoke(val))), 0, bytes, offset + idx, arrayLength * 4);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.copy(Bytes.toBytes(Converter.toPrimitive((Integer[])method.invoke(val))), le), 0, bytes, offset + idx, arrayLength * 4);
             case "java.util.List<java.lang.Integer>" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toIntArray((List<Integer>)method.invoke(val))), 0, bytes, offset + idx, arrayLength * 4);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.copy(Bytes.toBytes(Converter.toIntArray((List<Integer>)method.invoke(val))), le), 0, bytes, offset + idx, arrayLength * 4);
             
             case "long[]" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((long[])method.invoke(val)), 0, bytes, offset + idx, arrayLength * 8);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.copy(Bytes.toBytes((long[])method.invoke(val)), le), 0, bytes, offset + idx, arrayLength * 8);
             case "java.lang.Long[]" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toPrimitive((Long[])method.invoke(val))), 0, bytes, offset + idx, arrayLength * 8);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.copy(Bytes.toBytes(Converter.toPrimitive((Long[])method.invoke(val))), le), 0, bytes, offset + idx, arrayLength * 8);
             case "java.util.List<java.lang.Long>" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toLongArray((List<Long>)method.invoke(val))), 0, bytes, offset + idx, arrayLength * 8);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.copy(Bytes.toBytes(Converter.toLongArray((List<Long>)method.invoke(val))), le), 0, bytes, offset + idx, arrayLength * 8);
             
             case "float[]" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((float[])method.invoke(val)), 0, bytes, offset + idx, arrayLength * 4);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.copy(Bytes.toBytes((float[])method.invoke(val)), le), 0, bytes, offset + idx, arrayLength * 4);
             case "java.lang.Float[]" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toPrimitive((Float[])method.invoke(val))), 0, bytes, offset + idx, arrayLength * 4);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.copy(Bytes.toBytes(Converter.toPrimitive((Float[])method.invoke(val))), le), 0, bytes, offset + idx, arrayLength * 4);
             case "java.util.List<java.lang.Float>" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toFloatArray((List<Float>)method.invoke(val))), 0, bytes, offset + idx, arrayLength * 4);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.copy(Bytes.toBytes(Converter.toFloatArray((List<Float>)method.invoke(val))), le), 0, bytes, offset + idx, arrayLength * 4);
             
             case "double[]" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes((double[])method.invoke(val)), 0, bytes, offset + idx, arrayLength * 8);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.copy(Bytes.toBytes((double[])method.invoke(val)), le), 0, bytes, offset + idx, arrayLength * 8);
             case "java.lang.Double[]" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toPrimitive((Double[])method.invoke(val))), 0, bytes, offset + idx, arrayLength * 8);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.copy(Bytes.toBytes(Converter.toPrimitive((Double[])method.invoke(val))), le), 0, bytes, offset + idx, arrayLength * 8);
             case "java.util.List<java.lang.Double>" : 
-                return (bytes, idx, val) -> System.arraycopy(Bytes.toBytes(Converter.toDoubleArray((List<Double>)method.invoke(val))), 0, bytes, offset + idx, arrayLength * 8);
+                return (bytes, idx, val) -> System.arraycopy(Bytes.copy(Bytes.toBytes(Converter.toDoubleArray((List<Double>)method.invoke(val))), le), 0, bytes, offset + idx, arrayLength * 8);
             
             // there is not contained a basic types 
             default : 
@@ -166,19 +166,19 @@ public class FixedMethodBinaryType implements FixedMethod {
                 return (bytes, idx, val) -> method.invoke(val, bytes[idx + offset]);
                 
             case "short" : case "java.lang.Short" : 
-                return (bytes, idx, val) -> method.invoke(val, Bytes.toShort(bytes, idx + offset));
+                return (bytes, idx, val) -> method.invoke(val, Bytes.toShort(Bytes.copy(bytes, idx + offset, 2, le)));
                 
             case "int" : case "java.lang.Integer" : 
-                return (bytes, idx, val) -> method.invoke(val, Bytes.toInt(bytes, idx + offset));
+                return (bytes, idx, val) -> method.invoke(val, Bytes.toInt(Bytes.copy(bytes, idx + offset, 4, le)));
                 
             case "long" : case "java.lang.Long" : 
-                return (bytes, idx, val) -> method.invoke(val, Bytes.toLong(bytes, idx + offset));
+                return (bytes, idx, val) -> method.invoke(val, Bytes.toLong(Bytes.copy(bytes, idx + offset, 8, le)));
                 
             case "float" : case "java.lang.Float" : 
-                return (bytes, idx, val) -> method.invoke(val, Bytes.toFloat(bytes, idx + offset));
+                return (bytes, idx, val) -> method.invoke(val, Bytes.toFloat(Bytes.copy(bytes, idx + offset, 4, le)));
                 
             case "double" : case "java.lang.Double" : 
-                return (bytes, idx, val) -> method.invoke(val, Bytes.toDouble(bytes, idx + offset));
+                return (bytes, idx, val) -> method.invoke(val, Bytes.toDouble(Bytes.copy(bytes, idx + offset, 8, le)));
             
             // basic array and list
             case "byte[]" : 
@@ -187,39 +187,39 @@ public class FixedMethodBinaryType implements FixedMethod {
                 return (bytes, idx, val) -> method.invoke(val, (Object)Converter.toUnPrimitive(Arrays.copyOfRange(bytes, idx + offset, idx + offset + arrayLength)));
             
             case "short[]" : 
-                return (bytes, idx, val) -> method.invoke(val, Bytes.toShortArray(bytes, idx + offset, arrayLength));
+                return (bytes, idx, val) -> method.invoke(val, Bytes.toShortArray(Bytes.copy(bytes, idx + offset, arrayLength * 2, le), 0, arrayLength));
             case "java.lang.Short[]" : 
-                return (bytes, idx, val) -> method.invoke(val, (Object)Converter.toUnPrimitive(Bytes.toShortArray(bytes, idx + offset, arrayLength)));
+                return (bytes, idx, val) -> method.invoke(val, (Object)Converter.toUnPrimitive(Bytes.toShortArray(Bytes.copy(bytes, idx + offset, arrayLength * 2, le), 0, arrayLength)));
             case "java.util.List<java.lang.Short>" : 
-                return (bytes, idx, val) -> method.invoke(val, Bytes.toShortList(bytes, idx + offset, arrayLength));
+                return (bytes, idx, val) -> method.invoke(val, Bytes.toShortList(Bytes.copy(bytes, idx + offset, arrayLength * 2, le), 0, arrayLength));
             
             case "int[]" : 
-                return (bytes, idx, val) -> method.invoke(val, Bytes.toIntArray(bytes, idx + offset, arrayLength));
+                return (bytes, idx, val) -> method.invoke(val, Bytes.toIntArray(Bytes.copy(bytes, idx + offset, arrayLength * 4, le), 0, arrayLength));
             case "java.lang.Integer[]" : 
-                return (bytes, idx, val) -> method.invoke(val, (Object)Converter.toUnPrimitive(Bytes.toIntArray(bytes, idx + offset, arrayLength)));
+                return (bytes, idx, val) -> method.invoke(val, (Object)Converter.toUnPrimitive(Bytes.toIntArray(Bytes.copy(bytes, idx + offset, arrayLength * 4, le), 0, arrayLength)));
             case "java.util.List<java.lang.Integer>" : 
-                return (bytes, idx, val) -> method.invoke(val, Bytes.toIntegerList(bytes, idx + offset, arrayLength));
+                return (bytes, idx, val) -> method.invoke(val, Bytes.toIntegerList(Bytes.copy(bytes, idx + offset, arrayLength * 4, le), 0, arrayLength));
                 
             case "long[]" : 
-                return (bytes, idx, val) -> method.invoke(val, Bytes.toLongArray(bytes, idx + offset, arrayLength));
+                return (bytes, idx, val) -> method.invoke(val, Bytes.toLongArray(Bytes.copy(bytes, idx + offset, arrayLength * 8, le), 0, arrayLength));
             case "java.lang.Long[]" : 
-                return (bytes, idx, val) -> method.invoke(val, (Object)Converter.toUnPrimitive(Bytes.toLongArray(bytes, idx + offset, arrayLength)));
+                return (bytes, idx, val) -> method.invoke(val, (Object)Converter.toUnPrimitive(Bytes.toLongArray(Bytes.copy(bytes, idx + offset, arrayLength * 8, le), 0, arrayLength)));
             case "java.util.List<java.lang.Long>" : 
-                return (bytes, idx, val) -> method.invoke(val, Bytes.toLongList(bytes, idx + offset, arrayLength));
+                return (bytes, idx, val) -> method.invoke(val, Bytes.toLongList(Bytes.copy(bytes, idx + offset, arrayLength * 8, le), 0, arrayLength));
             
             case "float[]" : 
-                return (bytes, idx, val) -> method.invoke(val, Bytes.toFloatArray(bytes, idx + offset, arrayLength));
+                return (bytes, idx, val) -> method.invoke(val, Bytes.toFloatArray(Bytes.copy(bytes, idx + offset, arrayLength * 4, le), 0, arrayLength));
             case "java.lang.Float[]" : 
-                return (bytes, idx, val) -> method.invoke(val, (Object)Converter.toUnPrimitive(Bytes.toFloatArray(bytes, idx + offset, arrayLength))); 
+                return (bytes, idx, val) -> method.invoke(val, (Object)Converter.toUnPrimitive(Bytes.toFloatArray(Bytes.copy(bytes, idx + offset, arrayLength * 4, le), 0, arrayLength))); 
             case "java.util.List<java.lang.Float>" : 
-                return (bytes, idx, val) -> method.invoke(val, Bytes.toFloatList(bytes, idx + offset, arrayLength));
+                return (bytes, idx, val) -> method.invoke(val, Bytes.toFloatList(Bytes.copy(bytes, idx + offset, arrayLength * 4, le), 0, arrayLength));
             
             case "double[]" : 
-                return (bytes, idx, val) -> method.invoke(val, Bytes.toDoubleArray(bytes, idx + offset, arrayLength));
+                return (bytes, idx, val) -> method.invoke(val, Bytes.toDoubleArray(Bytes.copy(bytes, idx + offset, arrayLength * 8, le), 0, arrayLength));
             case "java.lang.Double[]" : 
-                return (bytes, idx, val) -> method.invoke(val, (Object)Converter.toUnPrimitive(Bytes.toDoubleArray(bytes, idx + offset, arrayLength)));
+                return (bytes, idx, val) -> method.invoke(val, (Object)Converter.toUnPrimitive(Bytes.toDoubleArray(Bytes.copy(bytes, idx + offset, arrayLength * 8, le), 0, arrayLength)));
             case "java.util.List<java.lang.Double>" : 
-                return (bytes, idx, val) -> method.invoke(val, Bytes.toDoubleList(bytes, idx + offset, arrayLength));
+                return (bytes, idx, val) -> method.invoke(val, Bytes.toDoubleList(Bytes.copy(bytes, idx + offset, arrayLength * 8, le), 0, arrayLength));
             
             // there is not contained a basic types 
             default :
