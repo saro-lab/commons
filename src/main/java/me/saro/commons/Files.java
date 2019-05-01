@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -126,6 +127,33 @@ public class Files {
             }
         }
         return src.renameTo(dest);
+    }
+    
+    /**
+     * move the files to the target directory
+     * @param files
+     * @param directory
+     * @param overwrite
+     * @return moveCount
+     * @throws IOException
+     */
+    public static int move(List<File> files, String directory, boolean overwrite) throws IOException {
+        int moveCount = 0;
+        new File(directory).mkdirs();
+        for (File file : files) {
+            File target = new File(directory + '/' + file.getName());
+            if (target.exists()) {
+                if (overwrite) {
+                    target.delete();
+                } else {
+                    throw new IOException("create file error : already exists file : " + target.getAbsolutePath());
+                }
+            }
+            if (file.renameTo(target)) {
+                moveCount++;
+            }
+        }
+        return moveCount;
     }
     
     /**
