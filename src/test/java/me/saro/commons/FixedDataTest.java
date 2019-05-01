@@ -152,6 +152,25 @@ public class FixedDataTest {
         assertEquals(bytes.length, 20);
         
         System.out.println(Bytes.toHex(bytes));
+        System.out.println(fd.toClass(bytes).toString());
+        
+        assertEquals(Bytes.toHex(fd.toBytes(ms)), Bytes.toHex(fd.toBytes(fd.toClass(bytes, 0))));
+        
+        System.out.println(ms);
+        System.out.println(fd.<ParentStruct>toClass(bytes, 0));
+    }
+    
+    @Test
+    public void littleEndian() {
+        
+        FixedData fd = FixedData.getInstance(LittleStruct.class);
+        LittleStruct ms = new LittleStruct(1, "가나다");
+        
+        byte[] bytes = fd.toBytes(ms);
+        
+        assertEquals(bytes.length, 14);
+        
+        System.out.println(Bytes.toHex(bytes));
         
         assertEquals(Bytes.toHex(fd.toBytes(ms)), Bytes.toHex(fd.toBytes(fd.toClass(bytes, 0))));
         
@@ -279,6 +298,19 @@ public class FixedDataTest {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ChildStruct {
+        
+        @BinaryData(offset=0)
+        int no;
+        
+        @TextData(offset=4, length=10)
+        String text;
+    }
+    
+    @Data
+    @FixedDataClass(size=14, bigEndian=false, fill = 0)
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class LittleStruct {
         
         @BinaryData(offset=0)
         int no;
