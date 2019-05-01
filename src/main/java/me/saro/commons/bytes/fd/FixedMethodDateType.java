@@ -63,7 +63,7 @@ public class FixedMethodDateType implements FixedMethod {
     @Override
     public FixedMethodConsumer toClass(Method method) {
         int offset = meta.offset();
-        boolean le = fixedDataClassInfo.bigEndian();
+        boolean le = !fixedDataClassInfo.bigEndian();
         DateDataType type = meta.type();
         String genericParameterTypeName = method.getGenericParameterTypes()[0].getTypeName();
         
@@ -72,21 +72,21 @@ public class FixedMethodDateType implements FixedMethod {
             switch (type) {
                 case millis8 :return (bytes, idx, val) -> method.invoke(val, new Date(Bytes.toLong(Bytes.copy(bytes, idx + offset, 8, le))));
                 case unix8 : return (bytes, idx, val) -> method.invoke(val, new Date(Bytes.toLong(Bytes.copy(bytes, idx + offset, 8, le)) * 1000));
-                case unix4 : return (bytes, idx, val) -> method.invoke(val, new Date(Integer.toUnsignedLong(Bytes.toInt(Bytes.copy(bytes, idx + offset, 4, le))) * 1000));
+                case unix4 : return (bytes, idx, val) -> method.invoke(val, new Date(Integer.toUnsignedLong(Bytes.toInt(Bytes.copy(bytes, idx + offset, 4, le))) * 1000L));
             }
             break;
         case "java.util.Calendar" : 
             switch (type) {
                 case millis8 :return (bytes, idx, val) -> method.invoke(val, DateFormat.parse(Bytes.toLong(Bytes.copy(bytes, idx + offset, 8, le))).toCalendar());
                 case unix8 : return (bytes, idx, val) -> method.invoke(val, DateFormat.parse(Bytes.toLong(Bytes.copy(bytes, idx + offset, 8, le)) * 1000).toCalendar());
-                case unix4 : return (bytes, idx, val) -> method.invoke(val, DateFormat.parse(Integer.toUnsignedLong(Bytes.toInt(Bytes.copy(bytes, idx + offset, 4, le))) * 1000).toCalendar());
+                case unix4 : return (bytes, idx, val) -> method.invoke(val, DateFormat.parse(Integer.toUnsignedLong(Bytes.toInt(Bytes.copy(bytes, idx + offset, 4, le))) * 1000L).toCalendar());
             }
             break;
         case "me.saro.commons.DateFormat" :
             switch (type) {
                 case millis8 :return (bytes, idx, val) -> method.invoke(val, DateFormat.parse(Bytes.toLong(Bytes.copy(bytes, idx + offset, 8, le))));
                 case unix8 : return (bytes, idx, val) -> method.invoke(val, DateFormat.parse(Bytes.toLong(Bytes.copy(bytes, idx + offset, 8, le)) * 1000));
-                case unix4 : return (bytes, idx, val) -> method.invoke(val, DateFormat.parse(Integer.toUnsignedLong(Bytes.toInt(Bytes.copy(bytes, idx + offset, 4, le))) * 1000));
+                case unix4 : return (bytes, idx, val) -> method.invoke(val, DateFormat.parse(Integer.toUnsignedLong(Bytes.toInt(Bytes.copy(bytes, idx + offset, 4, le))) * 1000L));
             }
             break;
     }
