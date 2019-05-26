@@ -11,14 +11,14 @@
 <dependency>
   <groupId>me.saro</groupId>
   <artifactId>commons</artifactId>
-  <version>4.0.1</version>
+  <version>4.0.2</version>
 </dependency>
 ```
 
 ## gradle
 
 ```
-compile 'me.saro:commons:4.0.1'
+compile 'me.saro:commons:4.0.2'
 ```
 
 ## repository
