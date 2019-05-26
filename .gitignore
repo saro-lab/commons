@@ -7,8 +7,6 @@
 /logs/
 /bin/
 /out/
-/yarn.lock
-/yarn-error.log
 /target/
 pom.xml.releaseBackup
 release.properties
