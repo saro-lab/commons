@@ -1,12 +1,12 @@
 package me.saro.commons.bytes.fd;
 
+import lombok.SneakyThrows;
+import me.saro.commons.bytes.fd.annotations.FixedDataClass;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
-
-import lombok.SneakyThrows;
-import me.saro.commons.bytes.fd.annotations.FixedDataClass;
 
 /**
  * Fixed Data Mapper
@@ -70,22 +70,24 @@ public interface FixedData {
     default <T> T toClass(byte[] bytes) {
         return toClass(bytes, 0);
     }
-    
+
     /**
-     * String to class
-     * @param bytes
+     * to class
+     * @param data
+     * @param <T>
      * @return
      */
     @SneakyThrows
     default <T> T toClass(String data) {
         return toClass(data.getBytes(meta().charset()), 0);
     }
-    
+
     /**
-     * String to class<br>
-     * check byte
-     * @param bytes
+     * to class
+     * @param data
+     * @param <T>
      * @return
+     * @throws IOException
      */
     default <T> T toClassWithCheckByte(String data) throws IOException {
         byte[] buf = data.getBytes(meta().charset());
@@ -105,6 +107,16 @@ public interface FixedData {
      */
     default byte[] toBytes(Object data) {
         return bindBytes(data, new byte[meta().size()]);
+    }
+
+    /**
+     * class to String
+     * @param data
+     * @return
+     */
+    @SneakyThrows
+    default String toString(Object data) {
+        return new String(toBytes(data), meta().charset());
     }
     
     /**
