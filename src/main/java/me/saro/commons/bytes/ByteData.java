@@ -9,8 +9,6 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
-import com.sun.jna.Memory;
-
 import lombok.SneakyThrows;
 
 /**
@@ -26,10 +24,10 @@ public class ByteData {
     final private static byte[] BYTES_NEW_LINE = new byte[] { '\r', '\n' };
 
     // buffer
-    byte[] buf;
-    int size;
-    final int capacity;
-    final String charset;
+    private byte[] buf;
+    private int size;
+    private final int capacity;
+    private final String charset;
 
     // point
     int writePointer;
@@ -37,9 +35,9 @@ public class ByteData {
 
     /**
      * constructor
-     * 
-     * @param capacity
-     * @param charset
+     *
+     * @param capacity capacity
+     * @param charset charset
      */
     private ByteData(int capacity, String charset) {
         if (capacity < 10) {
@@ -251,8 +249,7 @@ public class ByteData {
     /**
      * insert<br>
      * does not move write pointer<br>
-     * 
-     * @see rectifyWritePointer();
+     *
      * @param data
      * @param dataOffset
      * @param dataLength
@@ -268,8 +265,7 @@ public class ByteData {
     /**
      * insert<br>
      * does not move write pointer<br>
-     * 
-     * @see rectifyWritePointer();
+     *
      * @param data
      * @param offset
      * @return
@@ -281,8 +277,7 @@ public class ByteData {
     /**
      * insert<br>
      * does not move write pointer<br>
-     * 
-     * @see rectifyWritePointer();
+     *
      * @param data
      * @param offset
      * @return
@@ -297,7 +292,6 @@ public class ByteData {
      * @param data
      * @param fixedSize
      * @param fill
-     * @param ALIGN
      * @param offset
      * @return
      * @throws IOException
@@ -312,7 +306,6 @@ public class ByteData {
      * @param data
      * @param fixedSize
      * @param fill
-     * @param ALIGN
      * @param offset
      * @return
      * @throws IOException
@@ -649,32 +642,7 @@ public class ByteData {
         }
         return Arrays.copyOfRange(buf, offset, length);
     }
-    
-    /**
-     * to bytes
-     * @param memory
-     * @return
-     */
-    public byte[] toBytes(Memory memory) {
-        int size = (int)memory.size();
-        byte[] rv = new byte[size];
-        memory.write(0, rv, 0, size);
-        return rv;
-    }
-    
-    /**
-     * to Memory
-     * @param bytes
-     * @param offset
-     * @param length
-     * @return
-     */
-    public Memory toMemory(byte[] bytes) {
-        Memory m = new Memory(bytes.length);
-        m.read(0, bytes, 0, bytes.length);
-        return m;
-    }
-    
+
     /**
      * toBytesWithCheckSize
      * @return

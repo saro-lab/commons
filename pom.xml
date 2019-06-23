@@ -4,7 +4,7 @@
     <groupId>me.saro</groupId>
     <artifactId>commons</artifactId>
     <description>java commons</description>
-    <version>4.0.3-SNAPSHOT</version>
+    <version>4.0.4-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>commons</name>
@@ -45,16 +45,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>4.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>4.1.0</version>
-        </dependency>
-        <dependency>
             <groupId>com.jcraft</groupId>
             <artifactId>jsch</artifactId>
             <version>0.1.55</version>
@@ -64,16 +54,6 @@
             <artifactId>commons-net</artifactId>
             <version>3.6</version>
         </dependency>
-		<dependency>
-		    <groupId>net.java.dev.jna</groupId>
-		    <artifactId>jna</artifactId>
-		    <version>5.3.1</version>
-		</dependency>
-		<dependency>
-		    <groupId>net.java.dev.jna</groupId>
-		    <artifactId>jna-platform</artifactId>
-		    <version>5.3.1</version>
-		</dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

@@ -11,14 +11,14 @@
 <dependency>
   <groupId>me.saro</groupId>
   <artifactId>commons</artifactId>
-  <version>4.0.2</version>
+  <version>4.0.3</version>
 </dependency>
 ```
 
 ## gradle
 
 ```
-compile 'me.saro:commons:4.0.2'
+compile 'me.saro:commons:4.0.3'
 ```
 
 ## repository
@@ -283,6 +283,7 @@ toClass(String) : T
 toClass(byte[]) : T
 toClass(byte[], int) : T
 toClassWithCheckByte(String) : T
+toString(Object) : String
 ```
 
 
@@ -414,37 +415,6 @@ toString(String) : String
 ```
 
 
-## Excel
-
-#### me.saro.commons.excel.Excel
-
-```
-Excel.create() : Excel
-Excel.createBulkExcel() : Excel
-Excel.open(File) : Excel
-autoSizeColumn() : Excel
-autoSizeColumn(int) : Excel
-getCell(String) : ExcelCell
-getCell(int, int) : ExcelCell
-getPoiSheet() : Sheet
-getRow() : ExcelRow
-getRow(int) : ExcelRow
-isBulk() : boolean
-moveNextRow() : Excel
-moveSheet(int) : Excel
-output(OutputStream) : Excel
-readPivotTable(String, int, ThrowableFunction<List<ExcelCell>, R>) : List<R>
-readPivotTable(String, int, int, ThrowableFunction<List<ExcelCell>, R>) : List<R>
-readTable(String, int, ThrowableFunction<List<ExcelCell>, R>) : List<R>
-readTable(String, int, int, ThrowableFunction<List<ExcelCell>, R>) : List<R>
-save(File, boolean) : Excel
-writeHorizontalList(String, Collection<Object>) : Excel
-writePivotTable(String, Collection<String>, List<T>) : Excel
-writeTable(String, Collection<String>, List<T>) : Excel
-writeVerticalList(String, Collection<Object>) : Excel
-```
-
-
 ## JsonReader
 
 #### me.saro.commons.json.JsonReader
@@ -495,9 +465,7 @@ readTextLong(int, long) : long
 rectifyWritePointer() : ByteData
 size() : int
 toBytes() : byte[]
-toBytes(Memory) : byte[]
 toBytes(int, int) : byte[]
-toMemory(byte[]) : Memory
 toString() : String
 write(File) : ByteData
 write(File, String) : ByteData
