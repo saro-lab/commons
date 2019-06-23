@@ -5,13 +5,12 @@ import java.lang.reflect.Modifier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import me.saro.commons.crypt.Crypt;
 import org.junit.jupiter.api.Test;
 
 import me.saro.commons.bytes.ByteData;
 import me.saro.commons.bytes.Bytes;
 import me.saro.commons.bytes.fd.FixedData;
-import me.saro.commons.crypt.Crypt;
-import me.saro.commons.excel.Excel;
 import me.saro.commons.ftp.FTP;
 import me.saro.commons.json.JsonReader;
 import me.saro.commons.shell.Shell;
@@ -45,7 +44,6 @@ public class ReadmeTest {
         outClassInfo(SSHShell.class);
         outClassInfo(SSHExecutor.class);
         outClassInfo(DateFormat.class);
-        outClassInfo(Excel.class);
         outClassInfo(JsonReader.class);
         outClassInfo(ByteData.class);
         outClassInfo(Web.class);
@@ -77,17 +75,14 @@ public class ReadmeTest {
         System.out.println();
 
         System.out.println("```");
-        Stream.of(clazz.getDeclaredMethods()).map(method -> {
-            return Stream.of(
-                    getName(className, method) + getParameters(method)
-                    ,	getGenericReturnType(method)
-                    )
-                    .collect(Collectors.joining(" "));
-        })
-        .filter(e -> !e.startsWith("0"))
+        Stream.of(clazz.getDeclaredMethods()).map(method ->
+            Stream
+                .of(getName(className, method) + getParameters(method), getGenericReturnType(method))
+                .collect(Collectors.joining(" "))
+        ).filter(e -> !e.startsWith("0"))
         .sorted()
         .map(e -> e.substring(1))
-        .forEach(e -> System.out.println(e) );
+        .forEach(System.out::println);
         System.out.println("```");
         System.out.println();
     }
