@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import me.saro.commons.json.JsonReader;
+import me.saro.commons.__old.bytes.json.JsonReader;
 
 public class JsonReaderTest {
 

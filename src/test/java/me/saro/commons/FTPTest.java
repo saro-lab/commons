@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 
-import me.saro.commons.ftp.FTP;
+import me.saro.commons.__old.bytes.ftp.FTP;
 
 public class FTPTest {
 

@@ -13,7 +13,7 @@ import javax.crypto.NoSuchPaddingException;
 
 import org.junit.jupiter.api.Test;
 
-import me.saro.commons.crypt.Crypt;
+import me.saro.commons.__old.bytes.crypt.Crypt;
 
 public class CryptTest {
     

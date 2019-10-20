@@ -4,10 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.stream.Collectors;
 
+import me.saro.commons.__old.bytes.Converter;
 import org.junit.jupiter.api.Test;
 
-import me.saro.commons.bytes.Bytes;
-import me.saro.commons.converter.HashAlgorithm;
+import me.saro.commons.__old.bytes.Bytes;
+import me.saro.commons.__old.bytes.converter.HashAlgorithm;
 
 public class ConverterTest {
 

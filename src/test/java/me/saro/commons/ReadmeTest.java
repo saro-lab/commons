@@ -5,18 +5,17 @@ import java.lang.reflect.Modifier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import me.saro.commons.crypt.Crypt;
+import me.saro.commons.__old.bytes.*;
+import me.saro.commons.__old.bytes.crypt.Crypt;
 import org.junit.jupiter.api.Test;
 
-import me.saro.commons.bytes.ByteData;
-import me.saro.commons.bytes.Bytes;
-import me.saro.commons.bytes.fd.FixedData;
-import me.saro.commons.ftp.FTP;
-import me.saro.commons.json.JsonReader;
-import me.saro.commons.shell.Shell;
-import me.saro.commons.ssh.SSHExecutor;
-import me.saro.commons.ssh.SSHShell;
-import me.saro.commons.web.Web;
+import me.saro.commons.__old.bytes.fd.FixedData;
+import me.saro.commons.__old.bytes.ftp.FTP;
+import me.saro.commons.__old.bytes.json.JsonReader;
+import me.saro.commons.__old.bytes.shell.Shell;
+import me.saro.commons.__old.bytes.ssh.SSHExecutor;
+import me.saro.commons.__old.bytes.ssh.SSHShell;
+import me.saro.commons.__old.bytes.web.Web;
 public class ReadmeTest {
 
     @Test	
@@ -50,7 +49,7 @@ public class ReadmeTest {
         outClassInfo(NullOutputStream.class);
 
         System.out.println("# FUNCTION INTERFACE");
-        System.out.println("#### me.saro.commons.function.*");
+        System.out.println("#### me.saro.commons.__old.bytes.function.*");
         System.out.println("```\n" + 
                 "ThrowableRunnable\n" + 
                 "ThrowableSupplier<R>\n" + 

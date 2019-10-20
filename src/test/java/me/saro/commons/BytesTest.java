@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import me.saro.commons.bytes.Bytes;
+import me.saro.commons.__old.bytes.Bytes;
 
 public class BytesTest {
     

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.Arrays;
 import java.util.List;
 
+import me.saro.commons.__old.bytes.Naming;
 import org.junit.jupiter.api.Test;
 
 public class NamingTest {

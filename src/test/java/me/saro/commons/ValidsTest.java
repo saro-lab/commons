@@ -3,6 +3,7 @@ package me.saro.commons;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import me.saro.commons.__old.bytes.Valids;
 import org.junit.jupiter.api.Test;
 
 public class ValidsTest {

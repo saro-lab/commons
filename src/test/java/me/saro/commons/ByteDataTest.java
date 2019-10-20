@@ -5,9 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 
+import me.saro.commons.__old.bytes.Utils;
 import org.junit.jupiter.api.Test;
 
-import me.saro.commons.bytes.ByteData;
+import me.saro.commons.__old.bytes.ByteData;
 
 public class ByteDataTest {
     

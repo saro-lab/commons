@@ -5,8 +5,8 @@ import java.util.Scanner;
 
 import org.junit.jupiter.api.Test;
 
-import me.saro.commons.ssh.SSHExecutor;
-import me.saro.commons.ssh.SSHShell;
+import me.saro.commons.__old.bytes.ssh.SSHExecutor;
+import me.saro.commons.__old.bytes.ssh.SSHShell;
 
 public class SSHTest {
     

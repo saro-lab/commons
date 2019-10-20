@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import me.saro.commons.__old.bytes.Converter;
+import me.saro.commons.__old.bytes.Maps;
 import org.junit.jupiter.api.Test;
 
 public class MapsTest {
