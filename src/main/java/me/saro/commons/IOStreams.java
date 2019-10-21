@@ -1,8 +1,14 @@
 package me.saro.commons;
 
 import java.io.*;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
-public class IOUtils {
+public class IOStreams {
 
     public static int BUFSIZE = 8192;
 
@@ -34,4 +40,21 @@ public class IOUtils {
             out.flush();
         }
     }
+
+    public static <T> Stream<T> toStream(Iterable<T> iterable, boolean parallel) {
+        return StreamSupport.stream(iterable.spliterator(), parallel);
+    }
+
+    public static <T> Stream<T> toStream(Enumeration<T> enumeration, boolean parallel) {
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(new Iterator<T>() {
+            public T next() {
+                return enumeration.nextElement();
+            }
+            public boolean hasNext() {
+                return enumeration.hasMoreElements();
+            }
+        }, Spliterator.ORDERED), parallel);
+    }
+
 }
+
