@@ -72,4 +72,62 @@ public class Texts {
         return text.substring(0, text.lastIndexOf(token));
     }
 
+    /**
+     * Null Value Logic
+     *
+     * @param datas
+     * nullable data
+     * @return
+     *  - first not null data
+     *  <br>
+     *  - if has not null data return null
+     */
+    @SafeVarargs
+    public static String nvl(String... datas) {
+        for (String t : datas) {
+            if (t != null) {
+                return t;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Empty Value Logic
+     *
+     * @param datas
+     * nullable String
+     * @return
+     *  - first not null and not empty string
+     *  <br>
+     *  - if not found return null
+     */
+    public static String evl(String... datas) {
+        for (String val : datas) {
+            if (val != null && !val.isEmpty()) {
+                return val;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Blank Value Logic
+     *
+     * @param datas
+     * nullable String
+     * @return
+     *  - first not null and not blank string
+     *  <br>
+     *  - if not found return null
+     */
+    public static String bvl(String... datas) {
+        for (String val : datas) {
+            if (val != null && !val.isBlank()) {
+                return val;
+            }
+        }
+        return null;
+    }
+
 }

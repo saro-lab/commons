@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import me.saro.commons.__old.bytes.function.ThrowableTriConsumer;
+import me.saro.commons.function.ThrowableTriConsumer;
 import me.saro.commons.__old.bytes.web.BasicWeb;
 import me.saro.commons.__old.bytes.web.WebResult;
 

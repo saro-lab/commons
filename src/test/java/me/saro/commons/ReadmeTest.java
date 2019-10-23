@@ -49,7 +49,7 @@ public class ReadmeTest {
         outClassInfo(NullOutputStream.class);
 
         System.out.println("# FUNCTION INTERFACE");
-        System.out.println("#### me.saro.commons.__old.bytes.function.*");
+        System.out.println("#### me.saro.commons.function.*");
         System.out.println("```\n" + 
                 "ThrowableRunnable\n" + 
                 "ThrowableSupplier<R>\n" + 

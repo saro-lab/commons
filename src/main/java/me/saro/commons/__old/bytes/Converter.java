@@ -32,8 +32,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import me.saro.commons.__old.bytes.converter.HashAlgorithm;
-import me.saro.commons.__old.bytes.function.ThrowableBiFunction;
-import me.saro.commons.__old.bytes.function.ThrowableFunction;
+import me.saro.commons.function.ThrowableBiFunction;
+import me.saro.commons.function.ThrowableFunction;
 
 
 /**

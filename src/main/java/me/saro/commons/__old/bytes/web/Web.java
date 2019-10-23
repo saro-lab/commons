@@ -11,8 +11,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import me.saro.commons.__old.bytes.Converter;
 import me.saro.commons.__old.bytes.Files;
-import me.saro.commons.__old.bytes.function.ThrowableConsumer;
-import me.saro.commons.__old.bytes.function.ThrowableFunction;
+import me.saro.commons.function.ThrowableConsumer;
+import me.saro.commons.function.ThrowableFunction;
 import me.saro.commons.__old.bytes.json.JsonReader;
 
 /**

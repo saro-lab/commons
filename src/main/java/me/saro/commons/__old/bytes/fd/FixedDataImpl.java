@@ -6,7 +6,7 @@ import java.util.List;
 
 import lombok.SneakyThrows;
 import me.saro.commons.__old.bytes.fd.annotations.FixedDataClass;
-import me.saro.commons.__old.bytes.function.ThrowableConsumer;
+import me.saro.commons.function.ThrowableConsumer;
 
 /**
  * Fixed Data Mapper Impl

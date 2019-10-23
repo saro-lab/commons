@@ -532,7 +532,7 @@ write(int)
 ```
 
 # FUNCTION INTERFACE
-#### me.saro.commons.__old.bytes.function.*
+#### me.saro.commons.function.*
 ```
 ThrowableRunnable
 ThrowableSupplier<R>

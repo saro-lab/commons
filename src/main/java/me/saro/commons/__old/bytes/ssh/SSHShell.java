@@ -16,7 +16,7 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
-import me.saro.commons.__old.bytes.function.ThrowableConsumer;
+import me.saro.commons.function.ThrowableConsumer;
 
 /**
  * SSH Shell

@@ -19,10 +19,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import lombok.SneakyThrows;
-import me.saro.commons.__old.bytes.function.StreamReadConsumer;
-import me.saro.commons.__old.bytes.function.ThrowableConsumer;
-import me.saro.commons.__old.bytes.function.ThrowableFunction;
-import me.saro.commons.__old.bytes.function.ThrowableRunnable;
+import me.saro.commons.function.StreamReadConsumer;
+import me.saro.commons.function.ThrowableConsumer;
+import me.saro.commons.function.ThrowableFunction;
+import me.saro.commons.function.ThrowableRunnable;
 
 /**
  * util class

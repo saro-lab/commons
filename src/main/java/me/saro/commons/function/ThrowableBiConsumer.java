@@ -1,12 +1,15 @@
-package me.saro.commons.__old.bytes.function;
+package me.saro.commons.function;
 
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 /**
- * Throwable <code>Consumer</code>
+ * Throwable <code>BiConsumer</code>
  * 
  * @param <T>
  * input parameter type T
+ * 
+ * @param <U>
+ * input parameter type U
  * 
  * @see
  * java.util.function.Consumer
@@ -18,7 +21,7 @@ import java.util.function.Consumer;
  * 0.1
  */
 @FunctionalInterface
-public interface ThrowableConsumer<T> {
+public interface ThrowableBiConsumer<T, U> {
     /**
      * @see
      * java.util.function.Consumer
@@ -26,21 +29,24 @@ public interface ThrowableConsumer<T> {
      * @param t
      * input parameter type T
      * 
+     * @param u
+     * input parameter type U
+     * 
      * @throws Exception
      */
-    void accept(T t) throws Exception;
+    void accept(T t, U u) throws Exception;
     
     /**
      * throws Exception lambda to throws RuntimeException lambda
-     * @param consumer
+     * @param biConsumer
      * @return
      * @since
      * 0.6
      */
-    public static <T> Consumer<T> runtime(ThrowableConsumer<T> consumer) {
-        return t -> {
+    public static <T, U> BiConsumer<T, U> runtime(ThrowableBiConsumer<T, U> biConsumer) {
+        return (t, u) -> {
             try {
-                consumer.accept(t);
+                biConsumer.accept(t, u);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -50,15 +56,15 @@ public interface ThrowableConsumer<T> {
     /**
      * ignore exception<br>
      * this method recommend only special situation 
-     * @param consumer
+     * @param biConsumer
      * @return
      * @since
      * 1.1
      */
-    public static <T> Consumer<T> ignore(ThrowableConsumer<T> consumer) {
-        return t -> {
+    public static <T, U> BiConsumer<T, U> ignore(ThrowableBiConsumer<T, U> biConsumer) {
+        return (t, u) -> {
             try {
-                consumer.accept(t);
+                biConsumer.accept(t, u);
             } catch (Exception e) {
             }
         };

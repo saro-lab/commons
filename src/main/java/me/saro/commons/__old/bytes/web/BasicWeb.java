@@ -13,7 +13,7 @@ import java.util.Map;
 
 import lombok.Getter;
 import me.saro.commons.__old.bytes.Converter;
-import me.saro.commons.__old.bytes.function.ThrowableFunction;
+import me.saro.commons.function.ThrowableFunction;
 
 /**
  * Web Client Builder

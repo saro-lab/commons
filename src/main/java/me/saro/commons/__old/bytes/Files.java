@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import me.saro.commons.__old.bytes.function.ThrowableFunction;
-import me.saro.commons.__old.bytes.function.ThrowablePredicate;
+import me.saro.commons.function.ThrowableFunction;
+import me.saro.commons.function.ThrowablePredicate;
 
 /**
  * file util

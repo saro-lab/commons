@@ -1,7 +1,7 @@
-package me.saro.commons.__old.bytes.function;
+package me.saro.commons.function;
 
 /**
- * Throwable <code>TriConsumer</code>
+ * Throwable <code>TriFunction</code>
  * 
  * @param <T>
  * input parameter type T
@@ -12,8 +12,11 @@ package me.saro.commons.__old.bytes.function;
  * @param <V> 
  * input parameter type V
  * 
+ * @param <R> 
+ * output return type
+ * 
  * @see
- * java.util.function.Consumer
+ * java.util.function.Function
  * 
  * @author
  * PARK Yong Seo
@@ -22,10 +25,10 @@ package me.saro.commons.__old.bytes.function;
  * 0.1
  */
 @FunctionalInterface
-public interface ThrowableTriConsumer<T, U, V> {
+public interface ThrowableTriFunction<T, U, V, R> {
     /**
      * @see
-     * java.util.function.Consumer
+     * java.util.function.Function
      * 
      * @param t
      * input parameter type T
@@ -36,7 +39,10 @@ public interface ThrowableTriConsumer<T, U, V> {
      * @param v 
      * input parameter type V
      * 
+     * @return
+     * output return
+     * 
      * @throws Exception
      */
-    void accept(T t, U u, V v) throws Exception;
+    R apply(T t, U u, V v) throws Exception;
 }

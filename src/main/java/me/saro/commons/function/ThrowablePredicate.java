@@ -1,18 +1,15 @@
-package me.saro.commons.__old.bytes.function;
+package me.saro.commons.function;
 
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
- * Throwable <code>Function</code>
+ * Throwable <code>Predicate</code>
  * 
  * @param <T>
  * input parameter type T
  * 
- * @param <R> 
- * output return type
- * 
  * @see
- * java.util.function.Function
+ * java.util.function.Predicate
  * 
  * @author
  * PARK Yong Seo
@@ -21,32 +18,30 @@ import java.util.function.Function;
  * 0.1
  */
 @FunctionalInterface
-public interface ThrowableFunction<T, R> {
+public interface ThrowablePredicate<T> {
     /**
      * @see
-     * java.util.function.Function
+     * java.util.function.Predicate
      * 
      * @param t
      * input parameter type T
      * 
      * @return
-     * output return
+     * test return
      * 
      * @throws Exception
      */
-    R apply(T t) throws Exception;
+    boolean test(T t) throws Exception;
     
     /**
      * throws Exception lambda to throws RuntimeException lambda
-     * @param function
+     * @param runnable
      * @return
-     * @since
-     * 0.6
      */
-    public static <T, R> Function<T, R> runtime(ThrowableFunction<T, R> function) {
+    public static <T> Predicate<T> runtime(ThrowablePredicate<T> throwablePredicate) {
         return t -> {
             try {
-                return function.apply(t);
+                return throwablePredicate.test(t);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

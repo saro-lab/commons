@@ -7,14 +7,14 @@ import java.util.function.Function;
 
 import org.junit.jupiter.api.Test;
 
-import me.saro.commons.__old.bytes.function.ThrowableBiConsumer;
-import me.saro.commons.__old.bytes.function.ThrowableBiFunction;
-import me.saro.commons.__old.bytes.function.ThrowableConsumer;
-import me.saro.commons.__old.bytes.function.ThrowableFunction;
-import me.saro.commons.__old.bytes.function.ThrowableRunnable;
-import me.saro.commons.__old.bytes.function.ThrowableSupplier;
-import me.saro.commons.__old.bytes.function.ThrowableTriConsumer;
-import me.saro.commons.__old.bytes.function.ThrowableTriFunction;
+import me.saro.commons.function.ThrowableBiConsumer;
+import me.saro.commons.function.ThrowableBiFunction;
+import me.saro.commons.function.ThrowableConsumer;
+import me.saro.commons.function.ThrowableFunction;
+import me.saro.commons.function.ThrowableRunnable;
+import me.saro.commons.function.ThrowableSupplier;
+import me.saro.commons.function.ThrowableTriConsumer;
+import me.saro.commons.function.ThrowableTriFunction;
 
 public class LambdasTest {
 

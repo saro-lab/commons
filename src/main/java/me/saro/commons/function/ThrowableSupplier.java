@@ -1,4 +1,4 @@
-package me.saro.commons.__old.bytes.function;
+package me.saro.commons.function;
 
 import java.util.function.Supplier;
 
