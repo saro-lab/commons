@@ -37,7 +37,7 @@ public interface ThrowableConsumer<T> {
      * @since
      * 0.6
      */
-    public static <T> Consumer<T> runtime(ThrowableConsumer<T> consumer) {
+    public static <T> Consumer<T> wrap(ThrowableConsumer<T> consumer) {
         return t -> {
             try {
                 consumer.accept(t);

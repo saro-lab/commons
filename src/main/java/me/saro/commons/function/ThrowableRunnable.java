@@ -30,7 +30,7 @@ public interface ThrowableRunnable {
      * @since
      * 0.6
      */
-    public static Runnable runtime(ThrowableRunnable runnable) {
+    public static Runnable wrap(ThrowableRunnable runnable) {
         return () -> {
             try {
                 runnable.run();

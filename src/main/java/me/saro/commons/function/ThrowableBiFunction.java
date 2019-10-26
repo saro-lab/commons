@@ -49,7 +49,7 @@ public interface ThrowableBiFunction<T, U, R> {
      * @since
      * 0.6
      */
-    public static <T, U, R> BiFunction<T, U, R> runtime(ThrowableBiFunction<T, U, R> biFunction) {
+    public static <T, U, R> BiFunction<T, U, R> wrap(ThrowableBiFunction<T, U, R> biFunction) {
         return (t, u) -> {
             try {
                 return biFunction.apply(t, u);

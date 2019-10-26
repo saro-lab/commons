@@ -38,7 +38,7 @@ public interface ThrowablePredicate<T> {
      * @param runnable
      * @return
      */
-    public static <T> Predicate<T> runtime(ThrowablePredicate<T> throwablePredicate) {
+    public static <T> Predicate<T> wrap(ThrowablePredicate<T> throwablePredicate) {
         return t -> {
             try {
                 return throwablePredicate.test(t);

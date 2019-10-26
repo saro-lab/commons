@@ -65,7 +65,7 @@ class FixedDataImpl implements FixedData {
 
     @Override
     public byte[] bindBytes(Object data, byte[] out, int offset) {
-        toBytesConsumers.parallelStream().forEach(ThrowableConsumer.runtime(e -> e.to(out, offset, data)));
+        toBytesConsumers.parallelStream().forEach(ThrowableConsumer.wrap(e -> e.to(out, offset, data)));
         return out;
     }
 
@@ -73,7 +73,7 @@ class FixedDataImpl implements FixedData {
     public <T> T toClass(byte[] bytes, int offset) {
         @SuppressWarnings("unchecked")
         T t = (T) constructor.newInstance();
-        toClassConsumers.parallelStream().forEach(ThrowableConsumer.runtime(e -> e.to(bytes, offset, t)));
+        toClassConsumers.parallelStream().forEach(ThrowableConsumer.wrap(e -> e.to(bytes, offset, t)));
         return t;
     }
 }

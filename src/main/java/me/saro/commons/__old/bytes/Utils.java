@@ -359,7 +359,7 @@ public class Utils {
             return executorService
                     .invokeAll(list.parallelStream().<Callable<R>>map(e -> () -> map.apply(e)).collect(Collectors.toList()))
                     .parallelStream()
-                    .map(ThrowableFunction.runtime(x -> x.get()))
+                    .map(ThrowableFunction.wrap(x -> x.get()))
                     .collect(Collectors.toList());
         } catch (Exception e) {
             throw new RuntimeException(e);

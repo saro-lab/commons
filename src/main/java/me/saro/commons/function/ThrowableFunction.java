@@ -43,7 +43,7 @@ public interface ThrowableFunction<T, R> {
      * @since
      * 0.6
      */
-    public static <T, R> Function<T, R> runtime(ThrowableFunction<T, R> function) {
+    public static <T, R> Function<T, R> wrap(ThrowableFunction<T, R> function) {
         return t -> {
             try {
                 return function.apply(t);

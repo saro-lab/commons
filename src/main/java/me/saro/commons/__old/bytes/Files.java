@@ -247,6 +247,6 @@ public class Files {
      * @return
      */
     public static Predicate<File> attributesFilter(ThrowablePredicate<BasicFileAttributes> filter) {
-        return ThrowablePredicate.runtime(e -> filter.test(toBasicFileAttributes(e)));
+        return ThrowablePredicate.wrap(e -> filter.test(toBasicFileAttributes(e)));
     }
 }

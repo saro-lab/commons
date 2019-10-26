@@ -38,7 +38,7 @@ public class LambdasTest {
         assertEquals("123", throwableTriFunction((a, b, c) -> a + b + c, "1", "2", "3"));
 
 
-        assertEquals("OK TEST", callTest(ThrowableFunction.runtime(p1 -> {
+        assertEquals("OK TEST", callTest(ThrowableFunction.wrap(p1 -> {
             Thread.sleep(100);
             return "OK " + p1;
         })));

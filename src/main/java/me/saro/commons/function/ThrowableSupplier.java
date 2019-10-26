@@ -38,7 +38,7 @@ public interface ThrowableSupplier<R> {
      * @since
      * 0.6
      */
-    public static <R> Supplier<R> runtime(ThrowableSupplier<R> supplier) {
+    public static <R> Supplier<R> wrap(ThrowableSupplier<R> supplier) {
         return () -> {
             try {
                 return supplier.get();

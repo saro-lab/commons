@@ -83,7 +83,7 @@ public class SSHShell implements Closeable {
     private Thread getReadLineThread(ThrowableConsumer<String> readLines) {
         Thread thread = new Thread(() -> {
             try {
-                this.bufferedReader.lines().forEach(ThrowableConsumer.runtime(readLines));
+                this.bufferedReader.lines().forEach(ThrowableConsumer.wrap(readLines));
             } catch (Exception e) {
                 // UncheckedIOException just shutdown
                 if (!(e instanceof UncheckedIOException)) {

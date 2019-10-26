@@ -43,29 +43,12 @@ public interface ThrowableBiConsumer<T, U> {
      * @since
      * 0.6
      */
-    public static <T, U> BiConsumer<T, U> runtime(ThrowableBiConsumer<T, U> biConsumer) {
+    public static <T, U> BiConsumer<T, U> wrap(ThrowableBiConsumer<T, U> biConsumer) {
         return (t, u) -> {
             try {
                 biConsumer.accept(t, u);
             } catch (Exception e) {
                 throw new RuntimeException(e);
-            }
-        };
-    }
-    
-    /**
-     * ignore exception<br>
-     * this method recommend only special situation 
-     * @param biConsumer
-     * @return
-     * @since
-     * 1.1
-     */
-    public static <T, U> BiConsumer<T, U> ignore(ThrowableBiConsumer<T, U> biConsumer) {
-        return (t, u) -> {
-            try {
-                biConsumer.accept(t, u);
-            } catch (Exception e) {
             }
         };
     }
