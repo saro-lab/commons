@@ -54,6 +54,26 @@ public interface FTP extends Closeable {
     public static FTP openFTP(String host, int port, String user, String pass) throws IOException {
         return new FTPS(InetAddress.getByName(host), port, user, pass, false);
     }
+
+    /**
+     * open ftp
+     * @param host
+     * ip or domain
+     * @param port
+     * port (ftp basic port 21)
+     * @param user
+     * username
+     * @param pass
+     * password
+     * @param encoding
+     * encoding
+     * @return
+     * FTP Object
+     * @throws IOException
+     */
+    public static FTP openFTP(String host, int port, String user, String pass, String encoding) throws IOException {
+        return new FTPS(InetAddress.getByName(host), port, user, pass, false, encoding);
+    }
     
     /**
      * open ftps
