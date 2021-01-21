@@ -49,6 +49,11 @@ public class FTPS implements FTP {
            throw e;
         }
     }
+
+    public FTPS(InetAddress byName, int port, String user, String pass, boolean isFTPS, String encoding) throws IOException {
+        this(byName, port, user, pass, isFTPS);
+        ftp.setControlEncoding(encoding);
+    }
     
     /**
      * BINARY FILE MODE<br>
